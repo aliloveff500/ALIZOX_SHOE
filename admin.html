@@ -627,7 +627,7 @@ footer{border-top:1px solid rgba(255,255,255,.08);padding:28px clamp(20px,5vw,76
           <span style="font-size:20px">📧</span>
           <div style="flex:1">
             <div style="font-size:9.5px;color:var(--muted);text-transform:uppercase;font-weight:900">Target Email</div>
-            <div style="font-size:13px;font-weight:900;color:#fff" id="displayAdminEmail">aliloveff500@gmail.com</div>
+            <div style="font-size:13px;font-weight:900;color:#fff;letter-spacing:1px" id="displayAdminEmail">al••••••••••••••••</div>
           </div>
           <span style="font-size:10px;font-weight:900;color:var(--success);background:rgba(16,185,129,.15);padding:3px 9px;border-radius:999px">Active</span>
         </div>
@@ -642,7 +642,7 @@ footer{border-top:1px solid rgba(255,255,255,.08);padding:28px clamp(20px,5vw,76
       <!-- STEP 2: ENTER CODE -->
       <div id="resetStep2" style="display:none">
         <p style="font-size:12px;color:#d4d4df;margin:0 0 16px;line-height:1.5">
-          6-digit verification code <strong style="color:#fff">aliloveff500@gmail.com</strong> par bhej diya gaya hai. Baraye meherbani code darj karein:
+          6-digit verification code <strong style="color:#fff;letter-spacing:1px" id="displayAdminEmailStep2">al••••••••••••••••</strong> par bhej diya gaya hai. Baraye meherbani code darj karein:
         </p>
 
         <div class="form-group" style="margin-bottom:14px">
@@ -723,11 +723,16 @@ let currentOtp = null;
 let otpExpiresAt = 0;
 let otpTimerInterval = null;
 
+function maskEmail(email) {
+  if (!email || typeof email !== "string") return "al••••••••••••••••";
+  const firstTwo = email.slice(0, 2);
+  return firstTwo + "•".repeat(16);
+}
+
 function getEffectiveCredentials() {
   const u = (storeData && storeData.auth && storeData.auth.username) || REQUIRED_USER;
   const p = (storeData && storeData.auth && storeData.auth.password) || localStorage.getItem("alizox_admin_pass") || REQUIRED_PASS;
-  const e = (storeData && storeData.auth && storeData.auth.email) || ADMIN_EMAIL;
-  return { username: u, password: p, email: e };
+  return { username: u, password: p, email: ADMIN_EMAIL };
 }
 
 // 1. STRICT AUTH CHECK (AGAINST CURRENT ACTIVE PASSWORD)
@@ -775,8 +780,8 @@ function openResetModal() {
   $("step1Status").style.display = "none";
   $("step2Status").style.display = "none";
   $("step3Status").style.display = "none";
-  const creds = getEffectiveCredentials();
-  $("displayAdminEmail").textContent = creds.email || ADMIN_EMAIL;
+  $("displayAdminEmail").textContent = maskEmail(ADMIN_EMAIL);
+  $("displayAdminEmailStep2").textContent = maskEmail(ADMIN_EMAIL);
   $("resetPassModal").classList.add("open");
 }
 
@@ -787,7 +792,7 @@ $("openChangePassBtn").addEventListener("click", openResetModal);
 async function sendOtpCode() {
   const btn = $("sendOtpBtn");
   const origText = btn.innerHTML;
-  btn.innerHTML = "⏳ Sending Code to " + ADMIN_EMAIL + "...";
+  btn.innerHTML = "⏳ Sending Code to " + maskEmail(ADMIN_EMAIL) + "...";
   btn.disabled = true;
 
   currentOtp = Math.floor(100000 + Math.random() * 900000).toString();
@@ -818,6 +823,7 @@ async function sendOtpCode() {
     const data = await res.json();
     $("resetStep1").style.display = "none";
     $("resetStep2").style.display = "block";
+    $("displayAdminEmailStep2").textContent = maskEmail(ADMIN_EMAIL);
     $("otpInput").value = "";
     $("otpInput").focus();
     startOtpCountdown();
@@ -828,12 +834,12 @@ async function sendOtpCode() {
       s2.style.background = "rgba(16,185,129,.12)";
       s2.style.border = "1px solid rgba(16,185,129,.3)";
       s2.style.color = "#a7f3d0";
-      s2.innerHTML = `✅ <strong>Code sent!</strong> ${ADMIN_EMAIL} ke inbox ya spam mein code check karein.`;
+      s2.innerHTML = `✅ <strong>Code sent!</strong> ${maskEmail(ADMIN_EMAIL)} ke inbox ya spam mein code check karein.`;
     } else if (data.message && data.message.includes("Activation")) {
       s2.style.background = "rgba(245,158,11,.12)";
       s2.style.border = "1px solid rgba(245,158,11,.3)";
       s2.style.color = "#fde68a";
-      s2.innerHTML = `📩 <strong>Email Sent:</strong> FormSubmit ne ${ADMIN_EMAIL} par email bheja hai.<br>Agar activation link mange tou mail mein 'Activate Form' par click karein.<br>Aapka Security Code yeh hai: <strong style="color:#fff;font-size:15px;letter-spacing:1px">${currentOtp}</strong>`;
+      s2.innerHTML = `📩 <strong>Email Sent:</strong> FormSubmit ne ${maskEmail(ADMIN_EMAIL)} par email bheja hai.<br>Agar activation link mange tou mail mein 'Activate Form' par click karein.<br>Aapka Security Code yeh hai: <strong style="color:#fff;font-size:15px;letter-spacing:1px">${currentOtp}</strong>`;
     } else {
       s2.style.background = "rgba(245,158,11,.12)";
       s2.style.border = "1px solid rgba(245,158,11,.3)";
@@ -843,6 +849,7 @@ async function sendOtpCode() {
   } catch (err) {
     $("resetStep1").style.display = "none";
     $("resetStep2").style.display = "block";
+    $("displayAdminEmailStep2").textContent = maskEmail(ADMIN_EMAIL);
     $("otpInput").value = "";
     $("otpInput").focus();
     startOtpCountdown();
@@ -955,12 +962,13 @@ $("newPassForm").addEventListener("submit", async e => {
       storeData.auth = {
         username: REQUIRED_USER,
         password: REQUIRED_PASS,
-        email: ADMIN_EMAIL
+        email: "al••••••••••••••••"
       };
     }
 
     // Set new password
     storeData.auth.password = p1;
+    storeData.auth.email = "al••••••••••••••••";
     storeData.auth.updatedAt = new Date().toISOString();
 
     // Cache locally as immediate fallback
