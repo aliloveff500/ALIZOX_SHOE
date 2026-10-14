@@ -627,7 +627,7 @@ footer{border-top:1px solid rgba(255,255,255,.08);padding:28px clamp(20px,5vw,76
           <span style="font-size:20px">📧</span>
           <div style="flex:1">
             <div style="font-size:9.5px;color:var(--muted);text-transform:uppercase;font-weight:900">Target Email</div>
-            <div style="font-size:13px;font-weight:900;color:#fff;letter-spacing:1px" id="displayAdminEmail">al••••••••••••••••</div>
+            <div style="font-size:13px;font-weight:900;color:#fff;letter-spacing:1.5px" id="displayAdminEmail">al&bull;&bull;&bull;&bull;&bull;&bull;&bull;&bull;&bull;&bull;&bull;&bull;&bull;&bull;&bull;&bull;</div>
           </div>
           <span style="font-size:10px;font-weight:900;color:var(--success);background:rgba(16,185,129,.15);padding:3px 9px;border-radius:999px">Active</span>
         </div>
@@ -642,7 +642,7 @@ footer{border-top:1px solid rgba(255,255,255,.08);padding:28px clamp(20px,5vw,76
       <!-- STEP 2: ENTER CODE -->
       <div id="resetStep2" style="display:none">
         <p style="font-size:12px;color:#d4d4df;margin:0 0 16px;line-height:1.5">
-          6-digit verification code <strong style="color:#fff;letter-spacing:1px" id="displayAdminEmailStep2">al••••••••••••••••</strong> par bhej diya gaya hai. Baraye meherbani code darj karein:
+          6-digit verification code <strong style="color:#fff;letter-spacing:1.5px" id="displayAdminEmailStep2">al&bull;&bull;&bull;&bull;&bull;&bull;&bull;&bull;&bull;&bull;&bull;&bull;&bull;&bull;&bull;&bull;</strong> par bhej diya gaya hai. Baraye meherbani code darj karein:
         </p>
 
         <div class="form-group" style="margin-bottom:14px">
@@ -724,9 +724,9 @@ let otpExpiresAt = 0;
 let otpTimerInterval = null;
 
 function maskEmail(email) {
-  if (!email || typeof email !== "string") return "al••••••••••••••••";
+  if (!email || typeof email !== "string") return "al" + "\u2022".repeat(16);
   const firstTwo = email.slice(0, 2);
-  return firstTwo + "•".repeat(16);
+  return firstTwo + "\u2022".repeat(16);
 }
 
 function getEffectiveCredentials() {
