@@ -22,11 +22,7 @@
       "price": 8499,
       "category": "Men",
       "type": "Streetwear",
-      "theme": [
-        "#c026d3",
-        "#581c87",
-        "rgba(138,24,217,.38)"
-      ],
+      "theme": ["#c026d3", "#581c87", "rgba(138,24,217,.38)"],
       "colors": [
         {
           "name": "Voltage Purple",
@@ -54,11 +50,7 @@
       "price": 9299,
       "category": "Men",
       "type": "Streetwear",
-      "theme": [
-        "#e11d48",
-        "#881337",
-        "rgba(190,18,60,.38)"
-      ],
+      "theme": ["#e11d48", "#881337", "rgba(190,18,60,.38)"],
       "colors": [
         {
           "name": "Solar Red",
@@ -86,11 +78,7 @@
       "price": 7999,
       "category": "Women",
       "type": "Streetwear",
-      "theme": [
-        "#0284c7",
-        "#1e3a8a",
-        "rgba(2,132,199,.38)"
-      ],
+      "theme": ["#0284c7", "#1e3a8a", "rgba(2,132,199,.38)"],
       "colors": [
         {
           "name": "Ice Blue",
@@ -118,11 +106,7 @@
       "price": 6899,
       "category": "Women",
       "type": "Streetwear",
-      "theme": [
-        "#059669",
-        "#064e3b",
-        "rgba(5,150,105,.38)"
-      ],
+      "theme": ["#059669", "#064e3b", "rgba(5,150,105,.38)"],
       "colors": [
         {
           "name": "Emerald Night",
@@ -197,8 +181,9 @@
   },
   "auth": {
     "userHash": "99bbde1ce17fbdb9d29b1b60b195380da436067051117a02879f5896550220ea",
-    "passHash": "37e51001fb439e8f3508cc05462d9878617380f9cd581fca758daa8aa473d151",
+    "passHash": "8ce39582d7c0ebd4d5b522edc99034355b53aa075fb81c60a927bf146858653a",
     "emailMasked": "al••••••••••••••••",
-    "updatedAt": "2026-10-14T10:48:44.318Z"
+    "updatedAt": "2026-10-14T03:00:00Z"
   }
 }
+
