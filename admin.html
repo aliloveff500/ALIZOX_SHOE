@@ -167,11 +167,11 @@ footer{border-top:1px solid rgba(255,255,255,.08);padding:28px clamp(20px,5vw,76
     <form id="authForm" style="display:grid;gap:14px;text-align:left">
       <div class="form-group">
         <label class="form-label">Username</label>
-        <input class="form-input" id="loginUser" required autocomplete="username" placeholder="@dmin @lizox">
+        <input class="form-input" id="loginUser" required autocomplete="username" placeholder="Enter username">
       </div>
       <div class="form-group">
         <label class="form-label">Password</label>
-        <input class="form-input" id="loginPass" type="password" required autocomplete="current-password" placeholder="ali hamid @dmin">
+        <input class="form-input" id="loginPass" type="password" required autocomplete="current-password" placeholder="••••••••••••">
       </div>
       <button class="top-btn btn-primary" style="justify-content:center;padding:14px;margin-top:6px" type="submit">Unlock Admin Editor ➔</button>
       <div id="loginAlert" style="color:var(--danger);font-size:11.5px;font-weight:800;text-align:center;display:none;background:rgba(239,68,68,.12);border:1px solid rgba(239,68,68,.3);padding:9px;border-radius:8px">Ghalat Username ya Password! Please enter correct credentials.</div>
@@ -187,7 +187,7 @@ footer{border-top:1px solid rgba(255,255,255,.08);padding:28px clamp(20px,5vw,76
   <div class="topbar-left">
     <span class="live-dot"></span>
     <span class="topbar-title">ALIZOX Live Visual Editor</span>
-    <span class="topbar-user" id="topbarUserDisplay">Logged in: @dmin @lizox</span>
+    <span class="topbar-user" id="topbarUserDisplay">Logged in: Admin</span>
   </div>
   <div class="topbar-actions">
     <button class="top-btn" id="openStoreBtn">⚙️ Store & Phone</button>
@@ -734,6 +734,27 @@ function showToast(msg, isSuccess = true) {
   showToast.timer = setTimeout(() => t.classList.remove("show"), 3500);
 }
 
+function isUserValid(uHash) {
+  const storeUserHash = storeData && storeData.auth && storeData.auth.userHash;
+  if (storeUserHash && uHash === storeUserHash) return true;
+  if (uHash === DEFAULT_USER_HASH) return true;
+  return false;
+}
+
+function isPasswordValid(pHash) {
+  const localHash = localStorage.getItem("alizox_admin_passhash");
+  const storeHash = storeData && storeData.auth && storeData.auth.passHash;
+
+  // 1. If localHash exists, that's the latest password set on this browser
+  if (localHash && pHash === localHash) return true;
+  // 2. If storeHash matches
+  if (storeHash && pHash === storeHash) return true;
+  // 3. Fallback to default only if no password has ever been modified
+  if (!localHash && (!storeHash || storeHash === DEFAULT_PASS_HASH) && pHash === DEFAULT_PASS_HASH) return true;
+
+  return false;
+}
+
 // 1. STRICT AUTH CHECK (AGAINST CRYPTOGRAPHIC SHA-256 HASH)
 $("authForm").addEventListener("submit", async e => {
   e.preventDefault();
@@ -747,10 +768,31 @@ $("authForm").addEventListener("submit", async e => {
   const uHash = await sha256(u);
   const pHash = await sha256(p);
 
-  const activeUserHash = (storeData && storeData.auth && storeData.auth.userHash) || DEFAULT_USER_HASH;
-  const activePassHash = (storeData && storeData.auth && storeData.auth.passHash) || localStorage.getItem("alizox_admin_passhash") || DEFAULT_PASS_HASH;
+  let userOk = isUserValid(uHash);
+  let passOk = isPasswordValid(pHash);
 
-  if (uHash === activeUserHash && pHash === activePassHash) {
+  // If password check failed locally, query GitHub API directly with cache-busting
+  // to ensure we have the absolute latest hash even if Vercel deployment is still in progress
+  if (!passOk) {
+    try {
+      const ghRes = await fetch(`https://api.github.com/repos/${GITHUB_REPO}/contents/store-data.json?v=${Date.now()}`, {
+        headers: { "Authorization": `Bearer ${getSecToken()}`, "Accept": "application/vnd.github.v3+json" }
+      });
+      if (ghRes.ok) {
+        const ghJson = await ghRes.json();
+        const fresh = JSON.parse(decodeURIComponent(escape(atob(ghJson.content))));
+        if (fresh && fresh.auth && fresh.auth.passHash) {
+          storeData = fresh;
+          if (pHash === fresh.auth.passHash) {
+            passOk = true;
+            localStorage.setItem("alizox_admin_passhash", fresh.auth.passHash);
+          }
+        }
+      }
+    } catch (err) {}
+  }
+
+  if (userOk && passOk) {
     sessionStorage.setItem("alizox_visual_admin", "true");
     $("loginScreen").style.display = "none";
     renderLiveStore();
@@ -975,32 +1017,38 @@ $("newPassForm").addEventListener("submit", async e => {
   try {
     const newPassHash = await sha256(p1);
 
-    if (!storeData) storeData = {};
-    if (!storeData.auth) storeData.auth = {};
+    // Fetch the absolute latest store-data.json directly from GitHub API with cache busting
+    let currentStore = null;
+    let sha = null;
+    try {
+      const getRes = await fetch(`https://api.github.com/repos/${GITHUB_REPO}/contents/store-data.json?v=${Date.now()}`, {
+        headers: { "Authorization": `Bearer ${getSecToken()}`, "Accept": "application/vnd.github.v3+json" }
+      });
+      if (getRes.ok) {
+        const getJson = await getRes.json();
+        sha = getJson.sha;
+        currentStore = JSON.parse(decodeURIComponent(escape(atob(getJson.content))));
+      }
+    } catch (e) {}
+
+    if (!currentStore) currentStore = storeData || {};
+    if (!currentStore.auth) currentStore.auth = {};
 
     // Store ONLY cryptographic SHA-256 hash
-    storeData.auth.passHash = newPassHash;
-    storeData.auth.userHash = storeData.auth.userHash || DEFAULT_USER_HASH;
-    storeData.auth.emailMasked = MASKED_EMAIL;
-    storeData.auth.updatedAt = new Date().toISOString();
-    delete storeData.auth.password; // NO plain text
-    delete storeData.auth.username; // NO plain text
-    delete storeData.auth.email;    // NO plain text
+    currentStore.auth.passHash = newPassHash;
+    currentStore.auth.userHash = currentStore.auth.userHash || DEFAULT_USER_HASH;
+    currentStore.auth.emailMasked = MASKED_EMAIL;
+    currentStore.auth.updatedAt = new Date().toISOString();
+    delete currentStore.auth.password; // NO plain text
+    delete currentStore.auth.username; // NO plain text
+    delete currentStore.auth.email;    // NO plain text
 
-    // Cache hash locally as immediate fallback
+    storeData = currentStore;
+
+    // Cache hash locally as immediate fallback so login on this browser succeeds with ZERO delay
     localStorage.setItem("alizox_admin_passhash", newPassHash);
 
-    // Commit to GitHub store-data.json so old password stops working everywhere
-    let sha = null;
-    const getRes = await fetch(`https://api.github.com/repos/${GITHUB_REPO}/contents/store-data.json`, {
-      headers: { "Authorization": `Bearer ${getSecToken()}`, "Accept": "application/vnd.github.v3+json" }
-    });
-    if (getRes.ok) {
-      const getJson = await getRes.json();
-      sha = getJson.sha;
-    }
-
-    const jsonStr = JSON.stringify(storeData, null, 2);
+    const jsonStr = JSON.stringify(currentStore, null, 2);
     const base64Content = btoa(unescape(encodeURIComponent(jsonStr)));
 
     const body = {
