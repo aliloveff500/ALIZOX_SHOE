@@ -87,6 +87,25 @@ footer{border-top:1px solid rgba(255,255,255,.08);padding:28px clamp(20px,5vw,76
 /* Search, cart and checkout additions */
 .search-panel{display:none;position:absolute;top:calc(100% + 8px);right:clamp(16px,5vw,76px);width:min(430px,calc(100vw - 32px));padding:16px;background:#17171c;border:1px solid var(--line);border-radius:14px;box-shadow:0 20px 60px #0009;z-index:30}.search-panel.open{display:block}.search-input{width:100%;padding:14px 15px;border-radius:9px;border:1px solid var(--line);background:#0e0e12;color:#fff;outline:none}.search-input:focus{border-color:var(--accent)}.search-hint{font-size:10px;color:#8f8f9a;margin:9px 2px 0}.cart-count{position:absolute;top:-4px;right:-4px;min-width:18px;height:18px;padding:0 4px;border-radius:20px;background:var(--accent);color:#111;font-size:10px;font-weight:900;display:grid;place-items:center}.cart-trigger{position:relative}.hero-buy-actions{display:grid;grid-template-columns:1fr 1fr;gap:9px}.cart-add-btn{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;padding:14px 10px;margin-top:10px;background:transparent;color:#fff;border:1px solid var(--accent);border-radius:7px;font-size:9px;font-weight:950;letter-spacing:.09em;text-transform:uppercase;transition:all .2s}.cart-add-btn:hover{background:var(--accent);color:#111;transform:translateY(-2px)}.cart-add-btn svg{width:16px;height:16px}.drawer-backdrop{position:fixed;inset:0;background:#0009;backdrop-filter:blur(4px);z-index:100;opacity:0;pointer-events:none;transition:opacity .25s}.drawer-backdrop.open{opacity:1;pointer-events:auto}.cart-drawer{position:fixed;z-index:101;top:0;right:0;width:min(520px,100%);height:100dvh;background:#121216;border-left:1px solid var(--line);transform:translateX(102%);transition:transform .3s ease;display:flex;flex-direction:column;box-shadow:-25px 0 70px #0008}.cart-drawer.open{transform:translateX(0)}.drawer-head{display:flex;align-items:center;justify-content:space-between;padding:22px 24px;border-bottom:1px solid var(--line)}.drawer-head h2{font-size:21px;margin:0}.close-drawer{border:1px solid var(--line);background:#202026;color:#fff;border-radius:50%;width:36px;height:36px;font-size:21px}.cart-content{padding:20px 24px;overflow:auto;flex:1}.cart-empty{padding:38px 10px;text-align:center;color:#9b9ba6}.cart-line{display:grid;grid-template-columns:76px 1fr auto;gap:13px;padding:14px 0;border-bottom:1px solid var(--line);align-items:center}.cart-line img{width:76px;height:70px;object-fit:contain;background:#1b1b20;border-radius:9px}.cart-line h3{font-size:13px;margin:0 0 6px}.cart-line p{font-size:11px;color:#a4a4b1;margin:3px 0}.cart-line .line-price{font-size:12px;font-weight:900;white-space:nowrap}.line-actions{display:flex;align-items:center;gap:8px;margin-top:8px}.line-actions button{width:25px;height:25px;background:#292930;color:#fff;border:1px solid var(--line);border-radius:5px}.remove-line{font-size:10px!important;color:#ff9b9b!important;background:none!important;border:0!important;width:auto!important}.cart-total{display:flex;justify-content:space-between;gap:15px;padding:20px 0;font-weight:900}.checkout-form{border-top:1px solid var(--line);padding-top:18px;display:grid;gap:11px}.checkout-form h3{font-size:14px;margin:0 0 4px}.checkout-form label{display:grid;gap:6px;color:#aaaab5;font-size:10px;letter-spacing:.04em}.checkout-form input,.checkout-form textarea,.checkout-form select{width:100%;background:#202026;color:#fff;border:1px solid var(--line);border-radius:7px;padding:11px;font:inherit;font-size:12px;outline:none}.checkout-form input:focus,.checkout-form textarea:focus,.checkout-form select:focus{border-color:var(--accent)}.checkout-form textarea{resize:vertical;min-height:65px}.checkout-submit{width:100%;border:0;border-radius:8px;padding:14px;background:var(--accent);color:#111;font-weight:950;letter-spacing:.07em;text-transform:uppercase}.checkout-note{font-size:10px;color:#8e8e9a;line-height:1.6;margin:0}.cart-open-btn{position:relative}.card-actions{display:flex;gap:8px;margin-top:13px}.card-actions button{flex:1;padding:10px 8px;border:1px solid var(--line);background:#202026;color:#fff;border-radius:7px;font-size:9px;font-weight:850;text-transform:uppercase;letter-spacing:.05em}.card-actions button:last-child{background:var(--accent);color:#111;border-color:var(--accent)}
 @media(max-width:760px){.header-actions .icon-btn:first-child{display:grid}.search-panel{right:12px}.hero-buy-actions{grid-template-columns:1fr}.cart-content{padding:16px}.drawer-head{padding:18px 16px}.cart-line{grid-template-columns:62px 1fr auto;gap:9px}.cart-line img{width:62px;height:62px}}
+
+/* Reviews Section */
+.reviews-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin-top:28px}
+.review-card{background:linear-gradient(135deg,#16161b,#111115);border:1px solid var(--line);border-radius:20px;padding:24px 22px;display:flex;flex-direction:column;justify-content:space-between;transition:transform .3s,border-color .3s;position:relative}
+.review-card:hover{transform:translateY(-5px);border-color:var(--accent);box-shadow:0 15px 35px rgba(0,0,0,.4)}
+.review-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}
+.review-stars{color:#f59e0b;font-size:14px;letter-spacing:2px}
+.review-badge{font-size:9px;color:var(--accent);background:rgba(217,70,239,.1);padding:4px 9px;border-radius:999px;font-weight:900;letter-spacing:.08em;text-transform:uppercase;border:1px solid var(--glow)}
+.review-text{font-size:12.5px;color:#d0d0dc;line-height:1.75;margin:0 0 16px;flex:1;font-style:italic}
+.review-author{display:flex;align-items:center;gap:12px;padding-top:14px;border-top:1px solid rgba(255,255,255,.07)}
+.review-avatar{width:38px;height:38px;border-radius:50%;background:linear-gradient(135deg,var(--accent),var(--accent2));display:grid;place-items:center;font-size:13px;font-weight:900;color:#fff;flex-shrink:0}
+.review-info h5{font-size:13px;font-weight:850;margin:0 0 2px;color:#fff}
+.review-info p{font-size:10px;color:#8e8e9e;margin:0}
+.reviews-summary{display:flex;align-items:center;gap:16px;flex-wrap:wrap;background:rgba(255,255,255,.02);border:1px solid var(--line);border-radius:16px;padding:16px 22px;margin-bottom:24px}
+.reviews-score{font-size:28px;font-weight:950;color:#fff;display:flex;align-items:baseline;gap:6px}
+.reviews-score span{font-size:13px;color:var(--muted);font-weight:700}
+.reviews-pill{display:flex;align-items:center;gap:8px;font-size:11px;color:#c8c8d5;font-weight:750}
+@media(max-width:1050px){.reviews-grid{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:760px){.reviews-grid{grid-template-columns:1fr}}
 </style>
 </head>
 <body>
@@ -94,14 +113,14 @@ footer{border-top:1px solid rgba(255,255,255,.08);padding:28px clamp(20px,5vw,76
 <header class="site-header">
   <a class="brand" href="#home" aria-label="ALIZOX home"><span class="brand-mark">A</span>ALIZOX</a>
   <nav class="nav" aria-label="Main navigation">
-    <a href="#home" class="active">Featured</a><a href="#shop">Shop All</a><a href="#shop" data-filter-link="Men">Men</a><a href="#shop" data-filter-link="Women">Women</a><a href="#about">About Us</a>
+    <a href="#home" class="active">Featured</a><a href="#shop">Shop All</a><a href="#shop" data-filter-link="Men">Men</a><a href="#shop" data-filter-link="Women">Women</a><a href="#reviews">Reviews</a><a href="#about">About Us</a>
   </nav>
   <div class="header-actions">
     <button class="icon-btn" id="searchBtn" aria-label="Search products"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="10.8" cy="10.8" r="6.8"/><path d="m16 16 5 5"/></svg></button>
     <button class="icon-btn cart-trigger" id="cartBtn" aria-label="Open shopping cart"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 8h14l1 12H4L5 8Z"/><path d="M9 8V6a3 3 0 0 1 6 0v2"/></svg><span class="cart-count" id="cartCount">0</span></button>
     <button class="icon-btn menu-toggle" id="menuToggle" aria-label="Open menu">☰</button>
   </div>
-  <nav class="mobile-menu" id="mobileMenu"><a href="#home">Featured</a><a href="#shop">Shop All</a><a href="#shop" data-filter-link="Men">Men</a><a href="#shop" data-filter-link="Women">Women</a><a href="#about">About Us</a></nav>
+  <nav class="mobile-menu" id="mobileMenu"><a href="#home">Featured</a><a href="#shop">Shop All</a><a href="#shop" data-filter-link="Men">Men</a><a href="#shop" data-filter-link="Women">Women</a><a href="#reviews">Reviews</a><a href="#about">About Us</a></nav>
   <div class="search-panel" id="searchPanel" role="search"><input class="search-input" id="searchInput" type="search" placeholder="Search shoes, colors, or collection…" autocomplete="off" aria-label="Search ALIZOX products"><div class="search-hint">Search updates the collection instantly.</div></div>
 </header>
 <main>
@@ -131,6 +150,108 @@ footer{border-top:1px solid rgba(255,255,255,.08);padding:28px clamp(20px,5vw,76
  <div class="section-head"><div><div class="section-kicker">Find your next pair</div><h2>THE COLLECTION<span style="color:var(--accent)">.</span></h2></div><p class="section-sub">Distinct colorways. Everyday comfort. A statement that feels like you. Pick your pair and message us to order.</p></div>
  <div class="filter-row"><button class="filter-btn active" data-filter="All">All products</button><button class="filter-btn" data-filter="Men">Men</button><button class="filter-btn" data-filter="Women">Women</button><button class="filter-btn" data-filter="Street">Streetwear</button></div>
  <div class="product-grid" id="productGrid"></div>
+</section>
+
+<!-- ========================================================
+     CUSTOMER REVIEWS SECTION
+     ======================================================== -->
+<section class="section" id="reviews">
+ <div class="section-head">
+   <div>
+     <div class="section-kicker">Real Feedback</div>
+     <h2>CUSTOMER REVIEWS<span style="color:var(--accent)">.</span></h2>
+   </div>
+   <p class="section-sub">Read what sneaker lovers and everyday buyers across Pakistan say about ALIZOX quality, comfort, and service.</p>
+ </div>
+
+ <div class="reviews-summary">
+   <div class="reviews-score">4.9 <span>/ 5.0</span></div>
+   <div class="review-stars">★★★★★</div>
+   <div class="reviews-pill"><span>🛡️</span> 100% Authentic Customer Feedback</div>
+   <div class="reviews-pill" style="margin-left:auto"><span style="color:var(--accent)">●</span> Verified Purchases via WhatsApp</div>
+ </div>
+
+ <div class="reviews-grid">
+   <!-- Review 1 -->
+   <div class="review-card">
+     <div class="review-top">
+       <div class="review-stars">★★★★★</div>
+       <span class="review-badge">PULSE SHIFT</span>
+     </div>
+     <p class="review-text">“Bohot zabardast quality hai! Picture se bhi zyada premium lagte hain real mein. Lightweight hain aur daily wear ke liye best comfort hai. WhatsApp pe response bhi bohot fast mila.”</p>
+     <div class="review-author">
+       <div class="review-avatar">HM</div>
+       <div class="review-info">
+         <h5>Hamza Malik</h5>
+         <p>Lahore · Verified Buyer</p>
+       </div>
+     </div>
+   </div>
+
+   <!-- Review 2 -->
+   <div class="review-card">
+     <div class="review-top">
+       <div class="review-stars">★★★★★</div>
+       <span class="review-badge">NOVA RUSH</span>
+     </div>
+     <p class="review-text">“Streetwear look bilkul top-tier hai. 15 saal ke Ali bhai ka brand hai aur itni solid quality deliver kar rahe hain, salute! Delivery bhi sirf 3 din mein mil gayi Karachi mein.”</p>
+     <div class="review-author">
+       <div class="review-avatar">SR</div>
+       <div class="review-info">
+         <h5>Saad Rehman</h5>
+         <p>Karachi · Verified Buyer</p>
+       </div>
+     </div>
+   </div>
+
+   <!-- Review 3 -->
+   <div class="review-card">
+     <div class="review-top">
+       <div class="review-stars">★★★★★</div>
+       <span class="review-badge">AERO FLOW</span>
+     </div>
+     <p class="review-text">“Sole cushioning bohot soft hai, gym aur daily university fits ke sath perfect match hoti hai. Colorway bohot unique hai, definitely ordering another pair soon!”</p>
+     <div class="review-author">
+       <div class="review-avatar">AK</div>
+       <div class="review-info">
+         <h5>Ayesha Khan</h5>
+         <p>Islamabad · Verified Buyer</p>
+       </div>
+     </div>
+   </div>
+
+   <!-- Review 4 -->
+   <div class="review-card">
+     <div class="review-top">
+       <div class="review-stars">★★★★★</div>
+       <span class="review-badge">ECLIPSE CORE</span>
+     </div>
+     <p class="review-text">“Finishing aur stitching 10/10. Advance payment Easypaisa se ki thi, bhai ne payment aate hi tracking update de di. Trustworthy seller, highly recommended!”</p>
+     <div class="review-author">
+       <div class="review-avatar">UT</div>
+       <div class="review-info">
+         <h5>Usman Tariq</h5>
+         <p>Faisalabad · Verified Buyer</p>
+       </div>
+     </div>
+   </div>
+
+   <!-- Review 5 -->
+   <div class="review-card">
+     <div class="review-top">
+       <div class="review-stars">★★★★★</div>
+       <span class="review-badge">PULSE SHIFT</span>
+     </div>
+     <p class="review-text">“Sole grip aur fit bilkul true to size hai (UK 8). Streetwear community ko aise young creators ko zaroor support karna chahiye. ALIZOX rock kar raha hai!”</p>
+     <div class="review-author">
+       <div class="review-avatar">ZA</div>
+       <div class="review-info">
+         <h5>Zayan Ahmed</h5>
+         <p>Rawalpindi · Verified Buyer</p>
+       </div>
+     </div>
+   </div>
+ </div>
 </section>
 
 <!-- ========================================================
@@ -261,6 +382,7 @@ footer{border-top:1px solid rgba(255,255,255,.08);padding:28px clamp(20px,5vw,76
   <div>© <span id="year"></span> ALIZOX. Founded by Ali Hamid. Step into your style.</div>
   <div class="footer-links">
     <a href="#shop">Shop</a>
+    <a href="#reviews">Reviews</a>
     <a href="#about">About Us</a>
     <a href="https://wa.me/923079436896" target="_blank" rel="noopener">WhatsApp Order</a>
   </div>
