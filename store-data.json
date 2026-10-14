@@ -180,9 +180,9 @@
     "quote": "Age is just a number when you have a dream, a clear vision, and the courage to work for it. ALIZOX is only the beginning of my journey, and I hope to build something meaningful through hard work, consistency, and the trust of my customers."
   },
   "auth": {
-    "username": "@dmin @lizox",
-    "password": "ali hamid @dmin",
-    "email": "al••••••••••••••••",
+    "userHash": "99bbde1ce17fbdb9d29b1b60b195380da436067051117a02879f5896550220ea",
+    "passHash": "8ce39582d7c0ebd4d5b522edc99034355b53aa075fb81c60a927bf146858653a",
+    "emailMasked": "al••••••••••••••••",
     "updatedAt": "2026-10-14T03:00:00Z"
   }
 }
