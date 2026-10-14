@@ -384,7 +384,8 @@ footer{border-top:1px solid rgba(255,255,255,.08);padding:28px clamp(20px,5vw,76
     <a href="#shop">Shop</a>
     <a href="#reviews">Reviews</a>
     <a href="#about">About Us</a>
-    <a href="https://wa.me/923079436896" target="_blank" rel="noopener">WhatsApp Order</a>
+    <a href="https://wa.me/923079436896" target="_blank" rel="noopener" id="footerWa">WhatsApp Order</a>
+    <a href="admin.html" style="opacity:.7">⚙️ Admin</a>
   </div>
 </footer>
 
@@ -425,7 +426,16 @@ function paintProduct(){const p=products[current],c=p.colors[colorIndex];applyTh
 function goTo(index){if(animating||index===current)return;animating=true;const img=$("shoeImage");img.classList.add("exit");$("price").classList.add("changing");setTimeout(()=>{current=(index+products.length)%products.length;colorIndex=0;const p=products[current];applyTheme(p);$("eyebrow").textContent=p.tag;$("productName").innerHTML=`${p.name} <span>${p.sub}</span>`;$("productDescription").textContent=p.description;$("price").textContent=formatPrice(p.price);$("colorName").textContent=p.colors[0].name;img.src=p.colors[0].image;img.alt=`ALIZOX ${p.name} sneaker`;img.classList.remove("exit");img.classList.add("enter");renderSwatches(p);renderDots();requestAnimationFrame(()=>requestAnimationFrame(()=>{img.classList.remove("enter");$("price").classList.remove("changing");setTimeout(()=>animating=false,400)}));},240);}
 function selectColor(index){if(index===colorIndex)return;colorIndex=index;const p=products[current],c=p.colors[index],img=$("shoeImage");img.classList.add("exit");setTimeout(()=>{img.src=c.image;$("colorName").textContent=c.name;applyTheme({...p,theme:themeFromHex(c.hex,p.theme)});renderSwatches(p);img.classList.remove("exit");img.classList.add("enter");requestAnimationFrame(()=>requestAnimationFrame(()=>img.classList.remove("enter")));},180);}
 function themeFromHex(hex,fallback){const map={"#ff453a":["#e11d48","#881337","rgba(190,18,60,.38)"],"#ff4b35":["#e11d48","#881337","rgba(190,18,60,.38)"],"#ffd447":["#d97706","#78350f","rgba(180,83,9,.38)"],"#58c8ff":["#0284c7","#1e3a8a","rgba(2,132,199,.38)"],"#5bd5ff":["#0284c7","#1e3a8a","rgba(2,132,199,.38)"],"#e9e9f0":["#64748b","#1e293b","rgba(51,65,85,.36)"],"#f3f3f5":["#64748b","#1e293b","rgba(51,65,85,.36)"],"#28c997":["#059669","#064e3b","rgba(5,150,105,.38)"],"#5b5b66":["#4b5563","#111827","rgba(31,41,55,.45)"],"#b62dff":["#c026d3","#581c87","rgba(138,24,217,.38)"]};return map[hex]||fallback;}
-function whatsappLink(){const p=products[current],c=p.colors[colorIndex],size=$("sizeSelect").value,quantity=Number($("quantityValue").textContent)||1;const message=`Assalam-o-Alaikum! I want to order this shoe from ALIZOX.\n\nProduct: ${p.name} ${p.sub}\nColor: ${c.name}\nSize: ${size}\nQuantity: ${quantity}\nUnit price: ${formatPrice(p.price)}\nTotal: ${formatPrice(p.price*quantity)}\n\nPlease provide the ordering details.`;return `https://wa.me/923079436896?text=${encodeURIComponent(message)}`;}
+let STORE_CONFIG = {
+  brand: {
+    name: "ALIZOX",
+    tagline: "Move Different",
+    whatsappNumber: "923079436896"
+  }
+};
+function getWhatsAppNumber(){ return (STORE_CONFIG.brand && STORE_CONFIG.brand.whatsappNumber) || "923079436896"; }
+function getBrandName(){ return (STORE_CONFIG.brand && STORE_CONFIG.brand.name) || "ALIZOX"; }
+function whatsappLink(){const p=products[current],c=p.colors[colorIndex],size=$("sizeSelect").value,quantity=Number($("quantityValue").textContent)||1;const message=`Assalam-o-Alaikum! I want to order this shoe from ${getBrandName()}.\n\nProduct: ${p.name} ${p.sub}\nColor: ${c.name}\nSize: ${size}\nQuantity: ${quantity}\nUnit price: ${formatPrice(p.price)}\nTotal: ${formatPrice(p.price*quantity)}\n\nPlease provide the ordering details.`;return `https://wa.me/${getWhatsAppNumber()}?text=${encodeURIComponent(message)}`;}
 $("buyBtn").addEventListener("click",()=>window.open(whatsappLink(),"_blank","noopener,noreferrer"));let quantity=1;function updateQuantity(next){quantity=Math.max(1,Math.min(20,next));$("quantityValue").textContent=String(quantity); }$("qtyMinus").addEventListener("click",()=>updateQuantity(quantity-1));$("qtyPlus").addEventListener("click",()=>updateQuantity(quantity+1));
 $("nextBtn").addEventListener("click",()=>goTo(current+1));$("prevBtn").addEventListener("click",()=>goTo(current-1));
 $("year").textContent=new Date().getFullYear();
@@ -456,9 +466,76 @@ function escapeHtml(v){return String(v).replace(/[&<>"']/g,ch=>({"&":"&amp;","<"
 function addCurrentToCart(){const p=products[current],c=p.colors[colorIndex],size=$("sizeSelect").value,qty=Number($("quantityValue").textContent)||1;const found=cart.find(x=>x.productId===p.id&&x.color===c.name&&x.size===size);if(found)found.quantity=Math.min(20,found.quantity+qty);else cart.push({productId:p.id,name:`${p.name} ${p.sub}`,color:c.name,size,price:p.price,quantity:qty,image:c.image});saveCart();showToast("Added to your cart");}
 $("addToCartBtn").addEventListener("click",addCurrentToCart);$("cartBtn").addEventListener("click",openCart);$("closeCart").addEventListener("click",closeCart);$("drawerBackdrop").addEventListener("click",closeCart);document.addEventListener("keydown",e=>{if(e.key==="Escape")closeCart();});
 $("cartItems").addEventListener("click",e=>{const b=e.target.closest("button[data-cart-action]");if(!b)return;const i=Number(b.dataset.i);if(!cart[i])return;const action=b.dataset.cartAction;if(action==="minus")cart[i].quantity=Math.max(1,cart[i].quantity-1);if(action==="plus")cart[i].quantity=Math.min(20,cart[i].quantity+1);if(action==="remove")cart.splice(i,1);saveCart();});
-$("checkoutForm").addEventListener("submit",e=>{e.preventDefault();if(!cart.length){showToast("Your cart is empty");return;}const fd=new FormData(e.currentTarget);const items=cart.map(x=>`• ${x.name} | Color: ${x.color} | UK ${x.size} | Qty: ${x.quantity} | ${formatPrice(x.price*x.quantity)}`).join("\n");const total=cart.reduce((n,x)=>n+x.price*x.quantity,0);const msg=`Assalam-o-Alaikum! I would like to place an ALIZOX order.\n\nCustomer: ${fd.get("customerName")}\nPhone: ${fd.get("phone")}\nAddress: ${fd.get("address")}\nCity: ${fd.get("city")}\nPayment preference: ${fd.get("payment")}\n\nORDER ITEMS\n${items}\n\nSubtotal: ${formatPrice(total)}\nNotes: ${fd.get("notes")||"None"}\n\nPlease confirm availability, delivery charges, and payment instructions.`;window.open(`https://wa.me/923079436896?text=${encodeURIComponent(msg)}`,"_blank","noopener,noreferrer");});
+$("checkoutForm").addEventListener("submit",e=>{e.preventDefault();if(!cart.length){showToast("Your cart is empty");return;}const fd=new FormData(e.currentTarget);const items=cart.map(x=>`• ${x.name} | Color: ${x.color} | UK ${x.size} | Qty: ${x.quantity} | ${formatPrice(x.price*x.quantity)}`).join("\n");const total=cart.reduce((n,x)=>n+x.price*x.quantity,0);const msg=`Assalam-o-Alaikum! I would like to place an ${getBrandName()} order.\n\nCustomer: ${fd.get("customerName")}\nPhone: ${fd.get("phone")}\nAddress: ${fd.get("address")}\nCity: ${fd.get("city")}\nPayment preference: ${fd.get("payment")}\n\nORDER ITEMS\n${items}\n\nSubtotal: ${formatPrice(total)}\nNotes: ${fd.get("notes")||"None"}\n\nPlease confirm availability, delivery charges, and payment instructions.`;window.open(`https://wa.me/${getWhatsAppNumber()}?text=${encodeURIComponent(msg)}`,"_blank","noopener,noreferrer");});
+
+async function syncWithStoreData(){
+  try{
+    const res = await fetch("store-data.json?v=" + Date.now());
+    if(!res.ok) return;
+    const data = await res.json();
+    if(!data) return;
+    STORE_CONFIG = data;
+    if(data.brand && data.brand.whatsappNumber){
+      document.querySelectorAll('a[href*="wa.me"]').forEach(a => {
+        a.href = `https://wa.me/${data.brand.whatsappNumber}`;
+      });
+    }
+    if(data.brand && data.brand.name){
+      document.querySelectorAll(".brand").forEach(b => {
+        b.innerHTML = `<span class="brand-mark">A</span>` + escapeHtml(data.brand.name);
+      });
+      const gw = document.querySelector(".ghost-word");
+      if(gw) gw.textContent = data.brand.name;
+      document.title = `${data.brand.name} — ${data.brand.tagline || 'Move Different'}`;
+    }
+    if(data.theme){
+      document.documentElement.style.setProperty("--accent", data.theme.accent);
+      document.documentElement.style.setProperty("--accent2", data.theme.accent2);
+    }
+    if(Array.isArray(data.products) && data.products.length > 0){
+      products.length = 0;
+      data.products.forEach(p => products.push(p));
+      current = Math.min(current, products.length - 1);
+      renderGrid();
+      paintProduct();
+    }
+    if(Array.isArray(data.reviews) && data.reviews.length > 0){
+      const grid = document.querySelector(".reviews-grid");
+      if(grid){
+        grid.innerHTML = data.reviews.map(r=>`
+          <div class="review-card">
+            <div class="review-top">
+              <div class="review-stars">${"★".repeat(r.stars||5)}</div>
+              <span class="review-badge">${escapeHtml(r.shoe||'ALIZOX')}</span>
+            </div>
+            <p class="review-text">“${escapeHtml(r.text)}”</p>
+            <div class="review-author">
+              <div class="review-avatar">${escapeHtml(r.name?r.name.substring(0,2).toUpperCase():'AH')}</div>
+              <div class="review-info">
+                <h5>${escapeHtml(r.name)}</h5>
+                <p>${escapeHtml(r.city)} · Verified Buyer</p>
+              </div>
+            </div>
+          </div>
+        `).join("");
+      }
+    }
+    if(data.about){
+      const fName = document.querySelector(".founder-meta h3");
+      if(fName && data.about.founderName) fName.textContent = data.about.founderName;
+      const stats = document.querySelectorAll(".quick-stat-val");
+      if(stats[0] && data.about.age) stats[0].textContent = data.about.age;
+      if(stats[1] && data.about.education) stats[1].textContent = data.about.education;
+      const sTitle = document.querySelector(".about-story-col h4");
+      if(sTitle && data.about.storyTitle) sTitle.textContent = data.about.storyTitle;
+      const qText = document.querySelector(".quote-text");
+      if(qText && data.about.quote) qText.textContent = `“${data.about.quote}”`;
+    }
+  }catch(e){}
+}
 renderCart();
 renderGrid();paintProduct();
+syncWithStoreData();
 </script>
 </body>
 </html>
