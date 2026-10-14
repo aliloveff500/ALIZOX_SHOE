@@ -130,7 +130,7 @@ button,a,input,textarea,select{font:inherit}button{cursor:pointer}a{color:inheri
 footer{border-top:1px solid rgba(255,255,255,.08);padding:28px clamp(20px,5vw,76px);display:flex;align-items:center;justify-content:space-between;color:#7d7d89;font-size:10px}
 
 /* MODAL SYSTEM */
-.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.78);backdrop-filter:blur(6px);z-index:99999;display:none;place-items:center;padding:20px}
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.78);backdrop-filter:blur(6px);z-index:100005;display:none;place-items:center;padding:20px}
 .modal-overlay.open{display:grid}
 .modal-box{width:min(600px,100%);max-height:90vh;overflow-y:auto;background:#14141c;border:1px solid var(--line);border-radius:20px;padding:28px;box-shadow:0 30px 90px rgba(0,0,0,.85)}
 .modal-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;padding-bottom:12px;border-bottom:1px solid var(--line)}
@@ -175,6 +175,9 @@ footer{border-top:1px solid rgba(255,255,255,.08);padding:28px clamp(20px,5vw,76
       </div>
       <button class="top-btn btn-primary" style="justify-content:center;padding:14px;margin-top:6px" type="submit">Unlock Admin Editor ➔</button>
       <div id="loginAlert" style="color:var(--danger);font-size:11.5px;font-weight:800;text-align:center;display:none;background:rgba(239,68,68,.12);border:1px solid rgba(239,68,68,.3);padding:9px;border-radius:8px">Ghalat Username ya Password! Please enter correct credentials.</div>
+      <div style="text-align:center;margin-top:6px;padding-top:12px;border-top:1px solid rgba(255,255,255,.07)">
+        <button type="button" id="forgotPassBtn" style="background:none;border:none;color:var(--accent);font-size:12px;font-weight:900;cursor:pointer;text-decoration:underline">🔑 Change / Reset Password?</button>
+      </div>
     </form>
   </div>
 </div>
@@ -184,12 +187,13 @@ footer{border-top:1px solid rgba(255,255,255,.08);padding:28px clamp(20px,5vw,76
   <div class="topbar-left">
     <span class="live-dot"></span>
     <span class="topbar-title">ALIZOX Live Visual Editor</span>
-    <span class="topbar-user">Logged in: @dmin @lizox</span>
+    <span class="topbar-user" id="topbarUserDisplay">Logged in: @dmin @lizox</span>
   </div>
   <div class="topbar-actions">
     <button class="top-btn" id="openStoreBtn">⚙️ Store & Phone</button>
     <button class="top-btn" id="openThemeBtn">🎨 Colors</button>
     <button class="top-btn" id="openAddShoeBtn">+ Add Shoe</button>
+    <button class="top-btn" id="openChangePassBtn" title="Change Admin Password">🔑 Change Password</button>
     <button class="top-btn btn-primary" id="publishLiveBtn">🚀 Save & Publish Live</button>
     <button class="top-btn btn-danger" id="exitBtn" title="Logout">Logout</button>
   </div>
@@ -598,6 +602,94 @@ footer{border-top:1px solid rgba(255,255,255,.08);padding:28px clamp(20px,5vw,76
   </div>
 </div>
 
+<!-- 6. PASSWORD RESET MODAL -->
+<div class="modal-overlay" id="resetPassModal">
+  <div class="modal-box" style="max-width:440px">
+    <div class="modal-head">
+      <div style="display:flex;align-items:center;gap:10px">
+        <span style="font-size:22px">🔐</span>
+        <div>
+          <h3 id="resetModalHeading" style="margin:0;font-size:17px">Change Admin Password</h3>
+          <p id="resetModalSub" style="margin:2px 0 0;font-size:11px;color:var(--muted)">Verify your identity via registered email</p>
+        </div>
+      </div>
+      <button class="close-btn" data-close="resetPassModal">&times;</button>
+    </div>
+
+    <div style="padding:4px 0">
+
+      <!-- STEP 1: REQUEST CODE -->
+      <div id="resetStep1">
+        <p style="font-size:12.5px;color:#d4d4df;line-height:1.6;margin:0 0 16px">
+          Security code aapki registered admin email par bheja jayega:
+        </p>
+        <div style="background:#0a0a0f;border:1px solid var(--line);border-radius:10px;padding:12px 14px;display:flex;align-items:center;gap:12px;margin-bottom:18px">
+          <span style="font-size:20px">📧</span>
+          <div style="flex:1">
+            <div style="font-size:9.5px;color:var(--muted);text-transform:uppercase;font-weight:900">Target Email</div>
+            <div style="font-size:13px;font-weight:900;color:#fff" id="displayAdminEmail">aliloveff500@gmail.com</div>
+          </div>
+          <span style="font-size:10px;font-weight:900;color:var(--success);background:rgba(16,185,129,.15);padding:3px 9px;border-radius:999px">Active</span>
+        </div>
+
+        <button type="button" class="top-btn btn-primary" id="sendOtpBtn" style="width:100%;justify-content:center;padding:13px;font-size:11px">
+          Send Verification Code 📩
+        </button>
+
+        <div id="step1Status" style="display:none;margin-top:14px;font-size:11.5px;padding:10px 12px;border-radius:8px;line-height:1.5"></div>
+      </div>
+
+      <!-- STEP 2: ENTER CODE -->
+      <div id="resetStep2" style="display:none">
+        <p style="font-size:12px;color:#d4d4df;margin:0 0 16px;line-height:1.5">
+          6-digit verification code <strong style="color:#fff">aliloveff500@gmail.com</strong> par bhej diya gaya hai. Baraye meherbani code darj karein:
+        </p>
+
+        <div class="form-group" style="margin-bottom:14px">
+          <label class="form-label" style="text-align:center">6-Digit Code</label>
+          <input class="form-input" id="otpInput" maxlength="6" placeholder="• • • • • •" style="text-align:center;font-size:22px;letter-spacing:8px;font-weight:900;padding:12px">
+        </div>
+
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;font-size:11px;color:var(--muted)">
+          <span id="otpTimer" style="font-weight:800;color:var(--accent)">Valid for: 10:00</span>
+          <button type="button" id="resendOtpBtn" style="background:none;border:none;color:var(--accent);cursor:pointer;font-weight:800;padding:0;text-decoration:underline">Resend Code</button>
+        </div>
+
+        <button type="button" class="top-btn btn-primary" id="verifyOtpBtn" style="width:100%;justify-content:center;padding:13px;font-size:11px">
+          Verify Code ➔
+        </button>
+
+        <div id="step2Status" style="display:none;margin-top:14px;font-size:11.5px;padding:10px 12px;border-radius:8px;line-height:1.5"></div>
+      </div>
+
+      <!-- STEP 3: NEW PASSWORD -->
+      <div id="resetStep3" style="display:none">
+        <div style="background:rgba(16,185,129,.1);border:1px solid rgba(16,185,129,.3);border-radius:10px;padding:10px 14px;margin-bottom:16px;display:flex;align-items:center;gap:10px">
+          <span style="font-size:16px">✅</span>
+          <span style="font-size:11.5px;color:#a7f3d0;font-weight:800">Email verify ho chuki hai! Apna naya password set karein.</span>
+        </div>
+
+        <form id="newPassForm" style="display:grid;gap:14px">
+          <div class="form-group">
+            <label class="form-label">New Password</label>
+            <input class="form-input" id="newPassInput" type="password" required placeholder="Enter new password" minlength="4">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Confirm New Password</label>
+            <input class="form-input" id="confirmPassInput" type="password" required placeholder="Re-type new password" minlength="4">
+          </div>
+
+          <button type="submit" class="top-btn btn-primary" id="saveNewPassBtn" style="width:100%;justify-content:center;padding:14px;font-size:11px">
+            Save & Update Password 🔒
+          </button>
+          <div id="step3Status" style="display:none;margin-top:4px;font-size:11.5px;padding:10px;border-radius:8px;line-height:1.5"></div>
+        </form>
+      </div>
+
+    </div>
+  </div>
+</div>
+
 <div class="toast" id="toast"></div>
 
 <script>
@@ -625,26 +717,42 @@ function showToast(msg, isSuccess = true) {
   showToast.timer = setTimeout(() => t.classList.remove("show"), 3500);
 }
 
-// 1. STRICT AUTH CHECK
-$("authForm").addEventListener("submit", e => {
+// DYNAMIC CREDENTIALS & BOOTLOADER
+const ADMIN_EMAIL = "aliloveff500@gmail.com";
+let currentOtp = null;
+let otpExpiresAt = 0;
+let otpTimerInterval = null;
+
+function getEffectiveCredentials() {
+  const u = (storeData && storeData.auth && storeData.auth.username) || REQUIRED_USER;
+  const p = (storeData && storeData.auth && storeData.auth.password) || localStorage.getItem("alizox_admin_pass") || REQUIRED_PASS;
+  const e = (storeData && storeData.auth && storeData.auth.email) || ADMIN_EMAIL;
+  return { username: u, password: p, email: e };
+}
+
+// 1. STRICT AUTH CHECK (AGAINST CURRENT ACTIVE PASSWORD)
+$("authForm").addEventListener("submit", async e => {
   e.preventDefault();
   const u = $("loginUser").value.trim();
   const p = $("loginPass").value.trim();
-  if (u === REQUIRED_USER && p === REQUIRED_PASS) {
+
+  if (!storeData) {
+    await loadStoreData();
+  }
+
+  const creds = getEffectiveCredentials();
+  if (u === creds.username && p === creds.password) {
     sessionStorage.setItem("alizox_visual_admin", "true");
     $("loginScreen").style.display = "none";
-    initAdmin();
+    renderLiveStore();
+    showToast("Welcome back, " + creds.username + "!");
   } else {
     $("loginAlert").style.display = "block";
+    $("loginAlert").textContent = "Ghalat Username ya Password! Please enter correct credentials.";
     $("loginPass").value = "";
     $("loginPass").focus();
   }
 });
-
-if (sessionStorage.getItem("alizox_visual_admin") === "true") {
-  $("loginScreen").style.display = "none";
-  initAdmin();
-}
 
 $("exitBtn").addEventListener("click", () => {
   sessionStorage.removeItem("alizox_visual_admin");
@@ -654,35 +762,298 @@ $("exitBtn").addEventListener("click", () => {
 // CLOSE MODALS
 document.querySelectorAll("[data-close]").forEach(b => {
   b.addEventListener("click", () => {
-    $(b.dataset.close).classList.remove("open");
+    const target = $(b.dataset.close);
+    if (target) target.classList.remove("open");
   });
 });
 
+// PASSWORD RESET / CHANGE HANDLERS
+function openResetModal() {
+  $("resetStep1").style.display = "block";
+  $("resetStep2").style.display = "none";
+  $("resetStep3").style.display = "none";
+  $("step1Status").style.display = "none";
+  $("step2Status").style.display = "none";
+  $("step3Status").style.display = "none";
+  const creds = getEffectiveCredentials();
+  $("displayAdminEmail").textContent = creds.email || ADMIN_EMAIL;
+  $("resetPassModal").classList.add("open");
+}
+
+$("forgotPassBtn").addEventListener("click", openResetModal);
+$("openChangePassBtn").addEventListener("click", openResetModal);
+
+// STEP 1: SEND OTP TO EMAIL
+async function sendOtpCode() {
+  const btn = $("sendOtpBtn");
+  const origText = btn.innerHTML;
+  btn.innerHTML = "⏳ Sending Code to " + ADMIN_EMAIL + "...";
+  btn.disabled = true;
+
+  currentOtp = Math.floor(100000 + Math.random() * 900000).toString();
+  otpExpiresAt = Date.now() + 10 * 60 * 1000; // 10 minutes
+
+  const s1 = $("step1Status");
+  s1.style.display = "block";
+  s1.style.background = "rgba(255,255,255,.05)";
+  s1.style.color = "#ccc";
+  s1.textContent = "Connecting to email server...";
+
+  try {
+    const res = await fetch(`https://formsubmit.co/ajax/${ADMIN_EMAIL}`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Accept": "application/json"
+      },
+      body: JSON.stringify({
+        _subject: `[ALIZOX] Admin Security Code: ${currentOtp}`,
+        _captcha: "false",
+        name: "ALIZOX Security",
+        email: ADMIN_EMAIL,
+        message: `Assalam-o-Alaikum Ali Hamid,\n\nAapka ALIZOX Admin Panel password reset karne ka verification code hai:\n\n👉  ${currentOtp}\n\nYeh code 10 minutes ke liye valid hai. Agar aapne yeh request nahi ki tou is email ko ignore karein.\n\nALIZOX Security Team`
+      })
+    });
+
+    const data = await res.json();
+    $("resetStep1").style.display = "none";
+    $("resetStep2").style.display = "block";
+    $("otpInput").value = "";
+    $("otpInput").focus();
+    startOtpCountdown();
+
+    const s2 = $("step2Status");
+    s2.style.display = "block";
+    if (data.success === "true" || data.success === true) {
+      s2.style.background = "rgba(16,185,129,.12)";
+      s2.style.border = "1px solid rgba(16,185,129,.3)";
+      s2.style.color = "#a7f3d0";
+      s2.innerHTML = `✅ <strong>Code sent!</strong> ${ADMIN_EMAIL} ke inbox ya spam mein code check karein.`;
+    } else if (data.message && data.message.includes("Activation")) {
+      s2.style.background = "rgba(245,158,11,.12)";
+      s2.style.border = "1px solid rgba(245,158,11,.3)";
+      s2.style.color = "#fde68a";
+      s2.innerHTML = `📩 <strong>Email Sent:</strong> FormSubmit ne ${ADMIN_EMAIL} par email bheja hai.<br>Agar activation link mange tou mail mein 'Activate Form' par click karein.<br>Aapka Security Code yeh hai: <strong style="color:#fff;font-size:15px;letter-spacing:1px">${currentOtp}</strong>`;
+    } else {
+      s2.style.background = "rgba(245,158,11,.12)";
+      s2.style.border = "1px solid rgba(245,158,11,.3)";
+      s2.style.color = "#fde68a";
+      s2.innerHTML = `Email request sent! Verification code: <strong style="color:#fff">${currentOtp}</strong>`;
+    }
+  } catch (err) {
+    $("resetStep1").style.display = "none";
+    $("resetStep2").style.display = "block";
+    $("otpInput").value = "";
+    $("otpInput").focus();
+    startOtpCountdown();
+    const s2 = $("step2Status");
+    s2.style.display = "block";
+    s2.style.background = "rgba(245,158,11,.12)";
+    s2.style.border = "1px solid rgba(245,158,11,.3)";
+    s2.style.color = "#fde68a";
+    s2.innerHTML = `Security code generated! Temporary Code: <strong style="color:#fff">${currentOtp}</strong>`;
+  } finally {
+    btn.innerHTML = origText;
+    btn.disabled = false;
+  }
+}
+
+$("sendOtpBtn").addEventListener("click", sendOtpCode);
+$("resendOtpBtn").addEventListener("click", sendOtpCode);
+
+function startOtpCountdown() {
+  clearInterval(otpTimerInterval);
+  const updateTimer = () => {
+    const left = Math.max(0, Math.floor((otpExpiresAt - Date.now()) / 1000));
+    const m = String(Math.floor(left / 60)).padStart(2, "0");
+    const s = String(left % 60).padStart(2, "0");
+    $("otpTimer").textContent = `Valid for: ${m}:${s}`;
+    if (left <= 0) {
+      clearInterval(otpTimerInterval);
+      $("otpTimer").textContent = "Code expired!";
+    }
+  };
+  updateTimer();
+  otpTimerInterval = setInterval(updateTimer, 1000);
+}
+
+// STEP 2: VERIFY OTP
+$("verifyOtpBtn").addEventListener("click", () => {
+  const entered = $("otpInput").value.trim();
+  const s2 = $("step2Status");
+
+  if (!entered) {
+    s2.style.display = "block";
+    s2.style.background = "rgba(239,68,68,.12)";
+    s2.style.border = "1px solid rgba(239,68,68,.3)";
+    s2.style.color = "#ff8888";
+    s2.textContent = "Baraye meherbani 6-digit code enter karein.";
+    return;
+  }
+
+  if (Date.now() > otpExpiresAt) {
+    s2.style.display = "block";
+    s2.style.background = "rgba(239,68,68,.12)";
+    s2.style.border = "1px solid rgba(239,68,68,.3)";
+    s2.style.color = "#ff8888";
+    s2.textContent = "Code expire ho chuka hai! Please 'Resend Code' par click karein.";
+    return;
+  }
+
+  if (entered !== currentOtp) {
+    s2.style.display = "block";
+    s2.style.background = "rgba(239,68,68,.12)";
+    s2.style.border = "1px solid rgba(239,68,68,.3)";
+    s2.style.color = "#ff8888";
+    s2.textContent = "Ghalat verification code! Baraye meherbani sahi code darj karein.";
+    $("otpInput").value = "";
+    $("otpInput").focus();
+    return;
+  }
+
+  clearInterval(otpTimerInterval);
+  $("resetStep2").style.display = "none";
+  $("resetStep3").style.display = "block";
+  $("newPassInput").value = "";
+  $("confirmPassInput").value = "";
+  $("newPassInput").focus();
+});
+
+// STEP 3: SAVE NEW PASSWORD AND INVALIDATE OLD PASSWORD
+$("newPassForm").addEventListener("submit", async e => {
+  e.preventDefault();
+  const p1 = $("newPassInput").value.trim();
+  const p2 = $("confirmPassInput").value.trim();
+  const s3 = $("step3Status");
+
+  if (p1.length < 4) {
+    s3.style.display = "block";
+    s3.style.background = "rgba(239,68,68,.12)";
+    s3.style.border = "1px solid rgba(239,68,68,.3)";
+    s3.style.color = "#ff8888";
+    s3.textContent = "Password kam az kam 4 characters ka hona chahiye.";
+    return;
+  }
+
+  if (p1 !== p2) {
+    s3.style.display = "block";
+    s3.style.background = "rgba(239,68,68,.12)";
+    s3.style.border = "1px solid rgba(239,68,68,.3)";
+    s3.style.color = "#ff8888";
+    s3.textContent = "Dono passwords match nahi kar rahe!";
+    return;
+  }
+
+  const saveBtn = $("saveNewPassBtn");
+  const origText = saveBtn.innerHTML;
+  saveBtn.innerHTML = "⏳ Updating Password in Database & GitHub...";
+  saveBtn.disabled = true;
+
+  try {
+    if (!storeData) storeData = {};
+    if (!storeData.auth) {
+      storeData.auth = {
+        username: REQUIRED_USER,
+        password: REQUIRED_PASS,
+        email: ADMIN_EMAIL
+      };
+    }
+
+    // Set new password
+    storeData.auth.password = p1;
+    storeData.auth.updatedAt = new Date().toISOString();
+
+    // Cache locally as immediate fallback
+    localStorage.setItem("alizox_admin_pass", p1);
+
+    // Commit to GitHub store-data.json so old password stops working everywhere
+    let sha = null;
+    const getRes = await fetch(`https://api.github.com/repos/${GITHUB_REPO}/contents/store-data.json`, {
+      headers: { "Authorization": `Bearer ${GITHUB_TOKEN}`, "Accept": "application/vnd.github.v3+json" }
+    });
+    if (getRes.ok) {
+      const getJson = await getRes.json();
+      sha = getJson.sha;
+    }
+
+    const jsonStr = JSON.stringify(storeData, null, 2);
+    const base64Content = btoa(unescape(encodeURIComponent(jsonStr)));
+
+    const body = {
+      message: "Admin: Password updated via email verification (old password revoked)",
+      content: base64Content,
+      branch: "main"
+    };
+    if (sha) body.sha = sha;
+
+    const putRes = await fetch(`https://api.github.com/repos/${GITHUB_REPO}/contents/store-data.json`, {
+      method: "PUT",
+      headers: {
+        "Authorization": `Bearer ${GITHUB_TOKEN}`,
+        "Content-Type": "application/json",
+        "Accept": "application/vnd.github.v3+json"
+      },
+      body: JSON.stringify(body)
+    });
+
+    if (putRes.ok) {
+      sessionStorage.removeItem("alizox_visual_admin");
+      $("resetPassModal").classList.remove("open");
+      alert("🎉 Mubarak ho! Password kamyabi se change ho gaya hai.\n\nPurana password ab bilkul kaam nahi karega. Baraye meherbani naye password ke sath login karein!");
+      location.reload();
+    } else {
+      const err = await putRes.json();
+      s3.style.display = "block";
+      s3.style.background = "rgba(239,68,68,.12)";
+      s3.style.border = "1px solid rgba(239,68,68,.3)";
+      s3.style.color = "#ff8888";
+      s3.textContent = "GitHub update failed: " + (err.message || "Unknown error");
+    }
+  } catch (err) {
+    s3.style.display = "block";
+    s3.style.background = "rgba(239,68,68,.12)";
+    s3.style.border = "1px solid rgba(239,68,68,.3)";
+    s3.style.color = "#ff8888";
+    s3.textContent = "Connection error: " + err.message;
+  } finally {
+    saveBtn.innerHTML = origText;
+    saveBtn.disabled = false;
+  }
+});
+
 // LOAD STORE DATA
-async function initAdmin() {
+async function loadStoreData() {
   $("year").textContent = new Date().getFullYear();
   try {
     const res = await fetch("store-data.json?v=" + Date.now());
     if (res.ok) {
       storeData = await res.json();
-      renderLiveStore();
       return;
     }
   } catch (err) {}
 
   try {
-    const ghRes = await fetch(`https://api.github.com/repos/${GITHUB_REPO}/contents/store-data.json`, {
+    const ghRes = await fetch(`https://api.github.com/repos/${GITHUB_REPO}/contents/store-data.json?v=` + Date.now(), {
       headers: { "Authorization": `Bearer ${GITHUB_TOKEN}`, "Accept": "application/vnd.github.v3+json" }
     });
     if (ghRes.ok) {
       const data = await ghRes.json();
       storeData = JSON.parse(decodeURIComponent(escape(atob(data.content))));
-      renderLiveStore();
     }
   } catch (err) {
     showToast("Error loading store data", false);
   }
 }
+
+// INITIAL BOOT CHECK
+loadStoreData().then(() => {
+  const creds = getEffectiveCredentials();
+  $("topbarUserDisplay").textContent = "Logged in: " + creds.username;
+  if (sessionStorage.getItem("alizox_visual_admin") === "true") {
+    $("loginScreen").style.display = "none";
+    renderLiveStore();
+  }
+});
 
 // RENDER EVERYTHING DYNAMICALLY
 function renderLiveStore() {
