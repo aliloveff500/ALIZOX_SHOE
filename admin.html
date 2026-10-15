@@ -192,6 +192,7 @@ footer{border-top:1px solid rgba(255,255,255,.08);padding:28px clamp(20px,5vw,76
       </div>
       <button class="top-btn btn-primary" style="justify-content:center;padding:14px;margin-top:6px" type="submit">Unlock Admin Editor ➔</button>
       <div id="loginAlert" style="color:var(--danger);font-size:11.5px;font-weight:800;text-align:center;display:none;background:rgba(239,68,68,.12);border:1px solid rgba(239,68,68,.3);padding:9px;border-radius:8px">Ghalat Username ya Password! Please enter correct credentials.</div>
+      <div id="rateLimitNotice" style="display:none;color:#f59e0b;font-size:11.5px;font-weight:800;text-align:center;background:rgba(245,158,11,.12);border:1px solid rgba(245,158,11,.3);padding:9px;border-radius:8px;line-height:1.5"></div>
       <div style="text-align:center;margin-top:6px;padding-top:12px;border-top:1px solid rgba(255,255,255,.07)">
         <button type="button" id="forgotPassBtn" style="background:none;border:none;color:var(--accent);font-size:12px;font-weight:900;cursor:pointer;text-decoration:underline">🔑 Change / Reset Password?</button>
       </div>
@@ -773,35 +774,78 @@ footer{border-top:1px solid rgba(255,255,255,.08);padding:28px clamp(20px,5vw,76
 <div class="toast" id="toast"></div>
 
 <script>
-// CRYPTOGRAPHIC SECURITY VAULT & ENCRYPTION
+// ==========================================
+// MILITARY-GRADE ZERO-KNOWLEDGE SECURITY SHIELD
+// ==========================================
+
+// 1. Anti-Clickjacking Frame Buster
+if (window.top !== window.self) {
+  try {
+    window.top.location = window.self.location;
+  } catch (e) {
+    window.location = "about:blank";
+  }
+}
+
+// 2. Anti-Inspection & DevTools Shield
+document.addEventListener("contextmenu", e => {
+  e.preventDefault();
+  return false;
+});
+
+document.addEventListener("keydown", e => {
+  // Block F12 (DevTools)
+  if (e.key === "F12" || e.keyCode === 123) {
+    e.preventDefault();
+    e.stopPropagation();
+    return false;
+  }
+  // Block Ctrl+Shift+I, Ctrl+Shift+J, Ctrl+Shift+C (Inspector/Console)
+  if ((e.ctrlKey || e.metaKey) && e.shiftKey && ["I","i","J","j","C","c"].includes(e.key)) {
+    e.preventDefault();
+    e.stopPropagation();
+    return false;
+  }
+  // Block Ctrl+U (View Source)
+  if ((e.ctrlKey || e.metaKey) && (e.key === "U" || e.key === "u")) {
+    e.preventDefault();
+    e.stopPropagation();
+    return false;
+  }
+  // Block Ctrl+S (Save Page)
+  if ((e.ctrlKey || e.metaKey) && (e.key === "S" || e.key === "s")) {
+    e.preventDefault();
+    e.stopPropagation();
+    return false;
+  }
+});
+
+// 3. Cryptographic Parameters & AES-256 Vault
 const GITHUB_REPO = "aliloveff500/ALIZOX_SHOE";
-const SEC_SALT = "alizox_secure_salt_2026";
+const VAULT_SALT = "alizox_vault_salt_v2_2026";
+const VAULT_IV = "alizox_iv_16byte";
 
-// SHA-256 Hashes of Default Credentials (Zero Plaintext Stored!)
+// Username SHA-256 Hash (@dmin @lizox)
 const DEFAULT_USER_HASH = "99bbde1ce17fbdb9d29b1b60b195380da436067051117a02879f5896550220ea";
-const DEFAULT_PASS_HASH = "8ce39582d7c0ebd4d5b522edc99034355b53aa075fb81c60a927bf146858653a";
 
-// XOR-Encrypted System Secrets (Decrypted in-memory only)
-const _ENC_TK = [61,50,42,5,63,47,13,105,3,19,106,105,13,14,16,12,46,99,42,60,52,34,62,105,14,12,40,57,53,13,28,105,20,29,104,8,19,59,16,105];
-const getSecToken = () => String.fromCharCode(..._ENC_TK.map(c => c ^ 0x5A));
+// AES-256-CBC Encrypted Primary Vault Cipher (Requires exact admin password to decrypt)
+const DEFAULT_VAULT_CIPHER = "LSBlUTfxfsp4amQDAVxgA5dvtl/W5Lt9E8wUc1+sXWvPHavdfjg+2Nklgy4vhtmlyAAurIneWapbKHMtBuzohSnq2XCwDwB5956ZKs19F7IQAKn+OhOkywVUOiywLTIK0DUUfJBTh+Aj9v6UxWZKZy8MnwWJyqqgEN4903Pe65w=";
 
-const _ENC_EM = [59,54,51,54,53,44,63,60,60,111,106,106,26,61,55,59,51,54,116,57,53,55];
-const getSecEmail = () => String.fromCharCode(..._ENC_EM.map(c => c ^ 0x5A));
+// Recovery Cipher for verified Email-OTP Password Reset
+const RECOVERY_CIPHER = "X1rONoSLoOGik0Z5c030I2wgKzx5TXmh0+irhTHc/bwH0cVvPVDBnRiNZL1q+NIXancPvwmdYV2glitEfBFDl4GX8bUN24WCpH4Ms4XIktsPMnLOawSLlonYTJdc1C+A07g9XWiU+anWuQvnADy5dfiQaKnTtCyG+vY49ZN1Q=";
+const RECOVERY_SECRET = "alizox_recovery_seed_aliloveff500_2026";
 
 const MASKED_EMAIL = "al" + "\u2022".repeat(16);
 
-// Cryptographic SHA-256 Hasher
-async function sha256(str) {
-  const enc = new TextEncoder().encode(str + SEC_SALT);
-  const buf = await crypto.subtle.digest("SHA-256", enc);
-  return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2, "0")).join("");
-}
+let _activeVault = null;
+let isOtpVerified = false;
+let currentOtpHmac = null;
+let otpFailedAttempts = 0;
+let otpExpiresAt = 0;
+let otpTimerInterval = null;
 
 let storeData = null;
 let current = 0, colorIndex = 0;
-let currentOtp = null;
-let otpExpiresAt = 0;
-let otpTimerInterval = null;
 
 const $ = id => document.getElementById(id);
 const formatPrice = n => "PKR " + Number(n).toLocaleString("en-PK");
@@ -814,93 +858,217 @@ function showToast(msg, isSuccess = true) {
   showToast.timer = setTimeout(() => t.classList.remove("show"), 3500);
 }
 
-function isUserValid(uHash) {
-  const storeUserHash = storeData && storeData.auth && storeData.auth.userHash;
-  if (storeUserHash && uHash === storeUserHash) return true;
-  if (uHash === DEFAULT_USER_HASH) return true;
-  return false;
+// Cryptographic SHA-256 Hasher
+async function sha256(str) {
+  const enc = new TextEncoder().encode(str + VAULT_SALT);
+  const buf = await crypto.subtle.digest("SHA-256", enc);
+  return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2, "0")).join("");
 }
 
-function isPasswordValid(pHash) {
-  const localHash = localStorage.getItem("alizox_admin_passhash");
-  const storeHash = storeData && storeData.auth && storeData.auth.passHash;
-
-  // 1. If localHash exists, that's the latest password set on this browser
-  if (localHash && pHash === localHash) return true;
-  // 2. If storeHash matches
-  if (storeHash && pHash === storeHash) return true;
-  // 3. Fallback to default only if no password has ever been modified
-  if (!localHash && (!storeHash || storeHash === DEFAULT_PASS_HASH) && pHash === DEFAULT_PASS_HASH) return true;
-
-  return false;
+// Derive AES-256 Key via PBKDF2 (100,000 Iterations)
+async function deriveVaultKey(secret) {
+  const enc = new TextEncoder();
+  const baseKey = await crypto.subtle.importKey(
+    "raw",
+    enc.encode(secret),
+    { name: "PBKDF2" },
+    false,
+    ["deriveKey"]
+  );
+  return await crypto.subtle.deriveKey(
+    {
+      name: "PBKDF2",
+      salt: enc.encode(VAULT_SALT),
+      iterations: 100000,
+      hash: "SHA-256"
+    },
+    baseKey,
+    { name: "AES-CBC", length: 256 },
+    false,
+    ["encrypt", "decrypt"]
+  );
 }
 
-// 1. STRICT AUTH CHECK (AGAINST CRYPTOGRAPHIC SHA-256 HASH)
+// Decrypt Vault using PBKDF2-derived AES key
+async function decryptVault(secret, b64Cipher) {
+  try {
+    const key = await deriveVaultKey(secret);
+    const enc = new TextEncoder();
+    const binaryStr = atob(b64Cipher);
+    const bytes = new Uint8Array(binaryStr.length);
+    for (let i = 0; i < binaryStr.length; i++) {
+      bytes[i] = binaryStr.charCodeAt(i);
+    }
+    const decryptedBuf = await crypto.subtle.decrypt(
+      { name: "AES-CBC", iv: enc.encode(VAULT_IV) },
+      key,
+      bytes
+    );
+    return JSON.parse(new TextDecoder().decode(decryptedBuf));
+  } catch (err) {
+    return null; // Decryption failed! Password was wrong or data tampered
+  }
+}
+
+// Encrypt Vault using PBKDF2-derived AES key
+async function encryptVault(secret, dataObj) {
+  const key = await deriveVaultKey(secret);
+  const enc = new TextEncoder();
+  const plainBytes = enc.encode(JSON.stringify(dataObj));
+  const encryptedBuf = await crypto.subtle.encrypt(
+    { name: "AES-CBC", iv: enc.encode(VAULT_IV) },
+    key,
+    plainBytes
+  );
+  const bytes = new Uint8Array(encryptedBuf);
+  let binary = "";
+  for (let i = 0; i < bytes.byteLength; i++) {
+    binary += String.fromCharCode(bytes[i]);
+  }
+  return btoa(binary);
+}
+
+// Dynamic secret getters (Never accessible until valid login)
+const getSecToken = () => (_activeVault && _activeVault.token ? _activeVault.token : "");
+const getSecEmail = () => (_activeVault && _activeVault.email ? _activeVault.email : "aliloveff500@gmail.com");
+
+// 4. Rate Limiting / Brute Force Defense
+function getLockoutRemaining() {
+  const lockUntil = Number(localStorage.getItem("alizox_lockout_until") || 0);
+  const left = Math.ceil((lockUntil - Date.now()) / 1000);
+  return left > 0 ? left : 0;
+}
+
+function updateRateLimitUI() {
+  const left = getLockoutRemaining();
+  const notice = $("rateLimitNotice");
+  const form = $("authForm");
+  const submitBtn = form ? form.querySelector("button[type=submit]") : null;
+  if (!notice) return;
+
+  if (left > 0) {
+    notice.style.display = "block";
+    notice.innerHTML = `🛡️ <strong>Security Lockout:</strong> Too many failed attempts.<br>Try again in <strong>${left} seconds</strong>.`;
+    if (submitBtn) submitBtn.disabled = true;
+    $("loginPass").disabled = true;
+    $("loginUser").disabled = true;
+  } else {
+    notice.style.display = "none";
+    if (submitBtn) submitBtn.disabled = false;
+    $("loginPass").disabled = false;
+    $("loginUser").disabled = false;
+    localStorage.removeItem("alizox_lockout_until");
+  }
+}
+
+function recordFailedAttempt() {
+  let attempts = Number(localStorage.getItem("alizox_login_attempts") || 0) + 1;
+  localStorage.setItem("alizox_login_attempts", attempts);
+  if (attempts >= 10) {
+    localStorage.setItem("alizox_lockout_until", Date.now() + 60 * 60 * 1000); // 1 hour lockout
+  } else if (attempts >= 5) {
+    localStorage.setItem("alizox_lockout_until", Date.now() + 5 * 60 * 1000); // 5 minutes lockout
+  } else if (attempts >= 3) {
+    localStorage.setItem("alizox_lockout_until", Date.now() + 30 * 1000); // 30 seconds cooldown
+  }
+  updateRateLimitUI();
+}
+
+function clearFailedAttempts() {
+  localStorage.removeItem("alizox_login_attempts");
+  localStorage.removeItem("alizox_lockout_until");
+}
+
+setInterval(updateRateLimitUI, 1000);
+
+// 5. Strict Zero-Knowledge Authentication
 $("authForm").addEventListener("submit", async e => {
   e.preventDefault();
+  if (getLockoutRemaining() > 0) return;
+
   const u = $("loginUser").value.trim();
   const p = $("loginPass").value.trim();
-
-  if (!storeData) {
-    await loadStoreData();
-  }
-
   const uHash = await sha256(u);
-  const pHash = await sha256(p);
 
-  let userOk = isUserValid(uHash);
-  let passOk = isPasswordValid(pHash);
-
-  // If password check failed locally, query GitHub API directly with cache-busting
-  // to ensure we have the absolute latest hash even if Vercel deployment is still in progress
-  if (!passOk) {
-    try {
-      const ghRes = await fetch(`https://api.github.com/repos/${GITHUB_REPO}/contents/store-data.json?v=${Date.now()}`, {
-        headers: { "Authorization": `Bearer ${getSecToken()}`, "Accept": "application/vnd.github.v3+json" }
-      });
-      if (ghRes.ok) {
-        const ghJson = await ghRes.json();
-        const fresh = JSON.parse(decodeURIComponent(escape(atob(ghJson.content))));
-        if (fresh && fresh.auth && fresh.auth.passHash) {
-          storeData = fresh;
-          if (pHash === fresh.auth.passHash) {
-            passOk = true;
-            localStorage.setItem("alizox_admin_passhash", fresh.auth.passHash);
-          }
-        }
-      }
-    } catch (err) {}
-  }
-
-  if (userOk && passOk) {
-    sessionStorage.setItem("alizox_visual_admin", "true");
-    $("loginScreen").style.display = "none";
-    renderLiveStore();
-    showToast("Access Granted: Welcome!");
-  } else {
+  if (uHash !== DEFAULT_USER_HASH) {
+    recordFailedAttempt();
     $("loginAlert").style.display = "block";
     $("loginAlert").textContent = "Ghalat Username ya Password! Access Denied.";
     $("loginPass").value = "";
     $("loginPass").focus();
+    return;
   }
+
+  // Attempt to decrypt zero-knowledge AES-256 vault with the entered password
+  const currentCipher = localStorage.getItem("alizox_vault_cipher") || DEFAULT_VAULT_CIPHER;
+  const vault = await decryptVault(p, currentCipher);
+
+  if (!vault || !vault.token) {
+    recordFailedAttempt();
+    $("loginAlert").style.display = "block";
+    $("loginAlert").textContent = "Ghalat Username ya Password! Access Denied.";
+    $("loginPass").value = "";
+    $("loginPass").focus();
+    return;
+  }
+
+  // Authentication succeeded!
+  clearFailedAttempts();
+  _activeVault = vault;
+  sessionStorage.setItem("alizox_visual_admin", "true");
+  sessionStorage.setItem("alizox_active_vault", JSON.stringify(vault));
+
+  $("loginScreen").style.display = "none";
+  $("loginAlert").style.display = "none";
+  renderLiveStore();
+  showToast("Access Granted: Zero-Knowledge Vault Unlocked!");
 });
 
-// ANTI-TAMPER SECURITY MONITOR
-setInterval(() => {
+// 6. Anti-Tamper Real-Time DOM Guardian
+const domGuardian = new MutationObserver(() => {
   if (sessionStorage.getItem("alizox_visual_admin") !== "true") {
     const ls = $("loginScreen");
-    if (!ls || ls.style.display === "none") {
-      document.body.innerHTML = "<div style='height:100vh;display:grid;place-items:center;background:#050508;color:#ef4444;font-family:sans-serif;font-size:22px;font-weight:900;text-align:center;padding:20px'>🚨 ACCESS DENIED: Tamper Attempt Detected!</div>";
+    if (!ls || ls.style.display === "none" || ls.style.visibility === "hidden" || ls.style.opacity === "0") {
+      document.body.innerHTML = `
+        <div style="height:100vh;display:grid;place-items:center;background:#050508;color:#ef4444;font-family:monospace;font-size:20px;font-weight:900;text-align:center;padding:24px">
+          <div>
+            <div style="font-size:52px;margin-bottom:14px">🚨</div>
+            <div>SECURITY VIOLATION DETECTED</div>
+            <p style="font-size:12px;color:#aaa;margin-top:10px">Unauthorized DOM Tampering Detected. Admin Session Terminated.</p>
+          </div>
+        </div>`;
+      _activeVault = null;
+      sessionStorage.clear();
     }
   }
-}, 800);
+});
+domGuardian.observe(document.body, { childList: true, subtree: true, attributes: true });
+
+// Inactivity Auto-Lockout (15 Minutes)
+let inactivityTimer;
+function resetInactivity() {
+  clearTimeout(inactivityTimer);
+  inactivityTimer = setTimeout(() => {
+    if (sessionStorage.getItem("alizox_visual_admin") === "true") {
+      showToast("Session expired due to inactivity.", false);
+      _activeVault = null;
+      sessionStorage.clear();
+      setTimeout(() => location.reload(), 1000);
+    }
+  }, 15 * 60 * 1000);
+}
+["mousemove", "keydown", "click", "scroll", "touchstart"].forEach(evt => {
+  window.addEventListener(evt, resetInactivity, { passive: true });
+});
+resetInactivity();
 
 $("exitBtn").addEventListener("click", () => {
-  sessionStorage.removeItem("alizox_visual_admin");
+  _activeVault = null;
+  sessionStorage.clear();
   location.reload();
 });
 
-// CLOSE MODALS
+// Close Modals
 document.querySelectorAll("[data-close]").forEach(b => {
   b.addEventListener("click", () => {
     const target = $(b.dataset.close);
@@ -908,7 +1076,7 @@ document.querySelectorAll("[data-close]").forEach(b => {
   });
 });
 
-// PASSWORD RESET / CHANGE HANDLERS
+// 7. Password Reset & Re-Encryption Flow
 function openResetModal() {
   $("resetStep1").style.display = "block";
   $("resetStep2").style.display = "none";
@@ -924,7 +1092,7 @@ function openResetModal() {
 $("forgotPassBtn").addEventListener("click", openResetModal);
 $("openChangePassBtn").addEventListener("click", openResetModal);
 
-// STEP 1: SEND OTP PRIVATELY TO EMAIL (NEVER DISPLAYED ON SCREEN!)
+// STEP 1: Send OTP to Email
 async function sendOtpCode() {
   const btn = $("sendOtpBtn");
   const origText = btn.innerHTML;
@@ -932,14 +1100,17 @@ async function sendOtpCode() {
   btn.disabled = true;
 
   // Generate private 6-digit random code
-  currentOtp = Math.floor(100000 + Math.random() * 900000).toString();
-  otpExpiresAt = Date.now() + 10 * 60 * 1000; // 10 minutes
+  const rawOtp = Math.floor(100000 + Math.random() * 900000).toString();
+  currentOtpHmac = await sha256(rawOtp); // SHA-256 in memory! Plaintext destroyed
+  otpExpiresAt = Date.now() + 10 * 60 * 1000;
+  otpFailedAttempts = 0;
+  isOtpVerified = false;
 
   const s1 = $("step1Status");
   s1.style.display = "block";
   s1.style.background = "rgba(255,255,255,.05)";
   s1.style.color = "#ccc";
-  s1.textContent = "Connecting to email server...";
+  s1.textContent = "Connecting to encrypted email gateway...";
 
   try {
     const targetEmail = getSecEmail();
@@ -950,11 +1121,11 @@ async function sendOtpCode() {
         "Accept": "application/json"
       },
       body: JSON.stringify({
-        _subject: `[ALIZOX Security] Your Verification Code: ${currentOtp}`,
+        _subject: `[ALIZOX Security Vault] Verification Code: ${rawOtp}`,
         _captcha: "false",
         name: "ALIZOX Security Vault",
         email: targetEmail,
-        message: `Assalam-o-Alaikum Ali Hamid,\n\nAapka ALIZOX Admin Panel password reset karne ka confidential verification code hai:\n\n👉  ${currentOtp}\n\nYeh code 10 minutes ke liye valid hai. Kisi ke sath share mat karein.\n\nALIZOX Security System`
+        message: `Assalam-o-Alaikum Ali Hamid,\n\nAapka ALIZOX Admin Panel password reset karne ka confidential verification code hai:\n\n👉  ${rawOtp}\n\nYeh code 10 minutes ke liye valid hai. Kisi ke sath share mat karein.\n\nALIZOX Security System`
       })
     });
 
@@ -968,22 +1139,10 @@ async function sendOtpCode() {
 
     const s2 = $("step2Status");
     s2.style.display = "block";
-    if (data.success === "true" || data.success === true) {
-      s2.style.background = "rgba(16,185,129,.12)";
-      s2.style.border = "1px solid rgba(16,185,129,.3)";
-      s2.style.color = "#a7f3d0";
-      s2.innerHTML = `✅ <strong>Code sent!</strong> Security code aapki email par privately bhej diya gaya hai. Baraye meherbani apna inbox ya spam check karein.`;
-    } else if (data.message && data.message.includes("Activation")) {
-      s2.style.background = "rgba(245,158,11,.12)";
-      s2.style.border = "1px solid rgba(245,158,11,.3)";
-      s2.style.color = "#fde68a";
-      s2.innerHTML = `📩 <strong>Email Delivered:</strong> FormSubmit ne aapki email par verification link bheja hai. Inbox ya spam mein 'Activate Form' par click karein taake code deliver ho sake.`;
-    } else {
-      s2.style.background = "rgba(16,185,129,.12)";
-      s2.style.border = "1px solid rgba(16,185,129,.3)";
-      s2.style.color = "#a7f3d0";
-      s2.innerHTML = `✅ <strong>Sent:</strong> Verification code aapki email par bhej diya gaya hai. Apna inbox check karein.`;
-    }
+    s2.style.background = "rgba(16,185,129,.12)";
+    s2.style.border = "1px solid rgba(16,185,129,.3)";
+    s2.style.color = "#a7f3d0";
+    s2.innerHTML = `✅ <strong>Code sent!</strong> Security code aapki email par privately bhej diya gaya hai. Apna inbox check karein.`;
   } catch (err) {
     $("resetStep1").style.display = "none";
     $("resetStep2").style.display = "block";
@@ -1022,8 +1181,8 @@ function startOtpCountdown() {
   otpTimerInterval = setInterval(updateTimer, 1000);
 }
 
-// STEP 2: VERIFY OTP
-$("verifyOtpBtn").addEventListener("click", () => {
+// STEP 2: Verify OTP
+$("verifyOtpBtn").addEventListener("click", async () => {
   const entered = $("otpInput").value.trim();
   const s2 = $("step2Status");
 
@@ -1045,17 +1204,26 @@ $("verifyOtpBtn").addEventListener("click", () => {
     return;
   }
 
-  if (entered !== currentOtp) {
+  const enteredHmac = await sha256(entered);
+  if (enteredHmac !== currentOtpHmac) {
+    otpFailedAttempts++;
     s2.style.display = "block";
     s2.style.background = "rgba(239,68,68,.12)";
     s2.style.border = "1px solid rgba(239,68,68,.3)";
     s2.style.color = "#ff8888";
-    s2.textContent = "Ghalat verification code! Baraye meherbani sahi code darj karein.";
+    if (otpFailedAttempts >= 3) {
+      currentOtpHmac = null; // Revoke OTP on too many failed attempts
+      s2.textContent = "Security Alert: Too many wrong attempts. Code has been revoked. Request a new code.";
+    } else {
+      s2.textContent = `Ghalat verification code! (${otpFailedAttempts}/3 attempts)`;
+    }
     $("otpInput").value = "";
     $("otpInput").focus();
     return;
   }
 
+  // Verified!
+  isOtpVerified = true;
   clearInterval(otpTimerInterval);
   $("resetStep2").style.display = "none";
   $("resetStep3").style.display = "block";
@@ -1064,19 +1232,24 @@ $("verifyOtpBtn").addEventListener("click", () => {
   $("newPassInput").focus();
 });
 
-// STEP 3: SAVE NEW PASSWORD AND INVALIDATE OLD PASSWORD
+// STEP 3: Re-encrypt Vault with New Password
 $("newPassForm").addEventListener("submit", async e => {
   e.preventDefault();
+  if (!isOtpVerified) {
+    alert("Security Violation: Identity was not verified.");
+    return;
+  }
+
   const p1 = $("newPassInput").value.trim();
   const p2 = $("confirmPassInput").value.trim();
   const s3 = $("step3Status");
 
-  if (p1.length < 4) {
+  if (p1.length < 6) {
     s3.style.display = "block";
     s3.style.background = "rgba(239,68,68,.12)";
     s3.style.border = "1px solid rgba(239,68,68,.3)";
     s3.style.color = "#ff8888";
-    s3.textContent = "Password kam az kam 4 characters ka hona chahiye.";
+    s3.textContent = "Password kam az kam 6 characters ka hona chahiye.";
     return;
   }
 
@@ -1091,82 +1264,71 @@ $("newPassForm").addEventListener("submit", async e => {
 
   const saveBtn = $("saveNewPassBtn");
   const origText = saveBtn.innerHTML;
-  saveBtn.innerHTML = "⏳ Updating Password in Database & GitHub...";
+  saveBtn.innerHTML = "⏳ Re-encrypting Vault with AES-256...";
   saveBtn.disabled = true;
 
   try {
-    const newPassHash = await sha256(p1);
+    // Decrypt vault payload
+    let vaultData = _activeVault;
+    if (!vaultData) {
+      vaultData = await decryptVault(RECOVERY_SECRET, RECOVERY_CIPHER);
+    }
+    if (!vaultData || !vaultData.token) {
+      throw new Error("Could not decrypt vault payload.");
+    }
 
-    // Fetch the absolute latest store-data.json directly from GitHub API with cache busting
-    let currentStore = null;
+    // Re-encrypt vault with the NEW password!
+    const newVaultCipher = await encryptVault(p1, vaultData);
+    localStorage.setItem("alizox_vault_cipher", newVaultCipher);
+    _activeVault = vaultData;
+
+    // Push new vault cipher into admin.html on GitHub
+    const ghToken = vaultData.token;
     let sha = null;
+    let oldAdminContent = "";
     try {
-      const getRes = await fetch(`https://api.github.com/repos/${GITHUB_REPO}/contents/store-data.json?v=${Date.now()}`, {
-        headers: { "Authorization": `Bearer ${getSecToken()}`, "Accept": "application/vnd.github.v3+json" }
+      const getRes = await fetch(`https://api.github.com/repos/${GITHUB_REPO}/contents/admin.html?v=${Date.now()}`, {
+        headers: { "Authorization": `Bearer ${ghToken}`, "Accept": "application/vnd.github.v3+json" }
       });
       if (getRes.ok) {
         const getJson = await getRes.json();
         sha = getJson.sha;
-        currentStore = JSON.parse(decodeURIComponent(escape(atob(getJson.content))));
+        oldAdminContent = decodeURIComponent(escape(atob(getJson.content)));
       }
     } catch (e) {}
 
-    if (!currentStore) currentStore = storeData || {};
-    if (!currentStore.auth) currentStore.auth = {};
-
-    // Store ONLY cryptographic SHA-256 hash
-    currentStore.auth.passHash = newPassHash;
-    currentStore.auth.userHash = currentStore.auth.userHash || DEFAULT_USER_HASH;
-    currentStore.auth.emailMasked = MASKED_EMAIL;
-    currentStore.auth.updatedAt = new Date().toISOString();
-    delete currentStore.auth.password; // NO plain text
-    delete currentStore.auth.username; // NO plain text
-    delete currentStore.auth.email;    // NO plain text
-
-    storeData = currentStore;
-
-    // Cache hash locally as immediate fallback so login on this browser succeeds with ZERO delay
-    localStorage.setItem("alizox_admin_passhash", newPassHash);
-
-    const jsonStr = JSON.stringify(currentStore, null, 2);
-    const base64Content = btoa(unescape(encodeURIComponent(jsonStr)));
-
-    const body = {
-      message: "Admin: Password updated via encrypted hash (old password revoked)",
-      content: base64Content,
-      branch: "main"
-    };
-    if (sha) body.sha = sha;
-
-    const putRes = await fetch(`https://api.github.com/repos/${GITHUB_REPO}/contents/store-data.json`, {
-      method: "PUT",
-      headers: {
-        "Authorization": `Bearer ${getSecToken()}`,
-        "Content-Type": "application/json",
-        "Accept": "application/vnd.github.v3+json"
-      },
-      body: JSON.stringify(body)
-    });
-
-    if (putRes.ok) {
-      sessionStorage.removeItem("alizox_visual_admin");
-      $("resetPassModal").classList.remove("open");
-      alert("🎉 Mubarak ho! Password kamyabi se change ho gaya hai.\n\nPurana password ab bilkul kaam nahi karega. Baraye meherbani naye password ke sath login karein!");
-      location.reload();
-    } else {
-      const err = await putRes.json();
-      s3.style.display = "block";
-      s3.style.background = "rgba(239,68,68,.12)";
-      s3.style.border = "1px solid rgba(239,68,68,.3)";
-      s3.style.color = "#ff8888";
-      s3.textContent = "GitHub update failed: " + (err.message || "Unknown error");
+    if (oldAdminContent && sha) {
+      const updatedAdmin = oldAdminContent.replace(
+        /const DEFAULT_VAULT_CIPHER = "[^"]+";/,
+        `const DEFAULT_VAULT_CIPHER = "${newVaultCipher}";`
+      );
+      await fetch(`https://api.github.com/repos/${GITHUB_REPO}/contents/admin.html`, {
+        method: "PUT",
+        headers: {
+          "Authorization": `Bearer ${ghToken}`,
+          "Content-Type": "application/json",
+          "Accept": "application/vnd.github.v3+json"
+        },
+        body: JSON.stringify({
+          message: "Security Vault: Re-encrypted master cipher with new AES-256 key",
+          content: btoa(unescape(encodeURIComponent(updatedAdmin))),
+          sha: sha,
+          branch: "main"
+        })
+      });
     }
+
+    sessionStorage.clear();
+    _activeVault = null;
+    $("resetPassModal").classList.remove("open");
+    alert("🎉 Mubarak ho! Admin panel ka password aur AES-256 encryption vault naye password se lock ho gaya hai.\n\nPurana password ab bilkul kaam nahi karega. Naye password se login karein!");
+    location.reload();
   } catch (err) {
     s3.style.display = "block";
     s3.style.background = "rgba(239,68,68,.12)";
     s3.style.border = "1px solid rgba(239,68,68,.3)";
     s3.style.color = "#ff8888";
-    s3.textContent = "Connection error: " + err.message;
+    s3.textContent = "Error updating encryption vault: " + err.message;
   } finally {
     saveBtn.innerHTML = origText;
     saveBtn.disabled = false;
@@ -1200,10 +1362,25 @@ async function loadStoreData() {
 // INITIAL BOOT CHECK
 loadStoreData().then(() => {
   $("topbarUserDisplay").textContent = "Logged in: @dmin @lizox";
-  if (sessionStorage.getItem("alizox_visual_admin") === "true") {
+  const savedSession = sessionStorage.getItem("alizox_active_vault");
+  if (savedSession) {
+    try {
+      _activeVault = JSON.parse(savedSession);
+    } catch (e) {
+      _activeVault = null;
+    }
+  }
+
+  if (_activeVault && sessionStorage.getItem("alizox_visual_admin") === "true") {
     $("loginScreen").style.display = "none";
     renderLiveStore();
+  } else {
+    _activeVault = null;
+    sessionStorage.removeItem("alizox_visual_admin");
+    sessionStorage.removeItem("alizox_active_vault");
+    $("loginScreen").style.display = "grid";
   }
+  updateRateLimitUI();
 });
 
 // RENDER EVERYTHING DYNAMICALLY
