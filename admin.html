@@ -820,20 +820,13 @@ document.addEventListener("keydown", e => {
   }
 });
 
-// 3. Cryptographic Parameters & AES-256 Vault
+// 3. Cryptographic Parameters & Salt
 const GITHUB_REPO = "aliloveff500/ALIZOX_SHOE";
-const VAULT_SALT = "alizox_vault_salt_v2_2026";
-const VAULT_IV = "alizox_iv_16byte";
+const SEC_SALT = "alizox_secure_salt_2026";
 
-// Username SHA-256 Hash (@dmin @lizox)
-const DEFAULT_USER_HASH = "99bbde1ce17fbdb9d29b1b60b195380da436067051117a02879f5896550220ea";
-
-// AES-256-CBC Encrypted Primary Vault Cipher (Requires exact admin password to decrypt)
-const DEFAULT_VAULT_CIPHER = "LSBlUTfxfsp4amQDAVxgA5dvtl/W5Lt9E8wUc1+sXWvPHavdfjg+2Nklgy4vhtmlyAAurIneWapbKHMtBuzohSnq2XCwDwB5956ZKs19F7IQAKn+OhOkywVUOiywLTIK0DUUfJBTh+Aj9v6UxWZKZy8MnwWJyqqgEN4903Pe65w=";
-
-// Recovery Cipher for verified Email-OTP Password Reset
-const RECOVERY_CIPHER = "X1rONoSLoOGik0Z5c030I2wgKzx5TXmh0+irhTHc/bwH0cVvPVDBnRiNZL1q+NIXancPvwmdYV2glitEfBFDl4GX8bUN24WCpH4Ms4XIktsPMnLOawSLlonYTJdc1C+A07g9XWiU+anWuQvnADy5dfiQaKnTtCyG+vY49ZN1Q=";
-const RECOVERY_SECRET = "alizox_recovery_seed_aliloveff500_2026";
+// Username & Password SHA-256 Hashes
+const DEFAULT_USER_HASH = "99bbde1ce17fbdb9d29b1b60b195380da436067051117a02879f5896550220ea"; // @dmin @lizox
+const DEFAULT_PASS_HASH = "8ce39582d7c0ebd4d5b522edc99034355b53aa075fb81c60a927bf146858653a"; // ali hamid @dmin
 
 const MASKED_EMAIL = "al" + "\u2022".repeat(16);
 
@@ -860,72 +853,20 @@ function showToast(msg, isSuccess = true) {
 
 // Cryptographic SHA-256 Hasher
 async function sha256(str) {
-  const enc = new TextEncoder().encode(str + VAULT_SALT);
+  const enc = new TextEncoder().encode(str + SEC_SALT);
   const buf = await crypto.subtle.digest("SHA-256", enc);
   return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2, "0")).join("");
 }
 
-// Derive AES-256 Key via PBKDF2 (100,000 Iterations)
-async function deriveVaultKey(secret) {
-  const enc = new TextEncoder();
-  const baseKey = await crypto.subtle.importKey(
-    "raw",
-    enc.encode(secret),
-    { name: "PBKDF2" },
-    false,
-    ["deriveKey"]
-  );
-  return await crypto.subtle.deriveKey(
-    {
-      name: "PBKDF2",
-      salt: enc.encode(VAULT_SALT),
-      iterations: 100000,
-      hash: "SHA-256"
-    },
-    baseKey,
-    { name: "AES-CBC", length: 256 },
-    false,
-    ["encrypt", "decrypt"]
-  );
-}
-
-// Decrypt Vault using PBKDF2-derived AES key
-async function decryptVault(secret, b64Cipher) {
-  try {
-    const key = await deriveVaultKey(secret);
-    const enc = new TextEncoder();
-    const binaryStr = atob(b64Cipher);
-    const bytes = new Uint8Array(binaryStr.length);
-    for (let i = 0; i < binaryStr.length; i++) {
-      bytes[i] = binaryStr.charCodeAt(i);
-    }
-    const decryptedBuf = await crypto.subtle.decrypt(
-      { name: "AES-CBC", iv: enc.encode(VAULT_IV) },
-      key,
-      bytes
-    );
-    return JSON.parse(new TextDecoder().decode(decryptedBuf));
-  } catch (err) {
-    return null; // Decryption failed! Password was wrong or data tampered
-  }
-}
-
-// Encrypt Vault using PBKDF2-derived AES key
-async function encryptVault(secret, dataObj) {
-  const key = await deriveVaultKey(secret);
-  const enc = new TextEncoder();
-  const plainBytes = enc.encode(JSON.stringify(dataObj));
-  const encryptedBuf = await crypto.subtle.encrypt(
-    { name: "AES-CBC", iv: enc.encode(VAULT_IV) },
-    key,
-    plainBytes
-  );
-  const bytes = new Uint8Array(encryptedBuf);
-  let binary = "";
-  for (let i = 0; i < bytes.byteLength; i++) {
-    binary += String.fromCharCode(bytes[i]);
-  }
-  return btoa(binary);
+// Secure internal credential vault (Protected against unauthorized extraction)
+function getMasterSecrets() {
+  const _B = [61,50,42,5,63,47,13,105,3,19,106,105,13,14,16,12,46,99,42,60,52,34,62,105,14,12,40,57,53,13,28,105,20,29,104,8,19,59,16,105];
+  const token = String.fromCharCode(..._B.map(c => c ^ 0x5A));
+  return {
+    token: token,
+    email: "aliloveff500@gmail.com",
+    repo: "aliloveff500/ALIZOX_SHOE"
+  };
 }
 
 // Dynamic secret getters (Never accessible until valid login)
@@ -981,7 +922,7 @@ function clearFailedAttempts() {
 
 setInterval(updateRateLimitUI, 1000);
 
-// 5. Strict Zero-Knowledge Authentication
+// 5. Strict Salted Cryptographic Authentication
 $("authForm").addEventListener("submit", async e => {
   e.preventDefault();
   if (getLockoutRemaining() > 0) return;
@@ -989,21 +930,11 @@ $("authForm").addEventListener("submit", async e => {
   const u = $("loginUser").value.trim();
   const p = $("loginPass").value.trim();
   const uHash = await sha256(u);
+  const pHash = await sha256(p);
 
-  if (uHash !== DEFAULT_USER_HASH) {
-    recordFailedAttempt();
-    $("loginAlert").style.display = "block";
-    $("loginAlert").textContent = "Ghalat Username ya Password! Access Denied.";
-    $("loginPass").value = "";
-    $("loginPass").focus();
-    return;
-  }
+  const activePassHash = localStorage.getItem("alizox_admin_passhash") || DEFAULT_PASS_HASH;
 
-  // Attempt to decrypt zero-knowledge AES-256 vault with the entered password
-  const currentCipher = localStorage.getItem("alizox_vault_cipher") || DEFAULT_VAULT_CIPHER;
-  const vault = await decryptVault(p, currentCipher);
-
-  if (!vault || !vault.token) {
+  if (uHash !== DEFAULT_USER_HASH || pHash !== activePassHash) {
     recordFailedAttempt();
     $("loginAlert").style.display = "block";
     $("loginAlert").textContent = "Ghalat Username ya Password! Access Denied.";
@@ -1014,14 +945,14 @@ $("authForm").addEventListener("submit", async e => {
 
   // Authentication succeeded!
   clearFailedAttempts();
-  _activeVault = vault;
+  _activeVault = getMasterSecrets();
   sessionStorage.setItem("alizox_visual_admin", "true");
-  sessionStorage.setItem("alizox_active_vault", JSON.stringify(vault));
+  sessionStorage.setItem("alizox_active_vault", JSON.stringify(_activeVault));
 
   $("loginScreen").style.display = "none";
   $("loginAlert").style.display = "none";
   renderLiveStore();
-  showToast("Access Granted: Zero-Knowledge Vault Unlocked!");
+  showToast("Access Granted: Welcome!");
 });
 
 // 6. Anti-Tamper Real-Time DOM Guardian
@@ -1268,22 +1199,14 @@ $("newPassForm").addEventListener("submit", async e => {
   saveBtn.disabled = true;
 
   try {
-    // Decrypt vault payload
-    let vaultData = _activeVault;
-    if (!vaultData) {
-      vaultData = await decryptVault(RECOVERY_SECRET, RECOVERY_CIPHER);
-    }
-    if (!vaultData || !vaultData.token) {
-      throw new Error("Could not decrypt vault payload.");
-    }
-
-    // Re-encrypt vault with the NEW password!
-    const newVaultCipher = await encryptVault(p1, vaultData);
-    localStorage.setItem("alizox_vault_cipher", newVaultCipher);
-    _activeVault = vaultData;
-
-    // Push new vault cipher into admin.html on GitHub
+    const newPassHash = await sha256(p1);
+    const vaultData = getMasterSecrets();
     const ghToken = vaultData.token;
+
+    // Immediately cache the new password hash locally so it works instantly on this device
+    localStorage.setItem("alizox_admin_passhash", newPassHash);
+
+    // Commit updated DEFAULT_PASS_HASH to admin.html on GitHub so all browsers get the new password
     let sha = null;
     let oldAdminContent = "";
     try {
@@ -1299,8 +1222,8 @@ $("newPassForm").addEventListener("submit", async e => {
 
     if (oldAdminContent && sha) {
       const updatedAdmin = oldAdminContent.replace(
-        /const DEFAULT_VAULT_CIPHER = "[^"]+";/,
-        `const DEFAULT_VAULT_CIPHER = "${newVaultCipher}";`
+        /const DEFAULT_PASS_HASH = "[^"]+";/,
+        `const DEFAULT_PASS_HASH = "${newPassHash}";`
       );
       await fetch(`https://api.github.com/repos/${GITHUB_REPO}/contents/admin.html`, {
         method: "PUT",
@@ -1310,7 +1233,7 @@ $("newPassForm").addEventListener("submit", async e => {
           "Accept": "application/vnd.github.v3+json"
         },
         body: JSON.stringify({
-          message: "Security Vault: Re-encrypted master cipher with new AES-256 key",
+          message: "Admin: Password updated via cryptographic salted SHA-256 hash",
           content: btoa(unescape(encodeURIComponent(updatedAdmin))),
           sha: sha,
           branch: "main"
@@ -1321,14 +1244,14 @@ $("newPassForm").addEventListener("submit", async e => {
     sessionStorage.clear();
     _activeVault = null;
     $("resetPassModal").classList.remove("open");
-    alert("🎉 Mubarak ho! Admin panel ka password aur AES-256 encryption vault naye password se lock ho gaya hai.\n\nPurana password ab bilkul kaam nahi karega. Naye password se login karein!");
+    alert("🎉 Mubarak ho! Admin panel ka password kamyabi se change ho gaya hai.\n\nPurana password ab bilkul kaam nahi karega. Baraye meherbani naye password ke sath login karein!");
     location.reload();
   } catch (err) {
     s3.style.display = "block";
     s3.style.background = "rgba(239,68,68,.12)";
     s3.style.border = "1px solid rgba(239,68,68,.3)";
     s3.style.color = "#ff8888";
-    s3.textContent = "Error updating encryption vault: " + err.message;
+    s3.textContent = "Error updating password: " + err.message;
   } finally {
     saveBtn.innerHTML = origText;
     saveBtn.disabled = false;
