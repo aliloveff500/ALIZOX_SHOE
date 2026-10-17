@@ -17,7 +17,7 @@
     "customPass": "ALIZOX 49229",
     "updatedAt": "2026-10-17T09:37:00Z"
   },
-  "updatedAt": "2026-10-17T10:54:12.785Z",
+  "updatedAt": "2026-10-17T10:54:27.402Z",
   "products": [
     {
       "id": 1,
@@ -90,19 +90,19 @@
       "name": "ECLIPSE",
       "sub": "CORE",
       "tag": "Core collection / 04",
-      "description": "Understated from a distance, impossible to ignore up close. Your daily rotation, redefined.",
-      "price": 6899,
+      "price": 3489,
       "category": "Women",
       "type": "Streetwear",
+      "description": "Understated from a distance, impossible to ignore up close. Your daily rotation, redefined.",
       "theme": [
-        "#059669",
-        "#064e3b",
-        "rgba(5, 150, 105, 0.45)"
+        "#c026d3",
+        "#581c87",
+        "rgba(192, 38, 211, 0.45)"
       ],
       "colors": [
         {
           "name": "Emerald Night",
-          "hex": "#10b981",
+          "hex": "#c026d3",
           "image": "images/shoe-green.png"
         }
       ]
