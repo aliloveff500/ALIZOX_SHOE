@@ -28,16 +28,6 @@
           "name": "Voltage Purple",
           "hex": "#b62dff",
           "image": "images/shoe-purple.png"
-        },
-        {
-          "name": "Solar Red",
-          "hex": "#ff453a",
-          "image": "images/shoe-red.png"
-        },
-        {
-          "name": "Ice Blue",
-          "hex": "#58c8ff",
-          "image": "images/shoe-blue.png"
         }
       ]
     },
@@ -54,18 +44,8 @@
       "colors": [
         {
           "name": "Solar Red",
-          "hex": "#ff4b35",
+          "hex": "#ff453a",
           "image": "images/shoe-red.png"
-        },
-        {
-          "name": "Volt Yellow",
-          "hex": "#ffd447",
-          "image": "images/shoe-yellow.png"
-        },
-        {
-          "name": "Blackout",
-          "hex": "#1f242d",
-          "image": "images/shoe-black.png"
         }
       ]
     },
@@ -82,18 +62,8 @@
       "colors": [
         {
           "name": "Ice Blue",
-          "hex": "#5bd5ff",
+          "hex": "#58c8ff",
           "image": "images/shoe-blue.png"
-        },
-        {
-          "name": "Cloud White",
-          "hex": "#e9e9f0",
-          "image": "images/shoe-white.png"
-        },
-        {
-          "name": "Voltage Purple",
-          "hex": "#b62dff",
-          "image": "images/shoe-purple.png"
         }
       ]
     },
@@ -112,16 +82,6 @@
           "name": "Emerald Night",
           "hex": "#10b981",
           "image": "images/shoe-green.png"
-        },
-        {
-          "name": "Blackout",
-          "hex": "#1f242d",
-          "image": "images/shoe-black.png"
-        },
-        {
-          "name": "Cloud White",
-          "hex": "#f3f3f5",
-          "image": "images/shoe-white.png"
         }
       ]
     }
