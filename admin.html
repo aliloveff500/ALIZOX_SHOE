@@ -1825,18 +1825,45 @@ async function pushStoreDataToGitHub(silent = false) {
       let sha = null;
       try {
         const getRes = await fetch(`https://api.github.com/repos/${GITHUB_REPO}/contents/store-data.json?t=${Date.now()}`, {
-          cache: "no-store",
           headers: {
             "Authorization": `Bearer ${token}`,
-            "Accept": "application/vnd.github.v3+json",
-            "Cache-Control": "no-cache"
+            "Accept": "application/vnd.github.v3+json"
           }
         });
         if (getRes.ok) {
           const getJson = await getRes.json();
           sha = getJson.sha;
+        } else {
+          console.warn("Could not get SHA from contents endpoint, status:", getRes.status);
         }
-      } catch(e) {}
+      } catch(e) {
+        console.warn("GET SHA error:", e);
+      }
+
+      // Fallback: If SHA not found via contents endpoint, fetch via trees API
+      if (!sha) {
+        try {
+          const treeRes = await fetch(`https://api.github.com/repos/${GITHUB_REPO}/git/trees/main?t=${Date.now()}`, {
+            headers: {
+              "Authorization": `Bearer ${token}`,
+              "Accept": "application/vnd.github.v3+json"
+            }
+          });
+          if (treeRes.ok) {
+            const treeJson = await treeRes.json();
+            const node = treeJson.tree && treeJson.tree.find(f => f.path === "store-data.json");
+            if (node && node.sha) sha = node.sha;
+          }
+        } catch(e) {}
+      }
+
+      if (!sha) {
+        if (attempt < 3) {
+          await new Promise(r => setTimeout(r, 600));
+          continue;
+        }
+        throw new Error("Could not retrieve current file SHA from GitHub. Please check connection.");
+      }
 
       const jsonStr = JSON.stringify(storeData, null, 2);
       const base64Content = btoa(unescape(encodeURIComponent(jsonStr)));
@@ -1844,9 +1871,9 @@ async function pushStoreDataToGitHub(silent = false) {
       const body = {
         message: "ALIZOX Admin: Update store & credentials lifetime sync",
         content: base64Content,
+        sha: sha,
         branch: "main"
       };
-      if (sha) body.sha = sha;
 
       const putRes = await fetch(`https://api.github.com/repos/${GITHUB_REPO}/contents/store-data.json`, {
         method: "PUT",
