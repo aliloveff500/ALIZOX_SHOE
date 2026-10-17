@@ -353,7 +353,7 @@ footer{border-top:1px solid rgba(255,255,255,.08);padding:28px clamp(20px,5vw,76
     <div class="section-head">
       <div>
         <div class="section-kicker">Our Story & Ambition</div>
-        <h2>ABOUT US — ALIZOX<span style="color:var(--accent)">.</span></h2>
+        <h2>ABOUT US — <span id="aboutBrandDisplay">ALIZOX</span><span style="color:var(--accent)">.</span></h2>
       </div>
       <button class="top-btn" id="editAboutBtn">✏️ Edit Founder & About Us</button>
     </div>
@@ -405,14 +405,14 @@ footer{border-top:1px solid rgba(255,255,255,.08);padding:28px clamp(20px,5vw,76
     <div class="founder-quote-banner">
       <div class="section-kicker" style="margin-bottom:12px">A Message from the Founder</div>
       <p class="quote-text" id="quoteDisplay"></p>
-      <div style="font-size:12px;color:var(--accent);font-weight:900">— Ali Hamid · Founder of ALIZOX</div>
+      <div style="font-size:12px;color:var(--accent);font-weight:900" id="quoteAuthorDisplay">— Ali Hamid · Founder of ALIZOX</div>
     </div>
   </section>
 
   <!-- FOOTER -->
   <footer>
     <div class="brand"><span class="brand-mark">A</span><span id="footerBrand">ALIZOX</span></div>
-    <div>© <span id="year"></span> ALIZOX. Live Visual Admin Mode.</div>
+    <div>© <span id="year"></span> <span id="footerBrandCopy">ALIZOX</span>. Live Visual Admin Mode.</div>
     <div><a href="https://alizoxshoespk.vercel.app" target="_blank" style="color:var(--accent);font-weight:900">View Public Website ↗</a></div>
   </footer>
 </main>
@@ -1133,12 +1133,19 @@ loadStoreData().then(() => {
 function renderLiveStore() {
   if (!storeData) return;
 
+  const brandName = (storeData.brand && storeData.brand.name) || "ALIZOX";
+  const brandInitial = brandName.charAt(0).toUpperCase();
+
   // 1. Brand & Header
-  $("brandNameDisplay").textContent = storeData.brand.name;
-  $("footerBrand").textContent = storeData.brand.name;
-  $("ghostWord").textContent = storeData.brand.name;
-  $("heroTagline").textContent = storeData.brand.name + " / " + (storeData.brand.tagline || "Signature Series");
+  document.querySelectorAll(".brand-mark").forEach(bm => bm.textContent = brandInitial);
+  $("brandNameDisplay").textContent = brandName;
+  $("footerBrand").textContent = brandName;
+  if ($("footerBrandCopy")) $("footerBrandCopy").textContent = brandName;
+  $("ghostWord").textContent = brandName;
+  $("heroTagline").textContent = brandName + " / " + (storeData.brand.tagline || "Signature Series");
   $("phonePreview").textContent = storeData.brand.whatsappNumber;
+  if ($("aboutBrandDisplay")) $("aboutBrandDisplay").textContent = brandName.toUpperCase();
+  document.title = `${brandName} — Live Visual Admin Editor`;
 
   // 2. Theme
   document.documentElement.style.setProperty("--accent", storeData.theme.accent);
@@ -1282,16 +1289,18 @@ function renderReviews() {
 // ABOUT
 function renderAbout() {
   const a = storeData.about;
+  const brandName = (storeData.brand && storeData.brand.name) || "ALIZOX";
   $("founderNameDisplay").textContent = a.founderName;
   $("avatarDisplay").textContent = a.founderName ? a.founderName.split(' ').map(w => w[0]).join('').substring(0, 2).toUpperCase() : 'AH';
-  $("founderRoleDisplay").textContent = a.founderRole || "Founder of ALIZOX";
+  $("founderRoleDisplay").textContent = a.founderRole ? a.founderRole.replace(/\bALIZOX\b/gi, brandName) : `Founder of ${brandName}`;
   $("founderAgeDisplay").textContent = a.age;
   $("founderEduDisplay").textContent = a.education;
-  $("storyTitleDisplay").textContent = a.storyTitle;
-  $("storyTextDisplay").textContent = a.storyText;
-  $("missionDisplay").textContent = a.mission;
-  $("visionDisplay").textContent = a.vision;
-  $("quoteDisplay").textContent = `“${a.quote}”`;
+  $("storyTitleDisplay").textContent = a.storyTitle ? a.storyTitle.replace(/\bALIZOX\b/gi, brandName) : "Turning Passion Into a Growing Brand";
+  $("storyTextDisplay").textContent = a.storyText ? a.storyText.replace(/\bALIZOX\b/gi, brandName) : "";
+  $("missionDisplay").textContent = a.mission ? a.mission.replace(/\bALIZOX\b/gi, brandName) : "";
+  $("visionDisplay").textContent = a.vision ? a.vision.replace(/\bALIZOX\b/gi, brandName) : "";
+  $("quoteDisplay").textContent = a.quote ? `“${a.quote.replace(/\bALIZOX\b/gi, brandName)}”` : "";
+  if ($("quoteAuthorDisplay")) $("quoteAuthorDisplay").textContent = `— ${a.founderName || 'Ali Hamid'} · ${a.founderRole ? a.founderRole.replace(/\bALIZOX\b/gi, brandName) : ('Founder of ' + brandName)}`;
 }
 
 // ==========================================
@@ -1313,12 +1322,31 @@ $("editPhoneTrigger").addEventListener("click", openStoreModal);
 
 $("storeForm").addEventListener("submit", async e => {
   e.preventDefault();
-  storeData.brand.name = $("mBrandName").value.trim();
+  const oldBrand = (storeData.brand && storeData.brand.name) ? storeData.brand.name.trim() : "ALIZOX";
+  const newBrand = $("mBrandName").value.trim() || "ALIZOX";
+  storeData.brand.name = newBrand;
   storeData.brand.whatsappNumber = $("mWhatsapp").value.trim().replace(/[^0-9]/g, '');
   storeData.brand.tagline = $("mTagline").value.trim();
   storeData.brand.slogan = $("mSlogan").value.trim();
+
+  // If brand name changed, automatically replace old brand name across all about texts
+  if (newBrand && oldBrand && newBrand.toLowerCase() !== oldBrand.toLowerCase()) {
+    const regOld = new RegExp(oldBrand.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'gi');
+    const regAlizox = /\bALIZOX\b/gi;
+    const rep = str => str ? str.replace(regOld, newBrand).replace(regAlizox, newBrand) : str;
+
+    if (storeData.about) {
+      storeData.about.founderRole = rep(storeData.about.founderRole);
+      storeData.about.storyTitle = rep(storeData.about.storyTitle);
+      storeData.about.storyText = rep(storeData.about.storyText);
+      storeData.about.mission = rep(storeData.about.mission);
+      storeData.about.vision = rep(storeData.about.vision);
+      storeData.about.quote = rep(storeData.about.quote);
+    }
+  }
+
   $("storeModal").classList.remove("open");
-  await autoSaveAndPublish("Store details updated & saved live!");
+  await autoSaveAndPublish("Brand details updated across entire store & saved live!");
 });
 
 // Theme
