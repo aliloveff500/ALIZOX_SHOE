@@ -796,6 +796,19 @@ let current = 0, colorIndex = 0;
 
 const $ = id => document.getElementById(id);
 const formatPrice = n => "PKR " + Number(n).toLocaleString("en-PK");
+function escapeHtml(v) {
+  if (v === null || v === undefined) return "";
+  return String(v).replace(/[&<>"'`=\/]/g, ch => ({
+    "&": "&amp;",
+    "<": "&lt;",
+    ">": "&gt;",
+    '"': "&quot;",
+    "'": "&#39;",
+    "/": "&#x2F;",
+    "`": "&#x60;",
+    "=": "&#x3D;"
+  }[ch] || ch));
+}
 
 function showToast(msg, isSuccess = true) {
   const t = $("toast");
@@ -1298,7 +1311,7 @@ $("editBrandTrigger").addEventListener("click", openStoreModal);
 $("editTaglineTrigger").addEventListener("click", openStoreModal);
 $("editPhoneTrigger").addEventListener("click", openStoreModal);
 
-$("storeForm").addEventListener("submit", e => {
+$("storeForm").addEventListener("submit", async e => {
   e.preventDefault();
   storeData.brand.name = $("mBrandName").value.trim();
   storeData.brand.whatsappNumber = $("mWhatsapp").value.trim().replace(/[^0-9]/g, '');
@@ -1626,7 +1639,7 @@ $("openAddShoeBtn").addEventListener("click", () => openShoeModal());
 $("addShoeSectionBtn").addEventListener("click", () => openShoeModal());
 $("editCurrentShoeBtn").addEventListener("click", () => openShoeModal(storeData.products[current]));
 
-$("delCurrentShoeBtn").addEventListener("click", () => {
+$("delCurrentShoeBtn").addEventListener("click", async () => {
   if (storeData.products.length <= 1) {
     alert("You must keep at least 1 shoe in the store!");
     return;
