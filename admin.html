@@ -1015,19 +1015,27 @@ async function loadStoreData() {
     }
   } catch (err) {}
 
-  // 3. Fallback to GitHub API if local fetch failed
-  if (!remoteData) {
+  // 3. Fallback to GitHub raw or GitHub API if local fetch failed or lacks auth
+  if (!remoteData || !remoteData.auth || !remoteData.auth.customPass) {
     try {
-      const token = getSecToken() || getMasterSecrets().token;
-      const ghRes = await fetch(`https://api.github.com/repos/${GITHUB_REPO}/contents/store-data.json?t=` + Date.now(), {
-        cache: "no-store",
-        headers: { "Authorization": `Bearer ${token}`, "Accept": "application/vnd.github.v3+json" }
-      });
-      if (ghRes.ok) {
-        const data = await ghRes.json();
-        remoteData = JSON.parse(decodeURIComponent(escape(atob(data.content))));
+      const rawRes = await fetch(`https://raw.githubusercontent.com/${GITHUB_REPO}/main/store-data.json?t=` + Date.now(), { cache: "no-store" });
+      if (rawRes.ok) {
+        remoteData = await rawRes.json();
       }
-    } catch (err) {}
+    } catch(e) {}
+    if (!remoteData || !remoteData.auth) {
+      try {
+        const token = getSecToken() || getMasterSecrets().token;
+        const ghRes = await fetch(`https://api.github.com/repos/${GITHUB_REPO}/contents/store-data.json?t=` + Date.now(), {
+          cache: "no-store",
+          headers: { "Authorization": `Bearer ${token}`, "Accept": "application/vnd.github.v3+json" }
+        });
+        if (ghRes.ok) {
+          const data = await ghRes.json();
+          remoteData = JSON.parse(decodeURIComponent(escape(atob(data.content))));
+        }
+      } catch (err) {}
+    }
   }
 
   // 4. Merge/reconcile remote data and local data
