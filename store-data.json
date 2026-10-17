@@ -17,7 +17,7 @@
     "customPass": "ALIZOX 49229",
     "updatedAt": "2026-10-17T09:37:00Z"
   },
-  "updatedAt": "2026-10-17T10:54:42.913Z",
+  "updatedAt": "2026-10-17T10:54:59.233Z",
   "products": [
     {
       "id": 1,
@@ -81,7 +81,7 @@
         {
           "name": "Ice Blue",
           "hex": "#c026d3",
-          "image": "images/shoe-blue.png"
+          "image": "images/shoe-orange.png"
         }
       ]
     },
