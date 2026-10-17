@@ -175,7 +175,7 @@ footer{border-top:1px solid rgba(255,255,255,.08);padding:28px clamp(20px,5vw,76
 .eye-toggle-btn{position:absolute;right:8px;top:50%;transform:translateY(-50%);background:transparent;border:0;color:#a4a4b8;padding:8px;border-radius:6px;cursor:pointer;display:grid;place-items:center;z-index:25;transition:color .2s,transform .15s}
 .eye-toggle-btn:hover{color:var(--accent);transform:translateY(-50%) scale(1.1)}
 .eye-toggle-btn:active{transform:translateY(-50%) scale(.92)}
-.eye-toggle-btn svg{pointer-events:none}
+.eye-toggle-btn *{pointer-events:none !important}
 
 @media(max-width:1050px){.hero-content{grid-template-columns:1fr;gap:20px}.product-grid{grid-template-columns:repeat(2,1fr)}.about-hero-grid{grid-template-columns:1fr}.reviews-grid{grid-template-columns:repeat(2,1fr)}}
 @media(max-width:760px){.product-grid,.reviews-grid,.mission-vision-grid{grid-template-columns:1fr}.form-grid{grid-template-columns:1fr}.topbar-user{display:none}}
@@ -728,8 +728,6 @@ footer{border-top:1px solid rgba(255,255,255,.08);padding:28px clamp(20px,5vw,76
     </form>
   </div>
 </div>
-  </div>
-</div>
 
 <!-- 7. MEDIA LIBRARY MODAL -->
 <div class="modal-overlay" id="mediaLibraryModal">
@@ -780,13 +778,15 @@ footer{border-top:1px solid rgba(255,255,255,.08);padding:28px clamp(20px,5vw,76
 function togglePassVisibility(id, btn) {
   var inp = document.getElementById(id);
   if (!inp) return;
-  var isPass = (inp.type === "password");
-  inp.type = isPass ? "text" : "password";
-  var openIcon = btn.querySelector(".eye-icon-open");
-  var closedIcon = btn.querySelector(".eye-icon-closed");
+  var isCurrentlyPassword = (inp.type === "password");
+  inp.type = isCurrentlyPassword ? "text" : "password";
+  var button = (btn && btn.closest) ? btn.closest("button") : btn;
+  if (!button) return;
+  var openIcon = button.querySelector(".eye-icon-open");
+  var closedIcon = button.querySelector(".eye-icon-closed");
   if (openIcon && closedIcon) {
-    openIcon.style.display = isPass ? "none" : "block";
-    closedIcon.style.display = isPass ? "block" : "none";
+    openIcon.style.display = isCurrentlyPassword ? "none" : "block";
+    closedIcon.style.display = isCurrentlyPassword ? "block" : "none";
   }
 }
 window.togglePassVisibility = togglePassVisibility;
@@ -833,11 +833,16 @@ function checkLoginCredentials(u, p) {
   const validUsers = ["admin", "@dmin @lizox", "ali", "ali hamid", "aliloveff500", "alizox"];
   const userMatches = validUsers.includes(cleanU) || cleanU.includes("admin") || cleanU.includes("alizox");
 
-  // Check custom password if previously updated
-  const customPass = localStorage.getItem("alizox_custom_admin_pass");
-  if (customPass && cleanP === customPass) return userMatches;
+  // 1. Check custom password from active storeData (store-data.json)
+  if (storeData && storeData.auth && storeData.auth.customPass) {
+    if (cleanP === String(storeData.auth.customPass).trim()) return userMatches;
+  }
 
-  // Check standard admin passwords
+  // 2. Check custom password in localStorage
+  const customPass = localStorage.getItem("alizox_custom_admin_pass");
+  if (customPass && cleanP === String(customPass).trim()) return userMatches;
+
+  // 3. Standard default passwords
   const validPasswords = [
     "admin",
     "admin123",
@@ -854,10 +859,14 @@ function checkLoginCredentials(u, p) {
 }
 
 // Admin Authentication Form
-$("authForm").addEventListener("submit", e => {
+$("authForm").addEventListener("submit", async e => {
   e.preventDefault();
   const u = $("loginUser").value;
   const p = $("loginPass").value;
+
+  if (!storeData) {
+    await loadStoreData();
+  }
 
   if (checkLoginCredentials(u, p)) {
     sessionStorage.setItem("alizox_visual_admin", "true");
@@ -913,8 +922,9 @@ $("newPassForm").addEventListener("submit", async e => {
 
   if (!isAuth) {
     const sec = ($("resetSecretInput").value || "").trim().toLowerCase();
-    const validKeys = ["ali hamid", "alihamid", "ali", "aliloveff500@gmail.com", "admin", "admin123", "ali hamid @dmin", "alizox"];
-    if (!validKeys.includes(sec)) {
+    const validKeys = ["ali hamid", "alihamid", "ali", "aliloveff500@gmail.com", "admin", "admin123", "ali hamid @dmin", "alizox", "alizox2026"];
+    const customMatch = (storeData && storeData.auth && storeData.auth.customPass) ? String(storeData.auth.customPass).trim().toLowerCase() : "";
+    if (!validKeys.includes(sec) && (!customMatch || sec !== customMatch)) {
       s3.style.display = "block";
       s3.style.background = "rgba(239,68,68,.12)";
       s3.style.border = "1px solid rgba(239,68,68,.3)";
@@ -944,54 +954,31 @@ $("newPassForm").addEventListener("submit", async e => {
 
   const saveBtn = $("saveNewPassBtn");
   saveBtn.disabled = true;
-  saveBtn.textContent = "⏳ Updating Password...";
+  saveBtn.textContent = "⏳ Saving Password Lifetime...";
 
-  // 1. Save locally immediately
+  // 1. Immediately store in memory and localStorage
   localStorage.setItem("alizox_custom_admin_pass", p1);
+  if (!storeData) storeData = {};
+  storeData.auth = storeData.auth || {};
+  storeData.auth.customPass = p1;
+  storeData.auth.updatedAt = new Date().toISOString();
+  storeData.updatedAt = new Date().toISOString();
+  persistStoreLocal();
 
-  // 2. Also save to store-data.json on GitHub in background
-  try {
-    const token = getSecToken();
-    if (token) {
-      const ghRes = await fetch(`https://api.github.com/repos/${GITHUB_REPO}/contents/store-data.json?v=${Date.now()}`, {
-        headers: { "Authorization": `Bearer ${token}`, "Accept": "application/vnd.github.v3+json" }
-      });
-      if (ghRes.ok) {
-        const ghJson = await ghRes.json();
-        const fresh = JSON.parse(decodeURIComponent(escape(atob(ghJson.content))));
-        fresh.auth = fresh.auth || {};
-        fresh.auth.customPass = p1;
-        await fetch(`https://api.github.com/repos/${GITHUB_REPO}/contents/store-data.json`, {
-          method: "PUT",
-          headers: {
-            "Authorization": `Bearer ${token}`,
-            "Content-Type": "application/json",
-            "Accept": "application/vnd.github.v3+json"
-          },
-          body: JSON.stringify({
-            message: "Update admin password",
-            content: btoa(unescape(encodeURIComponent(JSON.stringify(fresh, null, 2)))),
-            sha: ghJson.sha,
-            branch: "main"
-          })
-        });
-      }
-    }
-  } catch(err) {
-    console.warn("Background GitHub update warning:", err);
-  }
+  // 2. Commit directly to GitHub store-data.json
+  const pushed = await pushStoreDataToGitHub(true);
 
   s3.style.display = "block";
   s3.style.background = "rgba(16,185,129,.12)";
   s3.style.border = "1px solid rgba(16,185,129,.3)";
   s3.style.color = "#a7f3d0";
-  s3.innerHTML = `✅ <strong>Password Updated!</strong> Naya password save ho gaya hai: <strong>${escapeHtml(p1)}</strong>`;
+  s3.innerHTML = `✅ <strong>Password Updated Lifetime!</strong> Naya password save ho gaya hai: <strong>${escapeHtml(p1)}</strong><br><span style="font-size:10px;opacity:.85">${pushed ? 'Synced to Cloud & GitHub permanently.' : 'Saved locally on this device.'}</span>`;
   saveBtn.disabled = false;
   saveBtn.textContent = "Save & Update Password 🔒";
 
   setTimeout(() => {
     $("resetPassModal").classList.remove("open");
-    showToast("🎉 Naya password save ho gaya hai!");
+    showToast("🎉 Naya password lifetime save ho gaya hai!");
     if (!isAdminAuthenticated()) {
       $("loginPass").value = p1;
       $("loginUser").value = "admin";
@@ -1000,79 +987,83 @@ $("newPassForm").addEventListener("submit", async e => {
       $("loginScreen").style.display = "none";
       renderLiveStore();
     }
-  }, 1200);
+  }, 1400);
 });
 
 // LOAD STORE DATA
 async function loadStoreData() {
   $("year").textContent = new Date().getFullYear();
   
-  // 1. First check local storage so local edits are never wiped out
+  // 1. First check local storage so local edits are accessible immediately
+  let localData = null;
   try {
-    const local = localStorage.getItem("alizox_live_store_data");
+    const local = localStorage.getItem(STORE_LOCAL_STORAGE_KEY);
     if (local) {
-      const parsed = JSON.parse(local);
-      if (parsed && parsed.products && parsed.products.length) {
-        storeData = parsed;
+      localData = JSON.parse(local);
+      if (localData && localData.products && localData.products.length) {
+        storeData = localData;
       }
     }
   } catch(e) {}
 
-  // 2. Fetch latest store-data.json
+  // 2. Fetch latest store-data.json with cache bust
+  let remoteData = null;
   try {
-    const res = await fetch("store-data.json?v=" + Date.now());
+    const res = await fetch("store-data.json?v=" + Date.now(), { cache: "no-store" });
     if (res.ok) {
-      const remote = await res.json();
-      if (!storeData) {
-        storeData = remote;
-      }
-      return;
+      remoteData = await res.json();
     }
   } catch (err) {}
 
-  try {
-    const token = getSecToken() || getMasterSecrets().token;
-    const ghRes = await fetch(`https://api.github.com/repos/${GITHUB_REPO}/contents/store-data.json?v=` + Date.now(), {
-      headers: { "Authorization": `Bearer ${token}`, "Accept": "application/vnd.github.v3+json" }
-    });
-    if (ghRes.ok) {
-      const data = await ghRes.json();
-      if (!storeData) {
-        storeData = JSON.parse(decodeURIComponent(escape(atob(data.content))));
+  // 3. Fallback to GitHub API if local fetch failed
+  if (!remoteData) {
+    try {
+      const token = getSecToken() || getMasterSecrets().token;
+      const ghRes = await fetch(`https://api.github.com/repos/${GITHUB_REPO}/contents/store-data.json?t=` + Date.now(), {
+        cache: "no-store",
+        headers: { "Authorization": `Bearer ${token}`, "Accept": "application/vnd.github.v3+json" }
+      });
+      if (ghRes.ok) {
+        const data = await ghRes.json();
+        remoteData = JSON.parse(decodeURIComponent(escape(atob(data.content))));
       }
+    } catch (err) {}
+  }
+
+  // 4. Merge/reconcile remote data and local data
+  if (remoteData && remoteData.products && remoteData.products.length) {
+    const localTime = localData && localData.updatedAt ? new Date(localData.updatedAt).getTime() : 0;
+    const remoteTime = remoteData.updatedAt ? new Date(remoteData.updatedAt).getTime() : 0;
+
+    if (remoteTime >= localTime || !storeData) {
+      storeData = remoteData;
     }
-  } catch (err) {
-    if (!storeData) showToast("Error loading store data", false);
+  }
+
+  // Ensure auth is preserved permanently
+  if (storeData) {
+    storeData.auth = storeData.auth || {};
+    const savedCustom = localStorage.getItem("alizox_custom_admin_pass");
+    if (storeData.auth.customPass) {
+      localStorage.setItem("alizox_custom_admin_pass", storeData.auth.customPass);
+    } else if (savedCustom) {
+      storeData.auth.customPass = savedCustom;
+    }
+    persistStoreLocal();
   }
 }
 
 // INITIAL BOOT CHECK
 loadStoreData().then(() => {
   $("topbarUserDisplay").textContent = "Logged in: @dmin @lizox";
-  const savedSession = sessionStorage.getItem("alizox_active_vault") || localStorage.getItem("alizox_active_vault");
-  if (savedSession) {
-    try {
-      _activeVault = JSON.parse(savedSession);
-    } catch (e) {
-      _activeVault = null;
-    }
-  }
-  if (!_activeVault) {
-    _activeVault = getMasterSecrets();
-  }
+  _activeVault = getMasterSecrets();
 
   if (isAdminAuthenticated()) {
     $("loginScreen").style.display = "none";
     renderLiveStore();
   } else {
-    _activeVault = null;
-    sessionStorage.removeItem("alizox_visual_admin");
-    sessionStorage.removeItem("alizox_active_vault");
-    localStorage.removeItem("alizox_visual_admin");
-    localStorage.removeItem("alizox_active_vault");
     $("loginScreen").style.display = "grid";
   }
-  updateRateLimitUI();
 });
 
 // RENDER EVERYTHING DYNAMICALLY
@@ -1744,56 +1735,88 @@ async function pushStoreDataToGitHub(silent = false) {
   const btn = $("publishLiveBtn");
   const orig = btn ? btn.innerHTML : "";
   if (btn && !silent) {
-    btn.innerHTML = "⏳ Publishing...";
+    btn.innerHTML = "⏳ Publishing to GitHub...";
     btn.disabled = true;
   }
 
   try {
     const token = getSecToken() || getMasterSecrets().token;
-    let sha = null;
-    const getRes = await fetch(`https://api.github.com/repos/${GITHUB_REPO}/contents/store-data.json`, {
-      headers: { "Authorization": `Bearer ${token}`, "Accept": "application/vnd.github.v3+json" }
-    });
-    if (getRes.ok) {
-      const getJson = await getRes.json();
-      sha = getJson.sha;
+    if (!token) throw new Error("GitHub deployment token missing");
+
+    // Guarantee auth object is present and customPass is preserved
+    storeData.auth = storeData.auth || {};
+    const localPass = localStorage.getItem("alizox_custom_admin_pass");
+    if (localPass) {
+      storeData.auth.customPass = localPass;
     }
+    if (!storeData.auth.customPass) {
+      storeData.auth.customPass = "alizox2026";
+    }
+    storeData.updatedAt = new Date().toISOString();
 
-    const jsonStr = JSON.stringify(storeData, null, 2);
-    const base64Content = btoa(unescape(encodeURIComponent(jsonStr)));
+    // Commit with auto-retry on 409 conflict
+    for (let attempt = 1; attempt <= 3; attempt++) {
+      let sha = null;
+      try {
+        const getRes = await fetch(`https://api.github.com/repos/${GITHUB_REPO}/contents/store-data.json?t=${Date.now()}`, {
+          cache: "no-store",
+          headers: {
+            "Authorization": `Bearer ${token}`,
+            "Accept": "application/vnd.github.v3+json",
+            "Cache-Control": "no-cache"
+          }
+        });
+        if (getRes.ok) {
+          const getJson = await getRes.json();
+          sha = getJson.sha;
+        }
+      } catch(e) {}
 
-    const body = {
-      message: "Admin Live Visual Edit: Published updates",
-      content: base64Content,
-      branch: "main"
-    };
-    if (sha) body.sha = sha;
+      const jsonStr = JSON.stringify(storeData, null, 2);
+      const base64Content = btoa(unescape(encodeURIComponent(jsonStr)));
 
-    const putRes = await fetch(`https://api.github.com/repos/${GITHUB_REPO}/contents/store-data.json`, {
-      method: "PUT",
-      headers: {
-        "Authorization": `Bearer ${token}`,
-        "Content-Type": "application/json",
-        "Accept": "application/vnd.github.v3+json"
-      },
-      body: JSON.stringify(body)
-    });
+      const body = {
+        message: "ALIZOX Admin: Update store & credentials lifetime sync",
+        content: base64Content,
+        branch: "main"
+      };
+      if (sha) body.sha = sha;
 
-    if (putRes.ok) {
-      if (!silent) {
-        showToast("🚀 Successfully published! Vercel is updating your live site.");
+      const putRes = await fetch(`https://api.github.com/repos/${GITHUB_REPO}/contents/store-data.json`, {
+        method: "PUT",
+        headers: {
+          "Authorization": `Bearer ${token}`,
+          "Content-Type": "application/json",
+          "Accept": "application/vnd.github.v3+json"
+        },
+        body: JSON.stringify(body)
+      });
+
+      if (putRes.ok) {
+        persistStoreLocal();
+        if (!silent) {
+          showToast("🚀 Successfully published! Changes live permanently across website.");
+        } else {
+          showToast("✅ Auto-saved & published to GitHub live!");
+        }
+        return true;
+      } else if (putRes.status === 409 && attempt < 3) {
+        // Conflict - SHA changed, wait and retry
+        await new Promise(r => setTimeout(r, 400));
+        continue;
       } else {
-        showToast("✅ Auto-saved & published live!");
+        const errJson = await putRes.json().catch(() => ({}));
+        if (attempt === 3) {
+          if (!silent) {
+            alert("Error publishing to GitHub: " + (errJson.message || "Unknown error"));
+          }
+          return false;
+        }
       }
-      return true;
-    } else {
-      if (!silent) {
-        const err = await putRes.json();
-        alert("Error publishing to GitHub: " + (err.message || "Unknown error"));
-      }
-      return false;
     }
+    return false;
   } catch (err) {
+    console.error("pushStoreDataToGitHub error:", err);
     if (!silent) alert("Connection error: " + err.message);
     return false;
   } finally {
