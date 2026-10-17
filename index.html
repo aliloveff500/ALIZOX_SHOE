@@ -689,29 +689,23 @@ setTimeout(hidePreloader, 2600);
 
 const products = [
  {id:1,name:"PULSE",sub:"SHIFT",tag:"New season / 01",description:"A bold everyday silhouette with a futuristic edge. Built for your own lane.",price:8499,category:"Men",type:"Streetwear",theme:["#c026d3","#581c87","rgba(192,38,211,.45)"],colors:[
-  {name:"Voltage Purple",hex:"#b62dff",image:"images/shoe-purple.png"},
-  {name:"Solar Red",hex:"#ff453a",image:"images/shoe-red.png"},
-  {name:"Ice Blue",hex:"#58c8ff",image:"images/shoe-blue.png"}
- ]},
- {id:2,name:"NOVA",sub:"RUSH",tag:"Energy line / 02",description:"A clean, athletic profile with high-contrast color and a street-ready attitude.",price:9299,category:"Men",type:"Streetwear",theme:["#e11d48","#881337","rgba(225,29,72,.45)"],colors:[
-  {name:"Solar Red",hex:"#ff4b35",image:"images/shoe-red.png"},
-  {name:"Volt Yellow",hex:"#ffd447",image:"images/shoe-yellow.png"},
-  {name:"Blackout",hex:"#1f242d",image:"images/shoe-black.png"}
- ]},
- {id:3,name:"AERO",sub:"FLOW",tag:"Motion series / 03",description:"Light-looking lines and a versatile shape made for everyday movement and effortless fits.",price:7999,category:"Women",type:"Streetwear",theme:["#0284c7","#1e3a8a","rgba(2,132,199,.45)"],colors:[
-  {name:"Ice Blue",hex:"#5bd5ff",image:"images/shoe-blue.png"},
-  {name:"Cloud White",hex:"#e9e9f0",image:"images/shoe-white.png"},
   {name:"Voltage Purple",hex:"#b62dff",image:"images/shoe-purple.png"}
  ]},
+ {id:2,name:"NOVA",sub:"RUSH",tag:"Energy line / 02",description:"A clean, athletic profile with high-contrast color and a street-ready attitude.",price:9299,category:"Men",type:"Streetwear",theme:["#e11d48","#881337","rgba(225,29,72,.45)"],colors:[
+  {name:"Solar Red",hex:"#ff453a",image:"images/shoe-red.png"}
+ ]},
+ {id:3,name:"AERO",sub:"FLOW",tag:"Motion series / 03",description:"Light-looking lines and a versatile shape made for everyday movement and effortless fits.",price:7999,category:"Women",type:"Streetwear",theme:["#0284c7","#1e3a8a","rgba(2,132,199,.45)"],colors:[
+  {name:"Ice Blue",hex:"#58c8ff",image:"images/shoe-blue.png"}
+ ]},
  {id:4,name:"ECLIPSE",sub:"CORE",tag:"Core collection / 04",description:"Understated from a distance, impossible to ignore up close. Your daily rotation, redefined.",price:6899,category:"Women",type:"Streetwear",theme:["#059669","#064e3b","rgba(5,150,105,.45)"],colors:[
-  {name:"Emerald Night",hex:"#10b981",image:"images/shoe-green.png"},
-  {name:"Blackout",hex:"#1f242d",image:"images/shoe-black.png"},
-  {name:"Cloud White",hex:"#f3f3f5",image:"images/shoe-white.png"}
+  {name:"Emerald Night",hex:"#10b981",image:"images/shoe-green.png"}
  ]}
 ];
 let current=0, colorIndex=0, animating=false, currentFilter="All";
 const $=id=>document.getElementById(id);
 const formatPrice=n=>"PKR "+n.toLocaleString("en-PK");
+const escHtml=s=>String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+
 function applyTheme(p){
   const glow = (p.theme && p.theme[2]) ? p.theme[2] : "rgba(192,38,211,.45)";
   document.documentElement.style.setProperty("--accent", p.theme[0]);
@@ -722,11 +716,166 @@ function applyTheme(p){
     amb.style.background = `radial-gradient(ellipse at 20% 20%, ${glow}, transparent 50%), radial-gradient(ellipse at 85% 78%, ${p.theme[1]}, transparent 44%), #050508`;
   }
 }
-function renderDots(){ $("dots").innerHTML=products.map((p,i)=>`<button class="dot ${i===current?"active":""}" data-index="${i}" aria-label="Go to product ${i+1}"></button>`).join("");document.querySelectorAll(".dot").forEach(b=>b.addEventListener("click",()=>goTo(+b.dataset.index)));$("slideCount").textContent=`0${current+1} / 0${products.length}`;}
-function renderSwatches(p){$("swatches").innerHTML=p.colors.map((c,i)=>`<button class="swatch ${i===colorIndex?"selected":""}" data-color="${i}" title="${c.name}" aria-label="${c.name}" style="background:${c.hex}"></button>`).join("");document.querySelectorAll(".swatch").forEach(b=>b.addEventListener("click",()=>selectColor(+b.dataset.color)));}
-function paintProduct(){const p=products[current],c=p.colors[colorIndex];applyTheme(p);$("eyebrow").textContent=p.tag;$("productName").innerHTML=`${p.name} <span>${p.sub}</span>`;$("productDescription").textContent=p.description;$("price").textContent=formatPrice(p.price);$("colorName").textContent=c.name;$("shoeImage").src=c.image;$("shoeImage").alt=`ALIZOX ${p.name} ${p.sub} sneaker in ${c.name}`;renderSwatches(p);renderDots();}
-function goTo(index){if(animating||index===current)return;animating=true;const img=$("shoeImage");img.classList.add("exit");$("price").classList.add("changing");setTimeout(()=>{current=(index+products.length)%products.length;colorIndex=0;const p=products[current];applyTheme(p);$("eyebrow").textContent=p.tag;$("productName").innerHTML=`${p.name} <span>${p.sub}</span>`;$("productDescription").textContent=p.description;$("price").textContent=formatPrice(p.price);$("colorName").textContent=p.colors[0].name;img.src=p.colors[0].image;img.alt=`ALIZOX ${p.name} sneaker`;img.classList.remove("exit");img.classList.add("enter");renderSwatches(p);renderDots();requestAnimationFrame(()=>requestAnimationFrame(()=>{img.classList.remove("enter");$("price").classList.remove("changing");setTimeout(()=>animating=false,400)}));},240);}
-function selectColor(index){if(index===colorIndex)return;colorIndex=index;const p=products[current],c=p.colors[index],img=$("shoeImage");img.classList.add("exit");setTimeout(()=>{img.src=c.image;$("colorName").textContent=c.name;applyTheme({...p,theme:themeFromHex(c.hex,p.theme)});renderSwatches(p);img.classList.remove("exit");img.classList.add("enter");requestAnimationFrame(()=>requestAnimationFrame(()=>img.classList.remove("enter")));},180);}
+
+function getAvailableColorways(){
+  const list = [];
+  products.forEach((p, pIdx) => {
+    if(Array.isArray(p.colors) && p.colors.length > 0){
+      p.colors.forEach((c, cIdx) => {
+        list.push({
+          productIndex: pIdx,
+          colorIndex: cIdx,
+          name: c.name || "Default",
+          hex: c.hex || (p.theme && p.theme[0]) || "#b62dff",
+          image: c.image || "",
+          product: p
+        });
+      });
+    } else {
+      list.push({
+        productIndex: pIdx,
+        colorIndex: 0,
+        name: p.name,
+        hex: (p.theme && p.theme[0]) || "#b62dff",
+        image: "",
+        product: p
+      });
+    }
+  });
+  return list;
+}
+
+function renderDots(){
+  $("dots").innerHTML=products.map((p,i)=>`<button class="dot ${i===current?"active":""}" data-index="${i}" aria-label="Go to product ${i+1}"></button>`).join("");
+  document.querySelectorAll(".dot").forEach(b=>b.addEventListener("click",()=>goTo(+b.dataset.index)));
+  $("slideCount").textContent=`0${current+1} / 0${products.length}`;
+}
+
+function renderSwatches(){
+  const swatchesEl = $("swatches");
+  if(!swatchesEl) return;
+  const colorways = getAvailableColorways();
+  swatchesEl.innerHTML = colorways.map((cw, i) => {
+    const isSelected = (cw.productIndex === current && cw.colorIndex === colorIndex);
+    return `<button class="swatch ${isSelected ? 'selected' : ''}" data-cw-idx="${i}" title="${escHtml(cw.name)} · ${escHtml(cw.product.name)} ${escHtml(cw.product.sub || '')}" aria-label="${escHtml(cw.name)}" style="background:${cw.hex}"></button>`;
+  }).join("");
+
+  swatchesEl.querySelectorAll(".swatch").forEach(btn => {
+    btn.addEventListener("click", () => {
+      const idx = Number(btn.dataset.cwIdx);
+      const cw = colorways[idx];
+      if(!cw) return;
+      selectAvailableColorway(cw);
+    });
+  });
+}
+
+function selectAvailableColorway(cw){
+  if(animating) return;
+  if(cw.productIndex === current && cw.colorIndex === colorIndex) return;
+
+  const targetProduct = cw.product;
+  const targetColor = cw;
+  const img = $("shoeImage");
+
+  if(cw.productIndex !== current){
+    animating = true;
+    img.classList.add("exit");
+    $("price").classList.add("changing");
+
+    setTimeout(() => {
+      current = cw.productIndex;
+      colorIndex = cw.colorIndex;
+      applyTheme(targetProduct);
+      $("eyebrow").textContent = targetProduct.tag;
+      $("productName").innerHTML = `${targetProduct.name} <span>${targetProduct.sub}</span>`;
+      $("productDescription").textContent = targetProduct.description;
+      $("price").textContent = formatPrice(targetProduct.price);
+      $("colorName").textContent = targetColor.name;
+      img.src = targetColor.image;
+      img.alt = `ALIZOX ${targetProduct.name} ${targetProduct.sub} sneaker in ${targetColor.name}`;
+      img.classList.remove("exit");
+      img.classList.add("enter");
+      renderSwatches();
+      renderDots();
+      requestAnimationFrame(() => requestAnimationFrame(() => {
+        img.classList.remove("enter");
+        $("price").classList.remove("changing");
+        setTimeout(() => animating = false, 400);
+      }));
+    }, 240);
+  } else {
+    animating = true;
+    colorIndex = cw.colorIndex;
+    img.classList.add("exit");
+    setTimeout(() => {
+      img.src = targetColor.image;
+      $("colorName").textContent = targetColor.name;
+      applyTheme({ ...targetProduct, theme: themeFromHex(targetColor.hex, targetProduct.theme) });
+      renderSwatches();
+      img.classList.remove("exit");
+      img.classList.add("enter");
+      requestAnimationFrame(() => requestAnimationFrame(() => {
+        img.classList.remove("enter");
+        setTimeout(() => animating = false, 300);
+      }));
+    }, 180);
+  }
+}
+
+function paintProduct(){
+  if(!products.length) return;
+  current = Math.min(current, products.length - 1);
+  const p = products[current];
+  const c = (p.colors && p.colors[colorIndex]) || (p.colors && p.colors[0]) || { name: "Default", hex: "#b62dff", image: "images/shoe-purple.png" };
+  applyTheme(p);
+  $("eyebrow").textContent = p.tag;
+  $("productName").innerHTML = `${p.name} <span>${p.sub}</span>`;
+  $("productDescription").textContent = p.description;
+  $("price").textContent = formatPrice(p.price);
+  $("colorName").textContent = c.name;
+  $("shoeImage").src = c.image;
+  $("shoeImage").alt = `ALIZOX ${p.name} ${p.sub} sneaker in ${c.name}`;
+  renderSwatches();
+  renderDots();
+}
+
+function goTo(index){
+  if(animating || index === current) return;
+  animating = true;
+  const img = $("shoeImage");
+  img.classList.add("exit");
+  $("price").classList.add("changing");
+  setTimeout(() => {
+    current = (index + products.length) % products.length;
+    colorIndex = 0;
+    const p = products[current];
+    const c = (p.colors && p.colors[0]) || { name: "Default", hex: "#b62dff", image: "" };
+    applyTheme(p);
+    $("eyebrow").textContent = p.tag;
+    $("productName").innerHTML = `${p.name} <span>${p.sub}</span>`;
+    $("productDescription").textContent = p.description;
+    $("price").textContent = formatPrice(p.price);
+    $("colorName").textContent = c.name;
+    img.src = c.image;
+    img.alt = `ALIZOX ${p.name} ${p.sub} sneaker in ${c.name}`;
+    img.classList.remove("exit");
+    img.classList.add("enter");
+    renderSwatches();
+    renderDots();
+    requestAnimationFrame(() => requestAnimationFrame(() => {
+      img.classList.remove("enter");
+      $("price").classList.remove("changing");
+      setTimeout(() => animating = false, 400);
+    }));
+  }, 240);
+}
+
+function selectColor(index){
+  const colorways = getAvailableColorways();
+  if(colorways[index]) selectAvailableColorway(colorways[index]);
+}
+
 function themeFromHex(hex,fallback){const map={"#ff453a":["#e11d48","#881337","rgba(225,29,72,.45)"],"#ff4b35":["#e11d48","#881337","rgba(225,29,72,.45)"],"#ffd447":["#f59e0b","#78350f","rgba(245,158,11,.45)"],"#58c8ff":["#0284c7","#1e3a8a","rgba(2,132,199,.45)"],"#5bd5ff":["#0284c7","#1e3a8a","rgba(2,132,199,.45)"],"#e9e9f0":["#94a3b8","#1e293b","rgba(148,163,184,.35)"],"#f3f3f5":["#94a3b8","#1e293b","rgba(148,163,184,.35)"],"#10b981":["#059669","#064e3b","rgba(5,150,105,.45)"],"#28c997":["#059669","#064e3b","rgba(5,150,105,.45)"],"#1f242d":["#374151","#111827","rgba(75,85,99,.45)"],"#5b5b66":["#374151","#111827","rgba(75,85,99,.45)"],"#b62dff":["#c026d3","#581c87","rgba(192,38,211,.45)"]};return map[hex]||fallback;}
 let STORE_CONFIG = {
   brand: {
@@ -744,7 +893,7 @@ function getBrandName(){
   const n = (STORE_CONFIG.brand && STORE_CONFIG.brand.name) || "ALIZOX";
   return escapeHtml(n);
 }
-function whatsappLink(){const p=products[current],c=p.colors[colorIndex],size=$("sizeSelect").value,quantity=Number($("quantityValue").textContent)||1;const message=`Assalam-o-Alaikum! I want to order this shoe from ${getBrandName()}.\n\nProduct: ${p.name} ${p.sub}\nColor: ${c.name}\nSize: ${size}\nQuantity: ${quantity}\nUnit price: ${formatPrice(p.price)}\nTotal: ${formatPrice(p.price*quantity)}\n\nPlease provide the ordering details.`;return `https://wa.me/${getWhatsAppNumber()}?text=${encodeURIComponent(message)}`;}
+function whatsappLink(){const p=products[current],c=(p.colors&&p.colors[colorIndex])||(p.colors&&p.colors[0])||{name:"Default"},size=$("sizeSelect").value,quantity=Number($("quantityValue").textContent)||1;const message=`Assalam-o-Alaikum! I want to order this shoe from ${getBrandName()}.\n\nProduct: ${p.name} ${p.sub}\nColor: ${c.name}\nSize: ${size}\nQuantity: ${quantity}\nUnit price: ${formatPrice(p.price)}\nTotal: ${formatPrice(p.price*quantity)}\n\nPlease provide the ordering details.`;return `https://wa.me/${getWhatsAppNumber()}?text=${encodeURIComponent(message)}`;}
 $("buyBtn").addEventListener("click",()=>window.open(whatsappLink(),"_blank","noopener,noreferrer"));let quantity=1;function updateQuantity(next){quantity=Math.max(1,Math.min(20,next));$("quantityValue").textContent=String(quantity); }$("qtyMinus").addEventListener("click",()=>updateQuantity(quantity-1));$("qtyPlus").addEventListener("click",()=>updateQuantity(quantity+1));
 $("nextBtn").addEventListener("click",()=>goTo(current+1));$("prevBtn").addEventListener("click",()=>goTo(current-1));
 $("year").textContent=new Date().getFullYear();
@@ -790,7 +939,7 @@ function safeImgUrl(url){
   if(trimmed.startsWith("https://") || trimmed.startsWith("images/") || trimmed.startsWith("data:image/")) return trimmed;
   return "https://images.unsplash.com/photo-1542291026-7eec264c27ff?auto=format&fit=crop&w=1200&q=90";
 }
-function addCurrentToCart(){const p=products[current],c=p.colors[colorIndex],size=$("sizeSelect").value,qty=Number($("quantityValue").textContent)||1;const found=cart.find(x=>x.productId===p.id&&x.color===c.name&&x.size===size);if(found)found.quantity=Math.min(20,found.quantity+qty);else cart.push({productId:p.id,name:`${p.name} ${p.sub}`,color:c.name,size,price:p.price,quantity:qty,image:c.image});saveCart();showToast("Added to your cart");}
+function addCurrentToCart(){const p=products[current],c=(p.colors&&p.colors[colorIndex])||(p.colors&&p.colors[0])||{name:"Default",image:""},size=$("sizeSelect").value,qty=Number($("quantityValue").textContent)||1;const found=cart.find(x=>x.productId===p.id&&x.color===c.name&&x.size===size);if(found)found.quantity=Math.min(20,found.quantity+qty);else cart.push({productId:p.id,name:`${p.name} ${p.sub}`,color:c.name,size,price:p.price,quantity:qty,image:c.image});saveCart();showToast("Added to your cart");}
 $("addToCartBtn").addEventListener("click",addCurrentToCart);$("cartBtn").addEventListener("click",openCart);$("closeCart").addEventListener("click",closeCart);$("drawerBackdrop").addEventListener("click",closeCart);document.addEventListener("keydown",e=>{if(e.key==="Escape")closeCart();});
 $("cartItems").addEventListener("click",e=>{const b=e.target.closest("button[data-cart-action]");if(!b)return;const i=Number(b.dataset.i);if(!cart[i])return;const action=b.dataset.cartAction;if(action==="minus")cart[i].quantity=Math.max(1,cart[i].quantity-1);if(action==="plus")cart[i].quantity=Math.min(20,cart[i].quantity+1);if(action==="remove")cart.splice(i,1);saveCart();});
 $("checkoutForm").addEventListener("submit",e=>{e.preventDefault();if(!cart.length){showToast("Your cart is empty");return;}const fd=new FormData(e.currentTarget);const items=cart.map(x=>`• ${x.name} | Color: ${x.color} | UK ${x.size} | Qty: ${x.quantity} | ${formatPrice(x.price*x.quantity)}`).join("\n");const total=cart.reduce((n,x)=>n+x.price*x.quantity,0);const msg=`Assalam-o-Alaikum! I would like to place an ${getBrandName()} order.\n\nCustomer: ${fd.get("customerName")}\nPhone: ${fd.get("phone")}\nAddress: ${fd.get("address")}\nCity: ${fd.get("city")}\nPayment preference: ${fd.get("payment")}\n\nORDER ITEMS\n${items}\n\nSubtotal: ${formatPrice(total)}\nNotes: ${fd.get("notes")||"None"}\n\nPlease confirm availability, delivery charges, and payment instructions.`;window.open(`https://wa.me/${getWhatsAppNumber()}?text=${encodeURIComponent(msg)}`,"_blank","noopener,noreferrer");});
