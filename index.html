@@ -1130,19 +1130,83 @@ function renderReviews(serverReviews = null){
 function applyStorePayload(data){
   if(!data) return;
   STORE_CONFIG = data;
+
+  const brandName = (data.brand && data.brand.name) ? data.brand.name.trim() : "ALIZOX";
+  const brandInitial = brandName.charAt(0).toUpperCase();
+  const tagline = (data.brand && data.brand.tagline) || "Move Different";
+  const slogan = (data.brand && data.brand.slogan) || "Step Into Your Style";
+
   if(data.brand && data.brand.whatsappNumber){
     document.querySelectorAll('a[href*="wa.me"]').forEach(a => {
       a.href = `https://wa.me/${data.brand.whatsappNumber}`;
     });
   }
-  if(data.brand && data.brand.name){
-    document.querySelectorAll(".brand").forEach(b => {
-      b.innerHTML = `<span class="brand-mark">A</span>` + escapeHtml(data.brand.name);
-    });
-    const gw = document.querySelector(".ghost-word");
-    if(gw) gw.textContent = data.brand.name;
-    document.title = `${data.brand.name} — ${data.brand.tagline || 'Move Different'}`;
+
+  // 1. All brand titles and monogram marks
+  document.querySelectorAll(".brand").forEach(b => {
+    b.innerHTML = `<span class="brand-mark">${escapeHtml(brandInitial)}</span>` + escapeHtml(brandName);
+  });
+  document.querySelectorAll(".brand-mark").forEach(bm => {
+    bm.textContent = brandInitial;
+  });
+
+  // 2. Preloader logo & tagline
+  const preBrand = document.querySelector(".preloader-brand");
+  if(preBrand) preBrand.textContent = brandName;
+  const preTag = document.querySelector(".preloader-tagline");
+  if(preTag) preTag.textContent = `${tagline.toUpperCase()} · ${slogan.toUpperCase()}`;
+
+  // 3. Hero & Page Title
+  const gw = document.querySelector(".ghost-word");
+  if(gw) gw.textContent = brandName;
+  const hTag = document.querySelector(".hero-top .mini-label");
+  if(hTag) hTag.textContent = `${brandName} / ${tagline}`;
+  const pLabel = document.querySelector(".price-label");
+  if(pLabel) pLabel.textContent = `${brandName} price`;
+  document.title = `${brandName} — ${tagline} | Premium Futuristic Streetwear Sneakers`;
+
+  // 4. Cart Drawer
+  const cartHead = document.querySelector(".drawer-head h2");
+  if(cartHead) cartHead.textContent = `Your ${brandName} Cart`;
+
+  // 5. Search Panel
+  const sInput = document.getElementById("searchInput");
+  if(sInput) sInput.placeholder = `Search ${brandName} shoes, colors, or collection…`;
+
+  // 6. Review Modal Collection Option
+  const revOpt = document.querySelector("#reviewShoe option[value*='Signature']");
+  if(revOpt) {
+    revOpt.value = `${brandName} Signature`;
+    revOpt.textContent = `${brandName} Signature Collection`;
   }
+
+  // 7. About Us Section Headings & Badges
+  const aboutHead = document.querySelector(".about-section .section-head h2");
+  if(aboutHead) aboutHead.innerHTML = `ABOUT US — ${escapeHtml(brandName.toUpperCase())}<span style="color:var(--accent)">.</span>`;
+  const fRole = document.querySelector(".founder-meta p");
+  if(fRole) fRole.textContent = (data.about && data.about.founderRole) ? data.about.founderRole.replace(/\bALIZOX\b/gi, brandName) : `Founder of ${brandName}`;
+  const whyHead = document.querySelector(".why-section-title h3");
+  if(whyHead) whyHead.textContent = `Why ${brandName}?`;
+  const whyCommunity = document.querySelector(".why-grid .why-card:nth-child(4) p");
+  if(whyCommunity) whyCommunity.textContent = `Every customer is part of our journey as we build, expand, and shape the future of ${brandName} together.`;
+  const qAuthor = document.querySelector(".quote-author span");
+  if(qAuthor) qAuthor.textContent = `Founder of ${brandName} · Class 10th Student`;
+  const qSlogan = document.querySelector(".quote-slogan");
+  if(qSlogan) qSlogan.textContent = `${brandName} — ${slogan}.`;
+
+  // 8. Footer Copyright
+  const fCopy = document.querySelector("footer div:nth-child(2) div:first-child");
+  if(fCopy) fCopy.innerHTML = `© <span id="year">${new Date().getFullYear()}</span> ${escapeHtml(brandName)}. Founded by Ali Hamid. ${escapeHtml(slogan)}.`;
+
+  // 9. About Story & Mission Paragraphs Brand Replacement
+  document.querySelectorAll(".about-story-col p").forEach(p => {
+    p.innerHTML = p.innerHTML.replace(/\bALIZOX\b/gi, `<strong>${escapeHtml(brandName)}</strong>`);
+  });
+  document.querySelectorAll(".mv-card p").forEach(p => {
+    p.textContent = p.textContent.replace(/\bALIZOX\b/gi, brandName);
+  });
+
+  // 10. Theme
   if(data.theme){
     document.documentElement.style.setProperty("--accent", data.theme.accent);
     document.documentElement.style.setProperty("--accent2", data.theme.accent2);
@@ -1165,9 +1229,9 @@ function applyStorePayload(data){
     if(stats[0] && data.about.age) stats[0].textContent = data.about.age;
     if(stats[1] && data.about.education) stats[1].textContent = data.about.education;
     const sTitle = document.querySelector(".about-story-col h4");
-    if(sTitle && data.about.storyTitle) sTitle.textContent = data.about.storyTitle;
+    if(sTitle && data.about.storyTitle) sTitle.textContent = data.about.storyTitle.replace(/\bALIZOX\b/gi, brandName);
     const qText = document.querySelector(".quote-text");
-    if(qText && data.about.quote) qText.textContent = `“${data.about.quote}”`;
+    if(qText && data.about.quote) qText.textContent = `“${data.about.quote.replace(/\bALIZOX\b/gi, brandName)}”`;
   }
 }
 
