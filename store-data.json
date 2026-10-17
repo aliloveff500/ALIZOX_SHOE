@@ -1,6 +1,6 @@
 {
   "brand": {
-    "name": "ALIZOX",
+    "name": "FOOT WEAR",
     "tagline": "Move Different",
     "slogan": "Step Into Your Style",
     "whatsappNumber": "923079436896",
@@ -17,7 +17,7 @@
     "customPass": "ALIZOX 49229",
     "updatedAt": "2026-10-17T09:37:00Z"
   },
-  "updatedAt": "2026-10-17T09:55:00Z",
+  "updatedAt": "2026-10-17T11:29:18.883Z",
   "products": [
     {
       "id": 1,
@@ -28,7 +28,11 @@
       "price": 8499,
       "category": "Men",
       "type": "Streetwear",
-      "theme": ["#c026d3", "#581c87", "rgba(192, 38, 211, 0.45)"],
+      "theme": [
+        "#c026d3",
+        "#581c87",
+        "rgba(192, 38, 211, 0.45)"
+      ],
       "colors": [
         {
           "name": "Voltage Purple",
@@ -46,7 +50,11 @@
       "price": 9299,
       "category": "Men",
       "type": "Streetwear",
-      "theme": ["#e11d48", "#881337", "rgba(225, 29, 72, 0.45)"],
+      "theme": [
+        "#e11d48",
+        "#881337",
+        "rgba(225, 29, 72, 0.45)"
+      ],
       "colors": [
         {
           "name": "Solar Red",
@@ -64,7 +72,11 @@
       "price": 7999,
       "category": "Women",
       "type": "Streetwear",
-      "theme": ["#0284c7", "#1e3a8a", "rgba(2, 132, 199, 0.45)"],
+      "theme": [
+        "#0284c7",
+        "#1e3a8a",
+        "rgba(2, 132, 199, 0.45)"
+      ],
       "colors": [
         {
           "name": "Ice Blue",
@@ -82,7 +94,11 @@
       "price": 6899,
       "category": "Women",
       "type": "Streetwear",
-      "theme": ["#059669", "#064e3b", "rgba(5, 150, 105, 0.45)"],
+      "theme": [
+        "#059669",
+        "#064e3b",
+        "rgba(5, 150, 105, 0.45)"
+      ],
       "colors": [
         {
           "name": "Emerald Night",
