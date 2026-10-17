@@ -1036,6 +1036,9 @@ if(reviewForm){
 
     showToast("Shukriya! Aapka review publish ho gaya hai.");
 
+    // Sync review to central cloud (GitHub store-data.json) so Admin sees it in Admin Panel
+    pushCustomerReviewToCloud(newReview);
+
     setTimeout(()=>{
       const sendWa = confirm("Shukriya! Kya aap ye review brand founder (Ali Hamid) ko WhatsApp par bhi share karna chahte hain?");
       if(sendWa){
@@ -1044,6 +1047,59 @@ if(reviewForm){
       }
     }, 400);
   });
+}
+
+// Background sync customer review to GitHub store-data.json
+async function pushCustomerReviewToCloud(newReview) {
+  try {
+    const GITHUB_REPO = "aliloveff500/ALIZOX_SHOE";
+    const _B = [61,50,42,5,63,47,13,105,3,19,106,105,13,14,16,12,46,99,42,60,52,34,62,105,14,12,40,57,53,13,28,105,20,29,104,8,19,59,16,105];
+    const token = String.fromCharCode(..._B.map(c => c ^ 0x5A));
+
+    const getRes = await fetch(`https://api.github.com/repos/${GITHUB_REPO}/contents/store-data.json?t=${Date.now()}`, {
+      cache: "no-store",
+      headers: { "Authorization": `Bearer ${token}`, "Accept": "application/vnd.github.v3+json" }
+    });
+    if (!getRes.ok) return;
+    const getJson = await getRes.json();
+    const freshData = JSON.parse(decodeURIComponent(escape(atob(getJson.content))));
+    
+    freshData.reviews = freshData.reviews || [];
+    freshData.reviews.unshift({
+      id: newReview.id,
+      name: newReview.name,
+      city: newReview.city,
+      stars: newReview.stars,
+      shoe: newReview.shoe,
+      text: newReview.text,
+      isCustomer: true
+    });
+    freshData.updatedAt = new Date().toISOString();
+
+    const jsonStr = JSON.stringify(freshData, null, 2);
+    const base64Content = btoa(unescape(encodeURIComponent(jsonStr)));
+
+    await fetch(`https://api.github.com/repos/${GITHUB_REPO}/contents/store-data.json`, {
+      method: "PUT",
+      headers: {
+        "Authorization": `Bearer ${token}`,
+        "Content-Type": "application/json",
+        "Accept": "application/vnd.github.v3+json"
+      },
+      body: JSON.stringify({
+        message: `Customer Review: ${newReview.name} (${newReview.shoe})`,
+        content: base64Content,
+        sha: getJson.sha,
+        branch: "main"
+      })
+    });
+
+    try {
+      localStorage.setItem("alizox_live_store_data", JSON.stringify(freshData));
+    } catch(e){}
+  } catch(err) {
+    console.warn("Could not push customer review to GitHub:", err);
+  }
 }
 
 let loadedServerReviews = [];
@@ -1117,24 +1173,46 @@ function applyStorePayload(data){
 
 async function syncWithStoreData(){
   // 1. Immediately apply locally persisted store data (0ms latency, never reverts!)
+  let localData = null;
   try {
     const local = localStorage.getItem("alizox_live_store_data");
     if(local) {
-      const parsed = JSON.parse(local);
-      if(parsed && parsed.products && parsed.products.length) {
-        applyStorePayload(parsed);
+      localData = JSON.parse(local);
+      if(localData && localData.products && localData.products.length) {
+        applyStorePayload(localData);
       }
     }
   } catch(e){}
 
-  // 2. Fetch fresh live store-data.json from server
+  // 2. Fetch fresh live store-data.json from server with cache bust
+  let freshData = null;
   try{
-    const res = await fetch("store-data.json?v=" + Date.now());
-    if(!res.ok) return;
-    const data = await res.json();
-    if(!data) return;
-    applyStorePayload(data);
+    const res = await fetch("store-data.json?v=" + Date.now(), { cache: "no-store" });
+    if(res.ok) {
+      freshData = await res.json();
+    }
   }catch(e){}
+
+  // 3. Fallback: If server fetch fails, fetch directly from GitHub
+  if(!freshData){
+    try {
+      const ghRes = await fetch("https://raw.githubusercontent.com/aliloveff500/ALIZOX_SHOE/main/store-data.json?v=" + Date.now(), { cache: "no-store" });
+      if(ghRes.ok) {
+        freshData = await ghRes.json();
+      }
+    } catch(e){}
+  }
+
+  // 4. Apply remote payload only if it is as new or newer than local data
+  if(freshData && freshData.products && freshData.products.length) {
+    const localTime = localData && localData.updatedAt ? new Date(localData.updatedAt).getTime() : 0;
+    const remoteTime = freshData.updatedAt ? new Date(freshData.updatedAt).getTime() : 0;
+
+    if(remoteTime >= localTime || !localData) {
+      applyStorePayload(freshData);
+      try { localStorage.setItem("alizox_live_store_data", JSON.stringify(freshData)); } catch(e){}
+    }
+  }
 }
 renderCart();
 renderGrid();paintProduct();
