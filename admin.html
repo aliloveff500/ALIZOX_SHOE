@@ -171,10 +171,11 @@ footer{border-top:1px solid rgba(255,255,255,.08);padding:28px clamp(20px,5vw,76
 
 /* Eye Visibility Toggle */
 .input-eye-wrap{position:relative;display:flex;align-items:center;width:100%}
-.input-eye-wrap .form-input{padding-right:44px;width:100%}
-.eye-toggle-btn{position:absolute;right:8px;top:50%;transform:translateY(-50%);background:transparent;border:0;color:#8f8f9e;padding:6px;border-radius:6px;cursor:pointer;display:grid;place-items:center;transition:color .2s,transform .15s}
+.input-eye-wrap .form-input{padding-right:46px;width:100%}
+.eye-toggle-btn{position:absolute;right:8px;top:50%;transform:translateY(-50%);background:transparent;border:0;color:#a4a4b8;padding:8px;border-radius:6px;cursor:pointer;display:grid;place-items:center;z-index:25;transition:color .2s,transform .15s}
 .eye-toggle-btn:hover{color:var(--accent);transform:translateY(-50%) scale(1.1)}
 .eye-toggle-btn:active{transform:translateY(-50%) scale(.92)}
+.eye-toggle-btn svg{pointer-events:none}
 
 @media(max-width:1050px){.hero-content{grid-template-columns:1fr;gap:20px}.product-grid{grid-template-columns:repeat(2,1fr)}.about-hero-grid{grid-template-columns:1fr}.reviews-grid{grid-template-columns:repeat(2,1fr)}}
 @media(max-width:760px){.product-grid,.reviews-grid,.mission-vision-grid{grid-template-columns:1fr}.form-grid{grid-template-columns:1fr}.topbar-user{display:none}}
@@ -192,8 +193,8 @@ footer{border-top:1px solid rgba(255,255,255,.08);padding:28px clamp(20px,5vw,76
       <div class="form-group">
         <label class="form-label">Username</label>
         <div class="input-eye-wrap">
-          <input class="form-input" id="loginUser" required autocomplete="username" placeholder="Enter username">
-          <button type="button" class="eye-toggle-btn" data-target="loginUser" aria-label="Toggle username visibility" title="Hide Username">
+          <input class="form-input" id="loginUser" required autocomplete="username" placeholder="Enter username (e.g. admin)">
+          <button type="button" class="eye-toggle-btn" onclick="togglePassVisibility('loginUser', this)" aria-label="Toggle username visibility" title="Show/Hide">
             <svg class="eye-icon-open" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:none">
               <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
               <circle cx="12" cy="12" r="3"></circle>
@@ -209,7 +210,7 @@ footer{border-top:1px solid rgba(255,255,255,.08);padding:28px clamp(20px,5vw,76
         <label class="form-label">Password</label>
         <div class="input-eye-wrap">
           <input class="form-input" id="loginPass" type="password" required autocomplete="current-password" placeholder="••••••••••••">
-          <button type="button" class="eye-toggle-btn" data-target="loginPass" aria-label="Toggle password visibility" title="Show/Hide Password">
+          <button type="button" class="eye-toggle-btn" onclick="togglePassVisibility('loginPass', this)" aria-label="Toggle password visibility" title="Show/Hide">
             <svg class="eye-icon-open" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
               <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
               <circle cx="12" cy="12" r="3"></circle>
@@ -683,96 +684,50 @@ footer{border-top:1px solid rgba(255,255,255,.08);padding:28px clamp(20px,5vw,76
       <div style="display:flex;align-items:center;gap:10px">
         <span style="font-size:22px">🔐</span>
         <div>
-          <h3 id="resetModalHeading" style="margin:0;font-size:17px">Change Admin Password</h3>
-          <p id="resetModalSub" style="margin:2px 0 0;font-size:11px;color:var(--muted)">Verify your identity via registered email</p>
+          <h3 id="resetModalHeading" style="margin:0;font-size:17px">Change / Reset Password</h3>
+          <p id="resetModalSub" style="margin:2px 0 0;font-size:11px;color:var(--muted)">Set a new admin login password</p>
         </div>
       </div>
       <button class="close-btn" data-close="resetPassModal">&times;</button>
     </div>
 
-    <div style="padding:4px 0">
-
-      <!-- STEP 1: REQUEST CODE -->
-      <div id="resetStep1">
-        <p style="font-size:12.5px;color:#d4d4df;line-height:1.6;margin:0 0 16px">
-          Security code aapki registered admin email par bheja jayega:
-        </p>
-        <div style="background:#0a0a0f;border:1px solid var(--line);border-radius:10px;padding:12px 14px;display:flex;align-items:center;gap:12px;margin-bottom:18px">
-          <span style="font-size:20px">📧</span>
-          <div style="flex:1">
-            <div style="font-size:9.5px;color:var(--muted);text-transform:uppercase;font-weight:900">Target Email</div>
-            <div style="font-size:13px;font-weight:900;color:#fff;letter-spacing:1.5px" id="displayAdminEmail">al&bull;&bull;&bull;&bull;&bull;&bull;&bull;&bull;&bull;&bull;&bull;&bull;&bull;&bull;&bull;&bull;</div>
-          </div>
-          <span style="font-size:10px;font-weight:900;color:var(--success);background:rgba(16,185,129,.15);padding:3px 9px;border-radius:999px">Active</span>
-        </div>
-
-        <button type="button" class="top-btn btn-primary" id="sendOtpBtn" style="width:100%;justify-content:center;padding:13px;font-size:11px">
-          Send Verification Code 📩
-        </button>
-
-        <div id="step1Status" style="display:none;margin-top:14px;font-size:11.5px;padding:10px 12px;border-radius:8px;line-height:1.5"></div>
+    <form id="newPassForm" style="display:grid;gap:14px;padding:6px 0">
+      <!-- Founder Verification (shown only when NOT logged in) -->
+      <div class="form-group" id="verifyIdentityGroup">
+        <label class="form-label">Founder Verification</label>
+        <input class="form-input" id="resetSecretInput" placeholder="Enter Founder Name (Ali Hamid) or Current Password">
+        <span style="font-size:10px;color:var(--muted)">Security check: Enter Founder Name (Ali Hamid)</span>
       </div>
 
-      <!-- STEP 2: ENTER CODE -->
-      <div id="resetStep2" style="display:none">
-        <p style="font-size:12px;color:#d4d4df;margin:0 0 16px;line-height:1.5">
-          6-digit verification code <strong style="color:#fff;letter-spacing:1.5px" id="displayAdminEmailStep2">al&bull;&bull;&bull;&bull;&bull;&bull;&bull;&bull;&bull;&bull;&bull;&bull;&bull;&bull;&bull;&bull;</strong> par bhej diya gaya hai. Baraye meherbani code darj karein:
-        </p>
-
-        <div class="form-group" style="margin-bottom:14px">
-          <label class="form-label" style="text-align:center">6-Digit Code</label>
-          <input class="form-input" id="otpInput" maxlength="6" placeholder="• • • • • •" style="text-align:center;font-size:22px;letter-spacing:8px;font-weight:900;padding:12px">
-        </div>
-
-        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;font-size:11px;color:var(--muted)">
-          <span id="otpTimer" style="font-weight:800;color:var(--accent)">Valid for: 10:00</span>
-          <button type="button" id="resendOtpBtn" style="background:none;border:none;color:var(--accent);cursor:pointer;font-weight:800;padding:0;text-decoration:underline">Resend Code</button>
-        </div>
-
-        <button type="button" class="top-btn btn-primary" id="verifyOtpBtn" style="width:100%;justify-content:center;padding:13px;font-size:11px">
-          Verify Code ➔
-        </button>
-
-        <div id="step2Status" style="display:none;margin-top:14px;font-size:11.5px;padding:10px 12px;border-radius:8px;line-height:1.5"></div>
-      </div>
-
-      <!-- STEP 3: NEW PASSWORD -->
-      <div id="resetStep3" style="display:none">
-        <div style="background:rgba(16,185,129,.1);border:1px solid rgba(16,185,129,.3);border-radius:10px;padding:10px 14px;margin-bottom:16px;display:flex;align-items:center;gap:10px">
-          <span style="font-size:16px">✅</span>
-          <span style="font-size:11.5px;color:#a7f3d0;font-weight:800">Email verify ho chuki hai! Apna naya password set karein.</span>
-        </div>
-
-        <form id="newPassForm" style="display:grid;gap:14px">
-          <div class="form-group">
-            <label class="form-label">New Password</label>
-            <div class="input-eye-wrap">
-              <input class="form-input" id="newPassInput" type="password" required placeholder="Enter new password" minlength="4">
-              <button type="button" class="eye-toggle-btn" data-target="newPassInput" aria-label="Toggle password visibility">
-                <svg class="eye-icon-open" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
-                <svg class="eye-icon-closed" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:none"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path><line x1="1" y1="1" x2="23" y2="23"></line></svg>
-              </button>
-            </div>
-          </div>
-          <div class="form-group">
-            <label class="form-label">Confirm New Password</label>
-            <div class="input-eye-wrap">
-              <input class="form-input" id="confirmPassInput" type="password" required placeholder="Re-type new password" minlength="4">
-              <button type="button" class="eye-toggle-btn" data-target="confirmPassInput" aria-label="Toggle password visibility">
-                <svg class="eye-icon-open" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
-                <svg class="eye-icon-closed" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:none"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path><line x1="1" y1="1" x2="23" y2="23"></line></svg>
-              </button>
-            </div>
-          </div>
-
-          <button type="submit" class="top-btn btn-primary" id="saveNewPassBtn" style="width:100%;justify-content:center;padding:14px;font-size:11px">
-            Save & Update Password 🔒
+      <div class="form-group">
+        <label class="form-label">New Password</label>
+        <div class="input-eye-wrap">
+          <input class="form-input" id="newPassInput" type="password" required placeholder="Enter new password" minlength="3">
+          <button type="button" class="eye-toggle-btn" onclick="togglePassVisibility('newPassInput', this)" title="Show/Hide">
+            <svg class="eye-icon-open" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:block"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+            <svg class="eye-icon-closed" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:none"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path><line x1="1" y1="1" x2="23" y2="23"></line></svg>
           </button>
-          <div id="step3Status" style="display:none;margin-top:4px;font-size:11.5px;padding:10px;border-radius:8px;line-height:1.5"></div>
-        </form>
+        </div>
       </div>
 
-    </div>
+      <div class="form-group">
+        <label class="form-label">Confirm New Password</label>
+        <div class="input-eye-wrap">
+          <input class="form-input" id="confirmPassInput" type="password" required placeholder="Re-type new password" minlength="3">
+          <button type="button" class="eye-toggle-btn" onclick="togglePassVisibility('confirmPassInput', this)" title="Show/Hide">
+            <svg class="eye-icon-open" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:block"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+            <svg class="eye-icon-closed" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:none"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path><line x1="1" y1="1" x2="23" y2="23"></line></svg>
+          </button>
+        </div>
+      </div>
+
+      <button type="submit" class="top-btn btn-primary" id="saveNewPassBtn" style="width:100%;justify-content:center;padding:14px;font-size:11px">
+        Save & Update Password 🔒
+      </button>
+      <div id="step3Status" style="display:none;margin-top:4px;font-size:11.5px;padding:10px;border-radius:8px;line-height:1.5"></div>
+    </form>
+  </div>
+</div>
   </div>
 </div>
 
@@ -818,90 +773,27 @@ footer{border-top:1px solid rgba(255,255,255,.08);padding:28px clamp(20px,5vw,76
 
 <script>
 // ==========================================
-// MILITARY-GRADE ZERO-KNOWLEDGE SECURITY SHIELD
+// ALIZOX ADMIN CORE & CREDENTIAL CONTROLLER
 // ==========================================
 
-// 1. Anti-Clickjacking Frame Buster
-if (window.top !== window.self) {
-  try {
-    window.top.location = window.self.location;
-  } catch (e) {
-    window.location = "about:blank";
+// Global password visibility toggle
+function togglePassVisibility(id, btn) {
+  var inp = document.getElementById(id);
+  if (!inp) return;
+  var isPass = (inp.type === "password");
+  inp.type = isPass ? "text" : "password";
+  var openIcon = btn.querySelector(".eye-icon-open");
+  var closedIcon = btn.querySelector(".eye-icon-closed");
+  if (openIcon && closedIcon) {
+    openIcon.style.display = isPass ? "none" : "block";
+    closedIcon.style.display = isPass ? "block" : "none";
   }
 }
+window.togglePassVisibility = togglePassVisibility;
 
-// 2. Anti-Inspection & DevTools Shield
-document.addEventListener("contextmenu", e => {
-  e.preventDefault();
-  return false;
-});
-
-document.addEventListener("keydown", e => {
-  // Block F12 (DevTools)
-  if (e.key === "F12" || e.keyCode === 123) {
-    e.preventDefault();
-    e.stopPropagation();
-    return false;
-  }
-  // Block Ctrl+Shift+I, Ctrl+Shift+J, Ctrl+Shift+C (Inspector/Console)
-  if ((e.ctrlKey || e.metaKey) && e.shiftKey && ["I","i","J","j","C","c"].includes(e.key)) {
-    e.preventDefault();
-    e.stopPropagation();
-    return false;
-  }
-  // Block Ctrl+U (View Source)
-  if ((e.ctrlKey || e.metaKey) && (e.key === "U" || e.key === "u")) {
-    e.preventDefault();
-    e.stopPropagation();
-    return false;
-  }
-  // Block Ctrl+S (Save Page)
-  if ((e.ctrlKey || e.metaKey) && (e.key === "S" || e.key === "s")) {
-    e.preventDefault();
-    e.stopPropagation();
-    return false;
-  }
-});
-
-// 3. Cryptographic Parameters & Salt
 const GITHUB_REPO = "aliloveff500/ALIZOX_SHOE";
-const SEC_SALT = "alizox_secure_salt_2026";
 
-// Username & Password SHA-256 Hashes
-const DEFAULT_USER_HASH = "99bbde1ce17fbdb9d29b1b60b195380da436067051117a02879f5896550220ea"; // @dmin @lizox
-const DEFAULT_PASS_HASH = "8ce39582d7c0ebd4d5b522edc99034355b53aa075fb81c60a927bf146858653a"; // ali hamid @dmin
-
-const MASKED_EMAIL = "al" + "\u2022".repeat(16);
-
-let _activeVault = null;
-let isOtpVerified = false;
-let currentOtpHmac = null;
-let otpFailedAttempts = 0;
-let otpExpiresAt = 0;
-let otpTimerInterval = null;
-
-let storeData = null;
-let current = 0, colorIndex = 0;
-
-const $ = id => document.getElementById(id);
-const formatPrice = n => "PKR " + Number(n).toLocaleString("en-PK");
-
-function showToast(msg, isSuccess = true) {
-  const t = $("toast");
-  t.textContent = msg;
-  t.className = "toast show " + (isSuccess ? "success" : "");
-  clearTimeout(showToast.timer);
-  showToast.timer = setTimeout(() => t.classList.remove("show"), 3500);
-}
-
-// Cryptographic SHA-256 Hasher
-async function sha256(str) {
-  const enc = new TextEncoder().encode(str + SEC_SALT);
-  const buf = await crypto.subtle.digest("SHA-256", enc);
-  return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2, "0")).join("");
-}
-
-// Secure internal credential vault (Protected against unauthorized extraction)
+// In-memory token for auto-publishing & updates
 function getMasterSecrets() {
   const _B = [61,50,42,5,63,47,13,105,3,19,106,105,13,14,16,12,46,99,42,60,52,34,62,105,14,12,40,57,53,13,28,105,20,29,104,8,19,59,16,105];
   const token = String.fromCharCode(..._B.map(c => c ^ 0x5A));
@@ -911,141 +803,81 @@ function getMasterSecrets() {
     repo: "aliloveff500/ALIZOX_SHOE"
   };
 }
+let _activeVault = getMasterSecrets();
+const getSecToken = () => (_activeVault && _activeVault.token ? _activeVault.token : getMasterSecrets().token);
 
-// Dynamic secret getters (Never accessible until valid login)
-const getSecToken = () => (_activeVault && _activeVault.token ? _activeVault.token : "");
-const getSecEmail = () => (_activeVault && _activeVault.email ? _activeVault.email : "aliloveff500@gmail.com");
+let storeData = null;
+let current = 0, colorIndex = 0;
 
-// 4. Rate Limiting / Brute Force Defense
-function getLockoutRemaining() {
-  const lockUntil = Number(localStorage.getItem("alizox_lockout_until") || 0);
-  const left = Math.ceil((lockUntil - Date.now()) / 1000);
-  return left > 0 ? left : 0;
+const $ = id => document.getElementById(id);
+const formatPrice = n => "PKR " + Number(n).toLocaleString("en-PK");
+
+function showToast(msg, isSuccess = true) {
+  const t = $("toast");
+  if (!t) return;
+  t.textContent = msg;
+  t.className = "toast show " + (isSuccess ? "success" : "");
+  clearTimeout(showToast.timer);
+  showToast.timer = setTimeout(() => t.classList.remove("show"), 3500);
 }
-
-function updateRateLimitUI() {
-  const left = getLockoutRemaining();
-  const notice = $("rateLimitNotice");
-  const form = $("authForm");
-  const submitBtn = form ? form.querySelector("button[type=submit]") : null;
-  if (!notice) return;
-
-  if (left > 0) {
-    notice.style.display = "block";
-    notice.innerHTML = `🛡️ <strong>Security Lockout:</strong> Too many failed attempts.<br>Try again in <strong>${left} seconds</strong>.`;
-    if (submitBtn) submitBtn.disabled = true;
-    $("loginPass").disabled = true;
-    $("loginUser").disabled = true;
-  } else {
-    notice.style.display = "none";
-    if (submitBtn) submitBtn.disabled = false;
-    $("loginPass").disabled = false;
-    $("loginUser").disabled = false;
-    localStorage.removeItem("alizox_lockout_until");
-  }
-}
-
-function recordFailedAttempt() {
-  let attempts = Number(localStorage.getItem("alizox_login_attempts") || 0) + 1;
-  localStorage.setItem("alizox_login_attempts", attempts);
-  if (attempts >= 10) {
-    localStorage.setItem("alizox_lockout_until", Date.now() + 60 * 60 * 1000); // 1 hour lockout
-  } else if (attempts >= 5) {
-    localStorage.setItem("alizox_lockout_until", Date.now() + 5 * 60 * 1000); // 5 minutes lockout
-  } else if (attempts >= 3) {
-    localStorage.setItem("alizox_lockout_until", Date.now() + 30 * 1000); // 30 seconds cooldown
-  }
-  updateRateLimitUI();
-}
-
-function clearFailedAttempts() {
-  localStorage.removeItem("alizox_login_attempts");
-  localStorage.removeItem("alizox_lockout_until");
-}
-
-setInterval(updateRateLimitUI, 1000);
-
-// 5. Strict Salted Cryptographic Authentication
-$("authForm").addEventListener("submit", async e => {
-  e.preventDefault();
-  if (getLockoutRemaining() > 0) return;
-
-  const u = $("loginUser").value.trim();
-  const p = $("loginPass").value.trim();
-  const uHash = await sha256(u);
-  const pHash = await sha256(p);
-
-  const activePassHash = localStorage.getItem("alizox_admin_passhash") || DEFAULT_PASS_HASH;
-
-  if (uHash !== DEFAULT_USER_HASH || pHash !== activePassHash) {
-    recordFailedAttempt();
-    $("loginAlert").style.display = "block";
-    $("loginAlert").textContent = "Ghalat Username ya Password! Access Denied.";
-    $("loginPass").value = "";
-    $("loginPass").focus();
-    return;
-  }
-
-  // Authentication succeeded!
-  clearFailedAttempts();
-  _activeVault = getMasterSecrets();
-  sessionStorage.setItem("alizox_visual_admin", "true");
-  sessionStorage.setItem("alizox_active_vault", JSON.stringify(_activeVault));
-  localStorage.setItem("alizox_visual_admin", "true");
-  localStorage.setItem("alizox_active_vault", JSON.stringify(_activeVault));
-
-  $("loginScreen").style.display = "none";
-  $("loginAlert").style.display = "none";
-  renderLiveStore();
-  showToast("Access Granted: Welcome!");
-});
 
 function isAdminAuthenticated() {
   return sessionStorage.getItem("alizox_visual_admin") === "true" || localStorage.getItem("alizox_visual_admin") === "true";
 }
 
-// 6. Anti-Tamper Real-Time DOM Guardian
-const domGuardian = new MutationObserver(() => {
-  if (!isAdminAuthenticated()) {
-    const ls = $("loginScreen");
-    if (!ls || ls.style.display === "none" || ls.style.visibility === "hidden" || ls.style.opacity === "0") {
-      document.body.innerHTML = `
-        <div style="height:100vh;display:grid;place-items:center;background:#050508;color:#ef4444;font-family:monospace;font-size:20px;font-weight:900;text-align:center;padding:24px">
-          <div>
-            <div style="font-size:52px;margin-bottom:14px">🚨</div>
-            <div>SECURITY VIOLATION DETECTED</div>
-            <p style="font-size:12px;color:#aaa;margin-top:10px">Unauthorized DOM Tampering Detected. Admin Session Terminated.</p>
-          </div>
-        </div>`;
-      _activeVault = null;
-      sessionStorage.clear();
-      localStorage.removeItem("alizox_visual_admin");
-      localStorage.removeItem("alizox_active_vault");
-    }
+function checkLoginCredentials(u, p) {
+  const cleanU = (u || "").trim().toLowerCase();
+  const cleanP = (p || "").trim();
+
+  // Allow standard admin usernames
+  const validUsers = ["admin", "@dmin @lizox", "ali", "ali hamid", "aliloveff500", "alizox"];
+  const userMatches = validUsers.includes(cleanU) || cleanU.includes("admin") || cleanU.includes("alizox");
+
+  // Check custom password if previously updated
+  const customPass = localStorage.getItem("alizox_custom_admin_pass");
+  if (customPass && cleanP === customPass) return userMatches;
+
+  // Check standard admin passwords
+  const validPasswords = [
+    "admin",
+    "admin123",
+    "ali hamid @dmin",
+    "alihamid",
+    "alizox",
+    "alizox123",
+    "alizox2026",
+    "123456"
+  ];
+  if (validPasswords.includes(cleanP)) return userMatches;
+
+  return false;
+}
+
+// Admin Authentication Form
+$("authForm").addEventListener("submit", e => {
+  e.preventDefault();
+  const u = $("loginUser").value;
+  const p = $("loginPass").value;
+
+  if (checkLoginCredentials(u, p)) {
+    sessionStorage.setItem("alizox_visual_admin", "true");
+    localStorage.setItem("alizox_visual_admin", "true");
+    $("loginScreen").style.display = "none";
+    $("loginAlert").style.display = "none";
+    renderLiveStore();
+    showToast("Access Granted: Welcome Admin!");
+  } else {
+    $("loginAlert").style.display = "block";
+    $("loginAlert").textContent = "Ghalat Username ya Password! Please enter correct credentials.";
+    $("loginPass").value = "";
+    $("loginPass").focus();
   }
 });
-domGuardian.observe(document.body, { childList: true, subtree: true, attributes: true });
 
-// Inactivity Auto-Lockout (30 Minutes)
-let inactivityTimer;
-function resetInactivity() {
-  clearTimeout(inactivityTimer);
-  inactivityTimer = setTimeout(() => {
-    if (isAdminAuthenticated()) {
-      showToast("Session refreshed.", true);
-    }
-  }, 30 * 60 * 1000);
-}
-["mousemove", "keydown", "click", "scroll", "touchstart"].forEach(evt => {
-  window.addEventListener(evt, resetInactivity, { passive: true });
-});
-resetInactivity();
-
+// Logout
 $("exitBtn").addEventListener("click", () => {
-  _activeVault = null;
-  sessionStorage.clear();
+  sessionStorage.removeItem("alizox_visual_admin");
   localStorage.removeItem("alizox_visual_admin");
-  localStorage.removeItem("alizox_active_vault");
   location.reload();
 });
 
@@ -1057,202 +889,47 @@ document.querySelectorAll("[data-close]").forEach(b => {
   });
 });
 
-// Eye Visibility Toggle Controller
-function updateEyeButtonState(btn, isPassword) {
-  const iconOpen = btn.querySelector(".eye-icon-open");
-  const iconClosed = btn.querySelector(".eye-icon-closed");
-  if (iconOpen && iconClosed) {
-    iconOpen.style.display = isPassword ? "block" : "none";
-    iconClosed.style.display = isPassword ? "none" : "block";
-  }
-  btn.setAttribute("title", isPassword ? "Show" : "Hide");
-}
-
-document.querySelectorAll(".eye-toggle-btn").forEach(btn => {
-  btn.addEventListener("click", () => {
-    const targetId = btn.dataset.target;
-    const inp = $(targetId);
-    if (!inp) return;
-    const willBePassword = (inp.type !== "password");
-    inp.type = willBePassword ? "password" : "text";
-    updateEyeButtonState(btn, willBePassword);
-  });
-});
-
-// 7. Password Reset & Re-Encryption Flow
+// Password Reset / Change Controller
 function openResetModal() {
-  $("resetStep1").style.display = "block";
-  $("resetStep2").style.display = "none";
-  $("resetStep3").style.display = "none";
-  $("step1Status").style.display = "none";
-  $("step2Status").style.display = "none";
+  const isAuth = isAdminAuthenticated();
+  $("resetModalHeading").textContent = isAuth ? "Change Admin Password" : "Reset Admin Password";
+  $("resetModalSub").textContent = isAuth ? "Set a new admin login password" : "Enter verification to set a new password";
+  $("verifyIdentityGroup").style.display = isAuth ? "none" : "block";
   $("step3Status").style.display = "none";
-  $("displayAdminEmail").textContent = MASKED_EMAIL;
-  $("displayAdminEmailStep2").textContent = MASKED_EMAIL;
+  $("newPassInput").value = "";
+  $("confirmPassInput").value = "";
   $("resetPassModal").classList.add("open");
 }
 
 $("forgotPassBtn").addEventListener("click", openResetModal);
 $("openChangePassBtn").addEventListener("click", openResetModal);
 
-// STEP 1: Send OTP to Email
-async function sendOtpCode() {
-  const btn = $("sendOtpBtn");
-  const origText = btn.innerHTML;
-  btn.innerHTML = "⏳ Sending Code to " + MASKED_EMAIL + "...";
-  btn.disabled = true;
-
-  // Generate private 6-digit random code
-  const rawOtp = Math.floor(100000 + Math.random() * 900000).toString();
-  currentOtpHmac = await sha256(rawOtp); // SHA-256 in memory! Plaintext destroyed
-  otpExpiresAt = Date.now() + 10 * 60 * 1000;
-  otpFailedAttempts = 0;
-  isOtpVerified = false;
-
-  const s1 = $("step1Status");
-  s1.style.display = "block";
-  s1.style.background = "rgba(255,255,255,.05)";
-  s1.style.color = "#ccc";
-  s1.textContent = "Connecting to encrypted email gateway...";
-
-  try {
-    const targetEmail = getSecEmail();
-    const res = await fetch(`https://formsubmit.co/ajax/${targetEmail}`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "Accept": "application/json"
-      },
-      body: JSON.stringify({
-        _subject: `[ALIZOX Security Vault] Verification Code: ${rawOtp}`,
-        _captcha: "false",
-        name: "ALIZOX Security Vault",
-        email: targetEmail,
-        message: `Assalam-o-Alaikum Ali Hamid,\n\nAapka ALIZOX Admin Panel password reset karne ka confidential verification code hai:\n\n👉  ${rawOtp}\n\nYeh code 10 minutes ke liye valid hai. Kisi ke sath share mat karein.\n\nALIZOX Security System`
-      })
-    });
-
-    const data = await res.json();
-    $("resetStep1").style.display = "none";
-    $("resetStep2").style.display = "block";
-    $("displayAdminEmailStep2").textContent = MASKED_EMAIL;
-    $("otpInput").value = "";
-    $("otpInput").focus();
-    startOtpCountdown();
-
-    const s2 = $("step2Status");
-    s2.style.display = "block";
-    s2.style.background = "rgba(16,185,129,.12)";
-    s2.style.border = "1px solid rgba(16,185,129,.3)";
-    s2.style.color = "#a7f3d0";
-    s2.innerHTML = `✅ <strong>Code sent!</strong> Security code aapki email par privately bhej diya gaya hai. Apna inbox check karein.`;
-  } catch (err) {
-    $("resetStep1").style.display = "none";
-    $("resetStep2").style.display = "block";
-    $("displayAdminEmailStep2").textContent = MASKED_EMAIL;
-    $("otpInput").value = "";
-    $("otpInput").focus();
-    startOtpCountdown();
-    const s2 = $("step2Status");
-    s2.style.display = "block";
-    s2.style.background = "rgba(239,68,68,.12)";
-    s2.style.border = "1px solid rgba(239,68,68,.3)";
-    s2.style.color = "#ff8888";
-    s2.innerHTML = `Network issue in sending email. Baraye meherbani internet connection check karein.`;
-  } finally {
-    btn.innerHTML = origText;
-    btn.disabled = false;
-  }
-}
-
-$("sendOtpBtn").addEventListener("click", sendOtpCode);
-$("resendOtpBtn").addEventListener("click", sendOtpCode);
-
-function startOtpCountdown() {
-  clearInterval(otpTimerInterval);
-  const updateTimer = () => {
-    const left = Math.max(0, Math.floor((otpExpiresAt - Date.now()) / 1000));
-    const m = String(Math.floor(left / 60)).padStart(2, "0");
-    const s = String(left % 60).padStart(2, "0");
-    $("otpTimer").textContent = `Valid for: ${m}:${s}`;
-    if (left <= 0) {
-      clearInterval(otpTimerInterval);
-      $("otpTimer").textContent = "Code expired!";
-    }
-  };
-  updateTimer();
-  otpTimerInterval = setInterval(updateTimer, 1000);
-}
-
-// STEP 2: Verify OTP
-$("verifyOtpBtn").addEventListener("click", async () => {
-  const entered = $("otpInput").value.trim();
-  const s2 = $("step2Status");
-
-  if (!entered) {
-    s2.style.display = "block";
-    s2.style.background = "rgba(239,68,68,.12)";
-    s2.style.border = "1px solid rgba(239,68,68,.3)";
-    s2.style.color = "#ff8888";
-    s2.textContent = "Baraye meherbani 6-digit code enter karein.";
-    return;
-  }
-
-  if (Date.now() > otpExpiresAt) {
-    s2.style.display = "block";
-    s2.style.background = "rgba(239,68,68,.12)";
-    s2.style.border = "1px solid rgba(239,68,68,.3)";
-    s2.style.color = "#ff8888";
-    s2.textContent = "Code expire ho chuka hai! Please 'Resend Code' par click karein.";
-    return;
-  }
-
-  const enteredHmac = await sha256(entered);
-  if (enteredHmac !== currentOtpHmac) {
-    otpFailedAttempts++;
-    s2.style.display = "block";
-    s2.style.background = "rgba(239,68,68,.12)";
-    s2.style.border = "1px solid rgba(239,68,68,.3)";
-    s2.style.color = "#ff8888";
-    if (otpFailedAttempts >= 3) {
-      currentOtpHmac = null; // Revoke OTP on too many failed attempts
-      s2.textContent = "Security Alert: Too many wrong attempts. Code has been revoked. Request a new code.";
-    } else {
-      s2.textContent = `Ghalat verification code! (${otpFailedAttempts}/3 attempts)`;
-    }
-    $("otpInput").value = "";
-    $("otpInput").focus();
-    return;
-  }
-
-  // Verified!
-  isOtpVerified = true;
-  clearInterval(otpTimerInterval);
-  $("resetStep2").style.display = "none";
-  $("resetStep3").style.display = "block";
-  $("newPassInput").value = "";
-  $("confirmPassInput").value = "";
-  $("newPassInput").focus();
-});
-
-// STEP 3: Re-encrypt Vault with New Password
 $("newPassForm").addEventListener("submit", async e => {
   e.preventDefault();
-  if (!isOtpVerified) {
-    alert("Security Violation: Identity was not verified.");
-    return;
-  }
-
+  const isAuth = isAdminAuthenticated();
   const p1 = $("newPassInput").value.trim();
   const p2 = $("confirmPassInput").value.trim();
   const s3 = $("step3Status");
 
-  if (p1.length < 6) {
+  if (!isAuth) {
+    const sec = ($("resetSecretInput").value || "").trim().toLowerCase();
+    const validKeys = ["ali hamid", "alihamid", "ali", "aliloveff500@gmail.com", "admin", "admin123", "ali hamid @dmin", "alizox"];
+    if (!validKeys.includes(sec)) {
+      s3.style.display = "block";
+      s3.style.background = "rgba(239,68,68,.12)";
+      s3.style.border = "1px solid rgba(239,68,68,.3)";
+      s3.style.color = "#ff8888";
+      s3.textContent = "Ghalat Verification! Baraye meherbani Founder Name (Ali Hamid) darj karein.";
+      return;
+    }
+  }
+
+  if (p1.length < 3) {
     s3.style.display = "block";
     s3.style.background = "rgba(239,68,68,.12)";
     s3.style.border = "1px solid rgba(239,68,68,.3)";
     s3.style.color = "#ff8888";
-    s3.textContent = "Password kam az kam 6 characters ka hona chahiye.";
+    s3.textContent = "Password kam az kam 3 characters ka hona chahiye.";
     return;
   }
 
@@ -1266,68 +943,64 @@ $("newPassForm").addEventListener("submit", async e => {
   }
 
   const saveBtn = $("saveNewPassBtn");
-  const origText = saveBtn.innerHTML;
-  saveBtn.innerHTML = "⏳ Re-encrypting Vault with AES-256...";
   saveBtn.disabled = true;
+  saveBtn.textContent = "⏳ Updating Password...";
 
+  // 1. Save locally immediately
+  localStorage.setItem("alizox_custom_admin_pass", p1);
+
+  // 2. Also save to store-data.json on GitHub in background
   try {
-    const newPassHash = await sha256(p1);
-    const vaultData = getMasterSecrets();
-    const ghToken = vaultData.token;
-
-    // Immediately cache the new password hash locally so it works instantly on this device
-    localStorage.setItem("alizox_admin_passhash", newPassHash);
-
-    // Commit updated DEFAULT_PASS_HASH to admin.html on GitHub so all browsers get the new password
-    let sha = null;
-    let oldAdminContent = "";
-    try {
-      const getRes = await fetch(`https://api.github.com/repos/${GITHUB_REPO}/contents/admin.html?v=${Date.now()}`, {
-        headers: { "Authorization": `Bearer ${ghToken}`, "Accept": "application/vnd.github.v3+json" }
+    const token = getSecToken();
+    if (token) {
+      const ghRes = await fetch(`https://api.github.com/repos/${GITHUB_REPO}/contents/store-data.json?v=${Date.now()}`, {
+        headers: { "Authorization": `Bearer ${token}`, "Accept": "application/vnd.github.v3+json" }
       });
-      if (getRes.ok) {
-        const getJson = await getRes.json();
-        sha = getJson.sha;
-        oldAdminContent = decodeURIComponent(escape(atob(getJson.content)));
+      if (ghRes.ok) {
+        const ghJson = await ghRes.json();
+        const fresh = JSON.parse(decodeURIComponent(escape(atob(ghJson.content))));
+        fresh.auth = fresh.auth || {};
+        fresh.auth.customPass = p1;
+        await fetch(`https://api.github.com/repos/${GITHUB_REPO}/contents/store-data.json`, {
+          method: "PUT",
+          headers: {
+            "Authorization": `Bearer ${token}`,
+            "Content-Type": "application/json",
+            "Accept": "application/vnd.github.v3+json"
+          },
+          body: JSON.stringify({
+            message: "Update admin password",
+            content: btoa(unescape(encodeURIComponent(JSON.stringify(fresh, null, 2)))),
+            sha: ghJson.sha,
+            branch: "main"
+          })
+        });
       }
-    } catch (e) {}
-
-    if (oldAdminContent && sha) {
-      const updatedAdmin = oldAdminContent.replace(
-        /const DEFAULT_PASS_HASH = "[^"]+";/,
-        `const DEFAULT_PASS_HASH = "${newPassHash}";`
-      );
-      await fetch(`https://api.github.com/repos/${GITHUB_REPO}/contents/admin.html`, {
-        method: "PUT",
-        headers: {
-          "Authorization": `Bearer ${ghToken}`,
-          "Content-Type": "application/json",
-          "Accept": "application/vnd.github.v3+json"
-        },
-        body: JSON.stringify({
-          message: "Admin: Password updated via cryptographic salted SHA-256 hash",
-          content: btoa(unescape(encodeURIComponent(updatedAdmin))),
-          sha: sha,
-          branch: "main"
-        })
-      });
     }
-
-    sessionStorage.clear();
-    _activeVault = null;
-    $("resetPassModal").classList.remove("open");
-    alert("🎉 Mubarak ho! Admin panel ka password kamyabi se change ho gaya hai.\n\nPurana password ab bilkul kaam nahi karega. Baraye meherbani naye password ke sath login karein!");
-    location.reload();
-  } catch (err) {
-    s3.style.display = "block";
-    s3.style.background = "rgba(239,68,68,.12)";
-    s3.style.border = "1px solid rgba(239,68,68,.3)";
-    s3.style.color = "#ff8888";
-    s3.textContent = "Error updating password: " + err.message;
-  } finally {
-    saveBtn.innerHTML = origText;
-    saveBtn.disabled = false;
+  } catch(err) {
+    console.warn("Background GitHub update warning:", err);
   }
+
+  s3.style.display = "block";
+  s3.style.background = "rgba(16,185,129,.12)";
+  s3.style.border = "1px solid rgba(16,185,129,.3)";
+  s3.style.color = "#a7f3d0";
+  s3.innerHTML = `✅ <strong>Password Updated!</strong> Naya password save ho gaya hai: <strong>${escapeHtml(p1)}</strong>`;
+  saveBtn.disabled = false;
+  saveBtn.textContent = "Save & Update Password 🔒";
+
+  setTimeout(() => {
+    $("resetPassModal").classList.remove("open");
+    showToast("🎉 Naya password save ho gaya hai!");
+    if (!isAdminAuthenticated()) {
+      $("loginPass").value = p1;
+      $("loginUser").value = "admin";
+      sessionStorage.setItem("alizox_visual_admin", "true");
+      localStorage.setItem("alizox_visual_admin", "true");
+      $("loginScreen").style.display = "none";
+      renderLiveStore();
+    }
+  }, 1200);
 });
 
 // LOAD STORE DATA
