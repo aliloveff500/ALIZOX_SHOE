@@ -1,6 +1,6 @@
 {
   "brand": {
-    "name": "FOOT  WEAR",
+    "name": "ALIZOX",
     "tagline": "Move Different",
     "slogan": "Step Into Your Style",
     "whatsappNumber": "923079436896",
@@ -17,26 +17,22 @@
     "customPass": "ALIZOX 49229",
     "updatedAt": "2026-10-17T09:37:00Z"
   },
-  "updatedAt": "2026-10-17T10:55:04.615Z",
+  "updatedAt": "2026-10-17T09:55:00Z",
   "products": [
     {
       "id": 1,
       "name": "PULSE",
       "sub": "SHIFT",
       "tag": "New season / 01",
-      "price": 3489,
+      "description": "A bold everyday silhouette with a futuristic edge. Built for your own lane.",
+      "price": 8499,
       "category": "Men",
       "type": "Streetwear",
-      "description": "A bold everyday silhouette with a futuristic edge. Built for your own lane.",
-      "theme": [
-        "#c026d3",
-        "#581c87",
-        "rgba(192, 38, 211, 0.45)"
-      ],
+      "theme": ["#c026d3", "#581c87", "rgba(192, 38, 211, 0.45)"],
       "colors": [
         {
           "name": "Voltage Purple",
-          "hex": "#c026d3",
+          "hex": "#b62dff",
           "image": "images/shoe-purple.png"
         }
       ]
@@ -46,19 +42,15 @@
       "name": "NOVA",
       "sub": "RUSH",
       "tag": "Energy line / 02",
-      "price": 3489,
+      "description": "A clean, athletic profile with high-contrast color and a street-ready attitude.",
+      "price": 9299,
       "category": "Men",
       "type": "Streetwear",
-      "description": "A clean, athletic profile with high-contrast color and a street-ready attitude.",
-      "theme": [
-        "#c026d3",
-        "#581c87",
-        "rgba(192, 38, 211, 0.45)"
-      ],
+      "theme": ["#e11d48", "#881337", "rgba(225, 29, 72, 0.45)"],
       "colors": [
         {
           "name": "Solar Red",
-          "hex": "#c026d3",
+          "hex": "#ff453a",
           "image": "images/shoe-red.png"
         }
       ]
@@ -68,20 +60,16 @@
       "name": "AERO",
       "sub": "FLOW",
       "tag": "Motion series / 03",
-      "price": 3489,
+      "description": "Light-looking lines and a versatile shape made for everyday movement and effortless fits.",
+      "price": 7999,
       "category": "Women",
       "type": "Streetwear",
-      "description": "Light-looking lines and a versatile shape made for everyday movement and effortless fits.",
-      "theme": [
-        "#c026d3",
-        "#581c87",
-        "rgba(192, 38, 211, 0.45)"
-      ],
+      "theme": ["#0284c7", "#1e3a8a", "rgba(2, 132, 199, 0.45)"],
       "colors": [
         {
           "name": "Ice Blue",
-          "hex": "#c026d3",
-          "image": "images/shoe-orange.png"
+          "hex": "#58c8ff",
+          "image": "images/shoe-blue.png"
         }
       ]
     },
@@ -90,19 +78,15 @@
       "name": "ECLIPSE",
       "sub": "CORE",
       "tag": "Core collection / 04",
-      "price": 3489,
+      "description": "Understated from a distance, impossible to ignore up close. Your daily rotation, redefined.",
+      "price": 6899,
       "category": "Women",
       "type": "Streetwear",
-      "description": "Understated from a distance, impossible to ignore up close. Your daily rotation, redefined.",
-      "theme": [
-        "#c026d3",
-        "#581c87",
-        "rgba(192, 38, 211, 0.45)"
-      ],
+      "theme": ["#059669", "#064e3b", "rgba(5, 150, 105, 0.45)"],
       "colors": [
         {
           "name": "Emerald Night",
-          "hex": "#c026d3",
+          "hex": "#10b981",
           "image": "images/shoe-green.png"
         }
       ]
