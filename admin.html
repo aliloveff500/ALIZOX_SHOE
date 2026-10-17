@@ -193,7 +193,7 @@ footer{border-top:1px solid rgba(255,255,255,.08);padding:28px clamp(20px,5vw,76
       <div class="form-group">
         <label class="form-label">Username</label>
         <div class="input-eye-wrap">
-          <input class="form-input" id="loginUser" required autocomplete="username" placeholder="Enter username (e.g. admin)">
+          <input class="form-input" id="loginUser" required autocomplete="username" placeholder="Enter username (ALI HAMID 49229 / admin)">
           <button type="button" class="eye-toggle-btn" onclick="togglePassVisibility('loginUser', this)" aria-label="Toggle username visibility" title="Show/Hide">
             <svg class="eye-icon-open" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:none">
               <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
@@ -226,7 +226,7 @@ footer{border-top:1px solid rgba(255,255,255,.08);padding:28px clamp(20px,5vw,76
       <div id="loginAlert" style="color:var(--danger);font-size:11.5px;font-weight:800;text-align:center;display:none;background:rgba(239,68,68,.12);border:1px solid rgba(239,68,68,.3);padding:9px;border-radius:8px">Ghalat Username ya Password! Please enter correct credentials.</div>
       <div id="rateLimitNotice" style="display:none;color:#f59e0b;font-size:11.5px;font-weight:800;text-align:center;background:rgba(245,158,11,.12);border:1px solid rgba(245,158,11,.3);padding:9px;border-radius:8px;line-height:1.5"></div>
       <div style="text-align:center;margin-top:6px;padding-top:12px;border-top:1px solid rgba(255,255,255,.07)">
-        <button type="button" id="forgotPassBtn" style="background:none;border:none;color:var(--accent);font-size:12px;font-weight:900;cursor:pointer;text-decoration:underline">🔑 Change / Reset Password?</button>
+        <button type="button" id="forgotPassBtn" onclick="openResetModal()" style="background:none;border:none;color:var(--accent);font-size:12px;font-weight:900;cursor:pointer;text-decoration:underline">🔑 Change / Reset Password?</button>
       </div>
     </form>
   </div>
@@ -243,7 +243,7 @@ footer{border-top:1px solid rgba(255,255,255,.08);padding:28px clamp(20px,5vw,76
     <button class="top-btn" id="openStoreBtn">⚙️ Store & Phone</button>
     <button class="top-btn" id="openThemeBtn">🎨 Colors</button>
     <button class="top-btn" id="openAddShoeBtn">+ Add Shoe</button>
-    <button class="top-btn" id="openChangePassBtn" title="Change Admin Password">🔑 Change Password</button>
+    <button class="top-btn" id="openChangePassBtn" onclick="openResetModal()" title="Change Admin Password">🔑 Change Password</button>
     <button class="top-btn btn-primary" id="publishLiveBtn">🚀 Save & Publish Live</button>
     <button class="top-btn btn-danger" id="exitBtn" title="Logout">Logout</button>
   </div>
@@ -678,7 +678,7 @@ footer{border-top:1px solid rgba(255,255,255,.08);padding:28px clamp(20px,5vw,76
 </div>
 
 <!-- 6. PASSWORD RESET MODAL -->
-<div class="modal-overlay" id="resetPassModal">
+<div class="modal-overlay" id="resetPassModal" onclick="if(event.target===this)closeResetModal()">
   <div class="modal-box" style="max-width:440px">
     <div class="modal-head">
       <div style="display:flex;align-items:center;gap:10px">
@@ -688,7 +688,7 @@ footer{border-top:1px solid rgba(255,255,255,.08);padding:28px clamp(20px,5vw,76
           <p id="resetModalSub" style="margin:2px 0 0;font-size:11px;color:var(--muted)">Set a new admin login password</p>
         </div>
       </div>
-      <button class="close-btn" data-close="resetPassModal">&times;</button>
+      <button type="button" class="close-btn" data-close="resetPassModal" onclick="closeResetModal()">&times;</button>
     </div>
 
     <form id="newPassForm" style="display:grid;gap:14px;padding:6px 0">
@@ -826,34 +826,50 @@ function isAdminAuthenticated() {
 }
 
 function checkLoginCredentials(u, p) {
-  const cleanU = (u || "").trim().toLowerCase();
-  const cleanP = (p || "").trim();
+  const rawU = (u || "").trim();
+  const rawP = (p || "").trim();
+  const cleanU = rawU.toLowerCase().replace(/\s+/g, " ");
+  const cleanP = rawP.toLowerCase().replace(/\s+/g, " ");
 
-  // Allow standard admin usernames
-  const validUsers = ["admin", "@dmin @lizox", "ali", "ali hamid", "aliloveff500", "alizox"];
-  const userMatches = validUsers.includes(cleanU) || cleanU.includes("admin") || cleanU.includes("alizox");
+  // 1. Direct check for user requested credentials:
+  // USER: "ALI HAMID 49229", PASS: "ALIZOX 49229"
+  const isTargetUser = (
+    cleanU === "ali hamid 49229" ||
+    cleanU === "alihamid49229" ||
+    cleanU === "ali hamid" ||
+    cleanU === "alihamid" ||
+    cleanU === "49229" ||
+    cleanU === "admin" ||
+    cleanU === "@dmin @lizox" ||
+    cleanU === "alizox" ||
+    cleanU.includes("49229") ||
+    cleanU.includes("admin")
+  );
 
-  // 1. Check custom password from active storeData (store-data.json)
-  if (storeData && storeData.auth && storeData.auth.customPass) {
-    if (cleanP === String(storeData.auth.customPass).trim()) return userMatches;
+  const isTargetPass = (
+    cleanP === "alizox 49229" ||
+    cleanP === "alizox49229" ||
+    rawP === "ALIZOX 49229" ||
+    cleanP === "alizox2026" ||
+    cleanP === "admin" ||
+    cleanP === "admin123" ||
+    cleanP === "alihamid" ||
+    cleanP === "123456"
+  );
+
+  if (isTargetUser && isTargetPass) return true;
+
+  // 2. Check storeData.auth (from store-data.json)
+  if (storeData && storeData.auth) {
+    const authUser = (storeData.auth.username || "").trim().toLowerCase().replace(/\s+/g, " ");
+    const authPass = (storeData.auth.customPass || "").trim().toLowerCase().replace(/\s+/g, " ");
+    const userMatchesAuth = (!authUser || cleanU === authUser || isTargetUser);
+    if (userMatchesAuth && (cleanP === authPass || rawP === storeData.auth.customPass)) return true;
   }
 
-  // 2. Check custom password in localStorage
-  const customPass = localStorage.getItem("alizox_custom_admin_pass");
-  if (customPass && cleanP === String(customPass).trim()) return userMatches;
-
-  // 3. Standard default passwords
-  const validPasswords = [
-    "admin",
-    "admin123",
-    "ali hamid @dmin",
-    "alihamid",
-    "alizox",
-    "alizox123",
-    "alizox2026",
-    "123456"
-  ];
-  if (validPasswords.includes(cleanP)) return userMatches;
+  // 3. Check custom password in localStorage
+  const customPass = (localStorage.getItem("alizox_custom_admin_pass") || "").trim().toLowerCase().replace(/\s+/g, " ");
+  if (isTargetUser && customPass && cleanP === customPass) return true;
 
   return false;
 }
@@ -900,6 +916,8 @@ document.querySelectorAll("[data-close]").forEach(b => {
 
 // Password Reset / Change Controller
 function openResetModal() {
+  const m = $("resetPassModal");
+  if (!m) return;
   const isAuth = isAdminAuthenticated();
   $("resetModalHeading").textContent = isAuth ? "Change Admin Password" : "Reset Admin Password";
   $("resetModalSub").textContent = isAuth ? "Set a new admin login password" : "Enter verification to set a new password";
@@ -907,8 +925,18 @@ function openResetModal() {
   $("step3Status").style.display = "none";
   $("newPassInput").value = "";
   $("confirmPassInput").value = "";
-  $("resetPassModal").classList.add("open");
+  const sec = $("resetSecretInput");
+  if (sec) sec.value = "";
+  m.style.zIndex = "200000";
+  m.classList.add("open");
 }
+window.openResetModal = openResetModal;
+
+function closeResetModal() {
+  const m = $("resetPassModal");
+  if (m) m.classList.remove("open");
+}
+window.closeResetModal = closeResetModal;
 
 $("forgotPassBtn").addEventListener("click", openResetModal);
 $("openChangePassBtn").addEventListener("click", openResetModal);
@@ -921,15 +949,30 @@ $("newPassForm").addEventListener("submit", async e => {
   const s3 = $("step3Status");
 
   if (!isAuth) {
-    const sec = ($("resetSecretInput").value || "").trim().toLowerCase();
-    const validKeys = ["ali hamid", "alihamid", "ali", "aliloveff500@gmail.com", "admin", "admin123", "ali hamid @dmin", "alizox", "alizox2026"];
-    const customMatch = (storeData && storeData.auth && storeData.auth.customPass) ? String(storeData.auth.customPass).trim().toLowerCase() : "";
-    if (!validKeys.includes(sec) && (!customMatch || sec !== customMatch)) {
+    const sec = ($("resetSecretInput").value || "").trim().toLowerCase().replace(/\s+/g, " ");
+    const validKeys = [
+      "ali hamid",
+      "alihamid",
+      "ali",
+      "ali hamid 49229",
+      "alihamid49229",
+      "49229",
+      "alizox 49229",
+      "alizox49229",
+      "alizox",
+      "alizox2026",
+      "aliloveff500@gmail.com",
+      "admin",
+      "admin123",
+      "ali hamid @dmin"
+    ];
+    const currentPass = (storeData && storeData.auth && storeData.auth.customPass) ? String(storeData.auth.customPass).trim().toLowerCase().replace(/\s+/g, " ") : "";
+    if (!validKeys.includes(sec) && (!currentPass || sec !== currentPass)) {
       s3.style.display = "block";
       s3.style.background = "rgba(239,68,68,.12)";
       s3.style.border = "1px solid rgba(239,68,68,.3)";
       s3.style.color = "#ff8888";
-      s3.textContent = "Ghalat Verification! Baraye meherbani Founder Name (Ali Hamid) darj karein.";
+      s3.textContent = "Ghalat Verification! Baraye meherbani Founder Name (Ali Hamid) ya code (49229) darj karein.";
       return;
     }
   }
@@ -977,11 +1020,11 @@ $("newPassForm").addEventListener("submit", async e => {
   saveBtn.textContent = "Save & Update Password 🔒";
 
   setTimeout(() => {
-    $("resetPassModal").classList.remove("open");
+    closeResetModal();
     showToast("🎉 Naya password lifetime save ho gaya hai!");
     if (!isAdminAuthenticated()) {
       $("loginPass").value = p1;
-      $("loginUser").value = "admin";
+      $("loginUser").value = "ALI HAMID 49229";
       sessionStorage.setItem("alizox_visual_admin", "true");
       localStorage.setItem("alizox_visual_admin", "true");
       $("loginScreen").style.display = "none";
@@ -1063,7 +1106,7 @@ async function loadStoreData() {
 
 // INITIAL BOOT CHECK
 loadStoreData().then(() => {
-  $("topbarUserDisplay").textContent = "Logged in: @dmin @lizox";
+  $("topbarUserDisplay").textContent = "Logged in: " + (storeData && storeData.auth && storeData.auth.username ? storeData.auth.username : "ALI HAMID 49229");
   _activeVault = getMasterSecrets();
 
   if (isAdminAuthenticated()) {
