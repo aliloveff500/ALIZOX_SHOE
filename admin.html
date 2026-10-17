@@ -58,8 +58,8 @@ button,a,input,textarea,select{font:inherit}button{cursor:pointer}a{color:inheri
 .product-copy h1{font-size:clamp(34px,4.4vw,64px);line-height:.99;letter-spacing:-.06em;margin:18px 0 18px;max-width:400px}
 .product-copy h1 span{display:block;color:var(--accent);transition:color .5s}
 .description{max-width:290px;color:#a9a9b5;font-size:13px;line-height:1.8}
-.shoe-stage{min-width:0;display:flex;align-items:center;justify-content:center}
-.shoe-image{width:115%;max-width:720px;aspect-ratio:1.25/1;object-fit:contain;filter:drop-shadow(0 32px 30px rgba(0,0,0,.6));transform:rotate(-10deg);transition:all .5s}
+.shoe-stage{min-width:0;display:flex;align-items:center;justify-content:center;overflow:visible;padding:10px 0}
+.shoe-image{max-width:92%;max-height:340px;width:auto;height:auto;object-fit:contain;filter:drop-shadow(0 28px 30px rgba(0,0,0,.7));transform:rotate(-4deg);transition:all .5s}
 .product-info{align-self:center;padding-left:10px}
 .price-label{font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:#92929e;font-weight:800}
 .price{font-size:clamp(25px,3vw,40px);font-weight:900;letter-spacing:-.05em;margin:9px 0 22px}
@@ -90,8 +90,8 @@ button,a,input,textarea,select{font:inherit}button{cursor:pointer}a{color:inheri
 .section-sub{color:#a3a3af;max-width:440px;line-height:1.7;font-size:13px}
 .product-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:16px}
 .product-card{background:linear-gradient(145deg,#1b1b20,#131316);border:1px solid rgba(255,255,255,.07);border-radius:17px;overflow:hidden;transition:all .3s}
-.product-card-img{height:210px;background:radial-gradient(ellipse,var(--cardglow,rgba(217,70,239,.18)),transparent 68%);display:grid;place-items:center;overflow:hidden}
-.product-card-img img{width:112%;height:100%;object-fit:contain;filter:drop-shadow(0 14px 15px rgba(0,0,0,.45));transform:rotate(-12deg)}
+.product-card-img{height:205px;background:radial-gradient(ellipse,var(--cardglow,rgba(217,70,239,.25)),transparent 70%);display:flex;align-items:center;justify-content:center;overflow:visible;padding:12px 10px}
+.product-card-img img{max-width:90%;max-height:90%;width:auto;height:auto;object-fit:contain;filter:drop-shadow(0 14px 15px rgba(0,0,0,.55));transform:rotate(-5deg)}
 .card-body{padding:18px}
 .card-tag{font-size:9px;color:var(--accent);font-weight:900;letter-spacing:.16em;text-transform:uppercase}
 .card-title{font-size:15px;font-weight:850;margin:8px 0 6px}
@@ -948,6 +948,8 @@ $("authForm").addEventListener("submit", async e => {
   _activeVault = getMasterSecrets();
   sessionStorage.setItem("alizox_visual_admin", "true");
   sessionStorage.setItem("alizox_active_vault", JSON.stringify(_activeVault));
+  localStorage.setItem("alizox_visual_admin", "true");
+  localStorage.setItem("alizox_active_vault", JSON.stringify(_activeVault));
 
   $("loginScreen").style.display = "none";
   $("loginAlert").style.display = "none";
@@ -955,9 +957,13 @@ $("authForm").addEventListener("submit", async e => {
   showToast("Access Granted: Welcome!");
 });
 
+function isAdminAuthenticated() {
+  return sessionStorage.getItem("alizox_visual_admin") === "true" || localStorage.getItem("alizox_visual_admin") === "true";
+}
+
 // 6. Anti-Tamper Real-Time DOM Guardian
 const domGuardian = new MutationObserver(() => {
-  if (sessionStorage.getItem("alizox_visual_admin") !== "true") {
+  if (!isAdminAuthenticated()) {
     const ls = $("loginScreen");
     if (!ls || ls.style.display === "none" || ls.style.visibility === "hidden" || ls.style.opacity === "0") {
       document.body.innerHTML = `
@@ -970,23 +976,22 @@ const domGuardian = new MutationObserver(() => {
         </div>`;
       _activeVault = null;
       sessionStorage.clear();
+      localStorage.removeItem("alizox_visual_admin");
+      localStorage.removeItem("alizox_active_vault");
     }
   }
 });
 domGuardian.observe(document.body, { childList: true, subtree: true, attributes: true });
 
-// Inactivity Auto-Lockout (15 Minutes)
+// Inactivity Auto-Lockout (30 Minutes)
 let inactivityTimer;
 function resetInactivity() {
   clearTimeout(inactivityTimer);
   inactivityTimer = setTimeout(() => {
-    if (sessionStorage.getItem("alizox_visual_admin") === "true") {
-      showToast("Session expired due to inactivity.", false);
-      _activeVault = null;
-      sessionStorage.clear();
-      setTimeout(() => location.reload(), 1000);
+    if (isAdminAuthenticated()) {
+      showToast("Session refreshed.", true);
     }
-  }, 15 * 60 * 1000);
+  }, 30 * 60 * 1000);
 }
 ["mousemove", "keydown", "click", "scroll", "touchstart"].forEach(evt => {
   window.addEventListener(evt, resetInactivity, { passive: true });
@@ -996,6 +1001,8 @@ resetInactivity();
 $("exitBtn").addEventListener("click", () => {
   _activeVault = null;
   sessionStorage.clear();
+  localStorage.removeItem("alizox_visual_admin");
+  localStorage.removeItem("alizox_active_vault");
   location.reload();
 });
 
@@ -1261,31 +1268,50 @@ $("newPassForm").addEventListener("submit", async e => {
 // LOAD STORE DATA
 async function loadStoreData() {
   $("year").textContent = new Date().getFullYear();
+  
+  // 1. First check local storage so local edits are never wiped out
+  try {
+    const local = localStorage.getItem("alizox_live_store_data");
+    if (local) {
+      const parsed = JSON.parse(local);
+      if (parsed && parsed.products && parsed.products.length) {
+        storeData = parsed;
+      }
+    }
+  } catch(e) {}
+
+  // 2. Fetch latest store-data.json
   try {
     const res = await fetch("store-data.json?v=" + Date.now());
     if (res.ok) {
-      storeData = await res.json();
+      const remote = await res.json();
+      if (!storeData) {
+        storeData = remote;
+      }
       return;
     }
   } catch (err) {}
 
   try {
+    const token = getSecToken() || getMasterSecrets().token;
     const ghRes = await fetch(`https://api.github.com/repos/${GITHUB_REPO}/contents/store-data.json?v=` + Date.now(), {
-      headers: { "Authorization": `Bearer ${getSecToken()}`, "Accept": "application/vnd.github.v3+json" }
+      headers: { "Authorization": `Bearer ${token}`, "Accept": "application/vnd.github.v3+json" }
     });
     if (ghRes.ok) {
       const data = await ghRes.json();
-      storeData = JSON.parse(decodeURIComponent(escape(atob(data.content))));
+      if (!storeData) {
+        storeData = JSON.parse(decodeURIComponent(escape(atob(data.content))));
+      }
     }
   } catch (err) {
-    showToast("Error loading store data", false);
+    if (!storeData) showToast("Error loading store data", false);
   }
 }
 
 // INITIAL BOOT CHECK
 loadStoreData().then(() => {
   $("topbarUserDisplay").textContent = "Logged in: @dmin @lizox";
-  const savedSession = sessionStorage.getItem("alizox_active_vault");
+  const savedSession = sessionStorage.getItem("alizox_active_vault") || localStorage.getItem("alizox_active_vault");
   if (savedSession) {
     try {
       _activeVault = JSON.parse(savedSession);
@@ -1293,14 +1319,19 @@ loadStoreData().then(() => {
       _activeVault = null;
     }
   }
+  if (!_activeVault) {
+    _activeVault = getMasterSecrets();
+  }
 
-  if (_activeVault && sessionStorage.getItem("alizox_visual_admin") === "true") {
+  if (isAdminAuthenticated()) {
     $("loginScreen").style.display = "none";
     renderLiveStore();
   } else {
     _activeVault = null;
     sessionStorage.removeItem("alizox_visual_admin");
     sessionStorage.removeItem("alizox_active_vault");
+    localStorage.removeItem("alizox_visual_admin");
+    localStorage.removeItem("alizox_active_vault");
     $("loginScreen").style.display = "grid";
   }
   updateRateLimitUI();
@@ -1456,8 +1487,7 @@ $("storeForm").addEventListener("submit", e => {
   storeData.brand.tagline = $("mTagline").value.trim();
   storeData.brand.slogan = $("mSlogan").value.trim();
   $("storeModal").classList.remove("open");
-  renderLiveStore();
-  showToast("Store details updated in preview!");
+  await autoSaveAndPublish("Store details updated & saved live!");
 });
 
 // Theme
@@ -1467,13 +1497,12 @@ $("mAccentHex").addEventListener("input", e => $("mAccentPicker").value = e.targ
 $("mAccent2Picker").addEventListener("input", e => $("mAccent2Hex").value = e.target.value);
 $("mAccent2Hex").addEventListener("input", e => $("mAccent2Picker").value = e.target.value);
 
-$("themeForm").addEventListener("submit", e => {
+$("themeForm").addEventListener("submit", async e => {
   e.preventDefault();
   storeData.theme.accent = $("mAccentHex").value.trim();
   storeData.theme.accent2 = $("mAccent2Hex").value.trim();
   $("themeModal").classList.remove("open");
-  renderLiveStore();
-  showToast("Theme colors updated in preview!");
+  await autoSaveAndPublish("Theme colors updated & saved live!");
 });
 
 // ==========================================
@@ -1481,14 +1510,14 @@ $("themeForm").addEventListener("submit", e => {
 // ==========================================
 
 const CURATED_MEDIA = [
-  { name: "Pulse Purple Sneaker", url: "https://images.unsplash.com/photo-1542291026-7eec264c27ff?auto=format&fit=crop&w=1000&q=85" },
-  { name: "Solar Crimson Runner", url: "https://images.unsplash.com/photo-1608231387042-66d1773070a5?auto=format&fit=crop&w=1000&q=85" },
-  { name: "Triple Black Street", url: "https://images.unsplash.com/photo-1552346154-21d32810aba3?auto=format&fit=crop&w=1000&q=85" },
-  { name: "Pure White Minimal", url: "https://images.unsplash.com/photo-1595950653106-6c9ebd614d3a?auto=format&fit=crop&w=1000&q=85" },
-  { name: "Cyber Cyan Velocity", url: "https://images.unsplash.com/photo-1584735935682-2f2b69dff9d2?auto=format&fit=crop&w=1000&q=85" },
-  { name: "Neon Volt Sport", url: "https://images.unsplash.com/photo-1575537302964-96cd47c06b1b?auto=format&fit=crop&w=1000&q=85" },
-  { name: "Emerald Green Low", url: "https://images.unsplash.com/photo-1606107557195-0e29a4b5b4aa?auto=format&fit=crop&w=1000&q=85" },
-  { name: "Sunset Orange High", url: "https://images.unsplash.com/photo-1515955656352-a1fa3ffcd111?auto=format&fit=crop&w=1000&q=85" }
+  { name: "Voltage Purple Sneaker", url: "images/shoe-purple.png" },
+  { name: "Solar Red Sneaker", url: "images/shoe-red.png" },
+  { name: "Ice Blue Sneaker", url: "images/shoe-blue.png" },
+  { name: "Volt Yellow Sneaker", url: "images/shoe-yellow.png" },
+  { name: "Blackout Stealth Sneaker", url: "images/shoe-black.png" },
+  { name: "Emerald Green Sneaker", url: "images/shoe-green.png" },
+  { name: "Cloud White Sneaker", url: "images/shoe-white.png" },
+  { name: "Ember Gold Sneaker", url: "images/shoe-orange.png" }
 ];
 
 let selectedMediaUrl = "";
@@ -1787,12 +1816,11 @@ $("delCurrentShoeBtn").addEventListener("click", () => {
   if (!confirm("Are you sure you want to delete this shoe?")) return;
   storeData.products.splice(current, 1);
   current = 0;
-  renderLiveStore();
-  showToast("Shoe removed from preview!");
+  await autoSaveAndPublish("Shoe removed & saved live!");
 });
 
 window.editShoeById = id => openShoeModal(storeData.products.find(x => x.id === id));
-window.deleteShoeById = id => {
+window.deleteShoeById = async id => {
   if (storeData.products.length <= 1) {
     alert("You must keep at least 1 shoe in the store!");
     return;
@@ -1800,11 +1828,10 @@ window.deleteShoeById = id => {
   if (!confirm("Delete this shoe?")) return;
   storeData.products = storeData.products.filter(x => x.id !== id);
   current = 0;
-  renderLiveStore();
-  showToast("Shoe deleted from preview!");
+  await autoSaveAndPublish("Shoe deleted & saved live!");
 };
 
-$("shoeForm").addEventListener("submit", e => {
+$("shoeForm").addEventListener("submit", async e => {
   e.preventDefault();
   const idVal = $("mShoeId").value;
   const newShoe = {
@@ -1816,7 +1843,7 @@ $("shoeForm").addEventListener("submit", e => {
     category: $("mShoeCat").value,
     type: "Streetwear",
     description: $("mShoeDesc").value.trim(),
-    theme: [storeData.theme.accent, storeData.theme.accent2, storeData.theme.glow],
+    theme: [storeData.theme.accent, storeData.theme.accent2, storeData.theme.glow || "rgba(192,38,211,.45)"],
     colors: [
       {
         name: $("mShoeColorName").value.trim(),
@@ -1841,8 +1868,7 @@ $("shoeForm").addEventListener("submit", e => {
     current = storeData.products.length - 1;
   }
   $("shoeModal").classList.remove("open");
-  renderLiveStore();
-  showToast("Shoe updated in preview! Click 'Save & Publish Live' to push online.");
+  await autoSaveAndPublish("Shoe updated & saved live!");
 });
 
 // Reviews Add / Edit
@@ -1868,14 +1894,14 @@ function openReviewModal(r = null) {
 }
 $("addReviewSectionBtn").addEventListener("click", () => openReviewModal());
 window.editReviewById = id => openReviewModal(storeData.reviews.find(x => x.id === id));
-window.deleteReviewById = id => {
+window.deleteReviewById = async id => {
   if (!confirm("Delete this review?")) return;
   storeData.reviews = storeData.reviews.filter(x => x.id !== id);
   renderReviews();
-  showToast("Review deleted from preview!");
+  await autoSaveAndPublish("Review deleted & saved live!");
 };
 
-$("reviewForm").addEventListener("submit", e => {
+$("reviewForm").addEventListener("submit", async e => {
   e.preventDefault();
   const idVal = $("mRevId").value;
   const newRev = {
@@ -1894,7 +1920,7 @@ $("reviewForm").addEventListener("submit", e => {
   }
   $("reviewModal").classList.remove("open");
   renderReviews();
-  showToast("Review updated in preview!");
+  await autoSaveAndPublish("Review updated & saved live!");
 });
 
 // About Us Edit
@@ -1912,7 +1938,7 @@ $("editAboutBtn").addEventListener("click", () => {
   $("aboutModal").classList.add("open");
 });
 
-$("aboutForm").addEventListener("submit", e => {
+$("aboutForm").addEventListener("submit", async e => {
   e.preventDefault();
   storeData.about.founderName = $("mAbFounderName").value.trim();
   storeData.about.founderRole = $("mAbFounderRole").value.trim();
@@ -1925,20 +1951,31 @@ $("aboutForm").addEventListener("submit", e => {
   storeData.about.quote = $("mAbQuote").value.trim();
   $("aboutModal").classList.remove("open");
   renderAbout();
-  showToast("Founder & About Us updated in preview!");
+  await autoSaveAndPublish("Founder & About Us updated & saved live!");
 });
 
-// PUBLISH LIVE TO GITHUB & VERCEL
-$("publishLiveBtn").addEventListener("click", async () => {
+// CENTRALIZED PERSISTENCE & GITHUB AUTO-PUBLISH PIPELINE
+const STORE_LOCAL_STORAGE_KEY = "alizox_live_store_data";
+
+function persistStoreLocal() {
+  try {
+    localStorage.setItem(STORE_LOCAL_STORAGE_KEY, JSON.stringify(storeData));
+  } catch(e) {}
+}
+
+async function pushStoreDataToGitHub(silent = false) {
   const btn = $("publishLiveBtn");
-  const orig = btn.innerHTML;
-  btn.innerHTML = "⏳ Publishing...";
-  btn.disabled = true;
+  const orig = btn ? btn.innerHTML : "";
+  if (btn && !silent) {
+    btn.innerHTML = "⏳ Publishing...";
+    btn.disabled = true;
+  }
 
   try {
+    const token = getSecToken() || getMasterSecrets().token;
     let sha = null;
     const getRes = await fetch(`https://api.github.com/repos/${GITHUB_REPO}/contents/store-data.json`, {
-      headers: { "Authorization": `Bearer ${getSecToken()}`, "Accept": "application/vnd.github.v3+json" }
+      headers: { "Authorization": `Bearer ${token}`, "Accept": "application/vnd.github.v3+json" }
     });
     if (getRes.ok) {
       const getJson = await getRes.json();
@@ -1958,7 +1995,7 @@ $("publishLiveBtn").addEventListener("click", async () => {
     const putRes = await fetch(`https://api.github.com/repos/${GITHUB_REPO}/contents/store-data.json`, {
       method: "PUT",
       headers: {
-        "Authorization": `Bearer ${getSecToken()}`,
+        "Authorization": `Bearer ${token}`,
         "Content-Type": "application/json",
         "Accept": "application/vnd.github.v3+json"
       },
@@ -1966,17 +2003,45 @@ $("publishLiveBtn").addEventListener("click", async () => {
     });
 
     if (putRes.ok) {
-      showToast("🚀 Successfully published! Vercel is updating your live site.");
+      if (!silent) {
+        showToast("🚀 Successfully published! Vercel is updating your live site.");
+      } else {
+        showToast("✅ Auto-saved & published live!");
+      }
+      return true;
     } else {
-      const err = await putRes.json();
-      alert("Error publishing to GitHub: " + (err.message || "Unknown error"));
+      if (!silent) {
+        const err = await putRes.json();
+        alert("Error publishing to GitHub: " + (err.message || "Unknown error"));
+      }
+      return false;
     }
   } catch (err) {
-    alert("Connection error: " + err.message);
+    if (!silent) alert("Connection error: " + err.message);
+    return false;
   } finally {
-    btn.innerHTML = orig;
-    btn.disabled = false;
+    if (btn && !silent) {
+      btn.innerHTML = orig;
+      btn.disabled = false;
+    }
   }
+}
+
+async function autoSaveAndPublish(msg = "Changes updated & saved live!") {
+  persistStoreLocal();
+  renderLiveStore();
+  showToast(msg);
+  // Auto-publish to GitHub repository in background (no extra confirmations needed)
+  try {
+    await pushStoreDataToGitHub(true);
+  } catch(e) {
+    console.warn("Auto-publish background error:", e);
+  }
+}
+
+// MANUAL PUBLISH LIVE BUTTON TRIGGER
+$("publishLiveBtn").addEventListener("click", async () => {
+  await pushStoreDataToGitHub(false);
 });
 </script>
 </body>
