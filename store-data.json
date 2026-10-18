@@ -7,9 +7,9 @@
     "currency": "PKR"
   },
   "theme": {
-    "accent": "#c026d3",
-    "accent2": "#581c87",
-    "glow": "rgba(192, 38, 211, 0.45)",
+    "accent": "#0284c7",
+    "accent2": "#1e3a8a",
+    "glow": "rgba(2, 132, 199, 0.45)",
     "bg": "#050508"
   },
   "auth": {
@@ -17,8 +17,30 @@
     "customPass": "ALIZOX 49229",
     "updatedAt": "2026-10-17T09:37:00Z"
   },
-  "updatedAt": "2026-10-18T07:37:21.717Z",
+  "updatedAt": "2026-10-18T12:50:00.000Z",
   "products": [
+    {
+      "id": 3,
+      "name": "AERO",
+      "sub": "FLOW",
+      "tag": "Motion series / 03",
+      "price": 2999,
+      "category": "Women",
+      "type": "Streetwear",
+      "description": "Light-looking lines and a versatile shape made for everyday movement and effortless fits.",
+      "theme": [
+        "#0284c7",
+        "#1e3a8a",
+        "rgba(2, 132, 199, 0.45)"
+      ],
+      "colors": [
+        {
+          "name": "Ice Blue",
+          "hex": "#58c8ff",
+          "image": "images/shoe-blue.png"
+        }
+      ]
+    },
     {
       "id": 1,
       "name": "PULSE",
@@ -64,46 +86,24 @@
       ]
     },
     {
-      "id": 3,
-      "name": "AERO",
-      "sub": "FLOW",
-      "tag": "Motion series / 03",
-      "price": 2999,
-      "category": "Women",
-      "type": "Streetwear",
-      "description": "Light-looking lines and a versatile shape made for everyday movement and effortless fits.",
-      "theme": [
-        "#0284c7",
-        "#1e3a8a",
-        "rgba(2, 132, 199, 0.45)"
-      ],
-      "colors": [
-        {
-          "name": "Ice Blue",
-          "hex": "#58c8ff",
-          "image": "images/shoe-blue.png"
-        }
-      ]
-    },
-    {
       "id": 4,
       "name": "ECLIPSE",
       "sub": "CORE",
       "tag": "Core collection / 04",
-      "price": 2898,
+      "price": 4999,
       "category": "Women",
       "type": "Streetwear",
       "description": "Understated from a distance, impossible to ignore up close. Your daily rotation, redefined.",
       "theme": [
-        "#ea580c",
-        "#7c2d12",
-        "rgba(234, 88, 12, 0.45)"
+        "#059669",
+        "#064e3b",
+        "rgba(5, 150, 105, 0.45)"
       ],
       "colors": [
         {
           "name": "Emerald Night",
-          "hex": "#f97316",
-          "image": "images/shoe-orange.png"
+          "hex": "#10b981",
+          "image": "images/shoe-green.png"
         }
       ]
     }
