@@ -225,6 +225,7 @@ footer{border-top:1px solid rgba(255,255,255,.08);padding:28px clamp(20px,5vw,76
     <span class="topbar-user" id="topbarUserDisplay">Logged in: Admin</span>
   </div>
   <div class="topbar-actions">
+    <button class="top-btn" id="openOrdersBtn" style="position:relative;background:rgba(255,255,255,0.08);font-weight:700">📦 Orders <span id="ordersBadge" style="display:none;background:#ef4444;color:#fff;font-size:10px;font-weight:900;padding:2px 7px;border-radius:999px;margin-left:4px">0</span></button>
     <button class="top-btn" id="openStoreBtn">⚙️ Store & Phone</button>
     <button class="top-btn" id="openThemeBtn">🎨 Colors</button>
     <button class="top-btn" id="openAddShoeBtn">+ Add Shoe</button>
@@ -755,6 +756,71 @@ footer{border-top:1px solid rgba(255,255,255,.08);padding:28px clamp(20px,5vw,76
         <button type="button" class="top-btn" data-close="mediaLibraryModal">Cancel</button>
         <button type="button" class="top-btn btn-primary" id="confirmSelectMediaBtn">Use Selected Image</button>
       </div>
+    </div>
+  </div>
+</div>
+
+<!-- 8. ORDERS MANAGEMENT MODAL -->
+<div class="modal-overlay" id="ordersModal">
+  <div class="modal-box" style="max-width:1050px;width:96%;max-height:92vh;display:flex;flex-direction:column;padding:22px;border:1px solid rgba(255,255,255,0.12)">
+    <div class="modal-head" style="margin-bottom:14px;padding-bottom:12px;border-bottom:1px solid var(--line);align-items:center">
+      <div style="display:flex;align-items:center;gap:12px">
+        <span style="font-size:26px">📦</span>
+        <div>
+          <div style="display:flex;align-items:center;gap:10px">
+            <h3 style="margin:0;font-size:18px">Customer Orders & Backend Database</h3>
+            <span id="ordersCountBadge" style="background:var(--accent);color:#000;font-size:11px;font-weight:900;padding:3px 10px;border-radius:999px">0 Orders</span>
+          </div>
+          <p style="margin:4px 0 0;font-size:11px;color:var(--muted)">All checkout orders permanently saved in database (Local, GitHub Cloud & Backend API)</p>
+        </div>
+      </div>
+      <div style="display:flex;gap:8px;align-items:center">
+        <button type="button" class="top-btn" id="refreshOrdersBtn" title="Refresh orders list" style="padding:7px 14px;font-size:11px">🔄 Refresh</button>
+        <button type="button" class="top-btn" id="exportOrdersBtn" title="Download Excel/CSV Spreadsheet" style="padding:7px 14px;font-size:11px">📥 Export CSV</button>
+        <button class="close-btn" data-close="ordersModal">&times;</button>
+      </div>
+    </div>
+
+    <!-- Quick Stats Cards -->
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px;margin-bottom:14px">
+      <div style="background:rgba(255,255,255,0.03);border:1px solid var(--line);border-radius:10px;padding:12px 14px">
+        <div style="font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:1px;font-weight:800">Total Orders</div>
+        <div id="statTotalOrders" style="font-size:20px;font-weight:900;color:#fff;margin-top:4px">0</div>
+      </div>
+      <div style="background:rgba(245,158,11,0.06);border:1px solid rgba(245,158,11,0.25);border-radius:10px;padding:12px 14px">
+        <div style="font-size:10px;color:#f59e0b;text-transform:uppercase;letter-spacing:1px;font-weight:800">Pending</div>
+        <div id="statPendingOrders" style="font-size:20px;font-weight:900;color:#f59e0b;margin-top:4px">0</div>
+      </div>
+      <div style="background:rgba(59,130,246,0.06);border:1px solid rgba(59,130,246,0.25);border-radius:10px;padding:12px 14px">
+        <div style="font-size:10px;color:#60a5fa;text-transform:uppercase;letter-spacing:1px;font-weight:800">Confirmed</div>
+        <div id="statConfirmedOrders" style="font-size:20px;font-weight:900;color:#60a5fa;margin-top:4px">0</div>
+      </div>
+      <div style="background:rgba(16,185,129,0.06);border:1px solid rgba(16,185,129,0.25);border-radius:10px;padding:12px 14px">
+        <div style="font-size:10px;color:#10b981;text-transform:uppercase;letter-spacing:1px;font-weight:800">Delivered</div>
+        <div id="statDeliveredOrders" style="font-size:20px;font-weight:900;color:#10b981;margin-top:4px">0</div>
+      </div>
+      <div style="background:rgba(192,38,211,0.08);border:1px solid rgba(192,38,211,0.3);border-radius:10px;padding:12px 14px">
+        <div style="font-size:10px;color:var(--accent);text-transform:uppercase;letter-spacing:1px;font-weight:800">Total Revenue</div>
+        <div id="statTotalRevenue" style="font-size:20px;font-weight:900;color:var(--accent);margin-top:4px">Rs. 0</div>
+      </div>
+    </div>
+
+    <!-- Filter & Search Toolbar -->
+    <div style="display:flex;gap:10px;margin-bottom:14px;flex-wrap:wrap">
+      <input type="text" id="orderSearchInput" class="form-input" placeholder="🔍 Search by Order ID, Name, Phone, City, Shoe..." style="flex:1;min-width:200px;font-size:12px;padding:9px 12px">
+      <select id="orderStatusFilter" class="form-select" style="width:auto;min-width:140px;font-size:12px;padding:9px 12px">
+        <option value="ALL">All Statuses</option>
+        <option value="Pending">Pending</option>
+        <option value="Confirmed">Confirmed</option>
+        <option value="Shipped">Shipped</option>
+        <option value="Delivered">Delivered</option>
+        <option value="Cancelled">Cancelled</option>
+      </select>
+    </div>
+
+    <!-- Orders Table / List Area -->
+    <div id="ordersListContainer" style="flex:1;overflow-y:auto;display:flex;flex-direction:column;gap:12px;padding-right:4px;min-height:260px;max-height:55vh">
+      <div style="text-align:center;padding:40px;color:var(--muted);font-size:13px">Loading orders from backend...</div>
     </div>
   </div>
 </div>
@@ -2069,6 +2135,407 @@ async function autoSaveAndPublish(msg = "Changes updated & saved live!") {
 $("publishLiveBtn").addEventListener("click", async () => {
   await pushStoreDataToGitHub(false);
 });
+
+// ==========================================
+// CUSTOMER ORDERS & BACKEND DATABASE MANAGER
+// ==========================================
+let allOrders = [];
+const ORDERS_BACKUP_KEY = "alizox_orders_backup";
+
+async function pushOrdersDataToGitHub(ordersArray) {
+  try {
+    const token = getSecToken() || getMasterSecrets().token;
+    if (!token) return false;
+    let sha = null;
+    try {
+      const getRes = await fetch(`https://api.github.com/repos/${GITHUB_REPO}/contents/orders-data.json?t=${Date.now()}`, {
+        headers: { "Authorization": `Bearer ${token}`, "Accept": "application/vnd.github.v3+json" }
+      });
+      if (getRes.ok) {
+        const gj = await getRes.json();
+        sha = gj.sha;
+      }
+    } catch(e) {}
+
+    const payload = {
+      updatedAt: new Date().toISOString(),
+      orders: ordersArray
+    };
+    const jsonStr = JSON.stringify(payload, null, 2);
+    const base64Content = btoa(unescape(encodeURIComponent(jsonStr)));
+    const body = {
+      message: "ALIZOX Admin: Sync customer orders database",
+      content: base64Content,
+      branch: "main"
+    };
+    if (sha) body.sha = sha;
+
+    const putRes = await fetch(`https://api.github.com/repos/${GITHUB_REPO}/contents/orders-data.json`, {
+      method: "PUT",
+      headers: {
+        "Authorization": `Bearer ${token}`,
+        "Content-Type": "application/json",
+        "Accept": "application/vnd.github.v3+json"
+      },
+      body: JSON.stringify(body)
+    });
+    return putRes.ok;
+  } catch(err) {
+    console.error("pushOrdersDataToGitHub error:", err);
+    return false;
+  }
+}
+
+async function loadOrdersFromBackend() {
+  let ordersList = null;
+
+  // 1. Try local server or Vercel serverless /api/orders
+  try {
+    const res = await fetch("api/orders?t=" + Date.now());
+    if (res.ok) {
+      const json = await res.json();
+      if (json && Array.isArray(json.orders)) {
+        ordersList = json.orders;
+      }
+    }
+  } catch(e) {}
+
+  // 2. Try static orders-data.json on server
+  if (!ordersList) {
+    try {
+      const res = await fetch("orders-data.json?t=" + Date.now(), { cache: "no-store" });
+      if (res.ok) {
+        const json = await res.json();
+        if (json && Array.isArray(json.orders)) ordersList = json.orders;
+      }
+    } catch(e) {}
+  }
+
+  // 3. Fallback to GitHub raw / API
+  if (!ordersList) {
+    try {
+      const ghRes = await fetch(`https://raw.githubusercontent.com/${GITHUB_REPO}/main/orders-data.json?t=${Date.now()}`);
+      if (ghRes.ok) {
+        const json = await ghRes.json();
+        if (json && Array.isArray(json.orders)) ordersList = json.orders;
+      }
+    } catch(e) {}
+  }
+
+  // 4. Merge any locally placed orders from localStorage backup
+  let localBackup = [];
+  try {
+    const rawLocal = localStorage.getItem(ORDERS_BACKUP_KEY);
+    if (rawLocal) localBackup = JSON.parse(rawLocal);
+  } catch(e) {}
+
+  if (!ordersList) ordersList = [];
+
+  // Merge unique by ID
+  const map = new Map();
+  ordersList.forEach(o => { if (o && o.id) map.set(o.id, o); });
+  if (Array.isArray(localBackup)) {
+    localBackup.forEach(o => {
+      if (o && o.id && !map.has(o.id)) {
+        map.set(o.id, o);
+      }
+    });
+  }
+
+  allOrders = Array.from(map.values()).sort((a,b) => {
+    const ta = new Date(a.createdAt || 0).getTime();
+    const tb = new Date(b.createdAt || 0).getTime();
+    return tb - ta; // newest first
+  });
+
+  // Update topbar badge
+  const pendingCount = allOrders.filter(o => (o.status || "Pending") === "Pending").length;
+  const badge = $("ordersBadge");
+  if (badge) {
+    if (pendingCount > 0) {
+      badge.textContent = pendingCount;
+      badge.style.display = "inline-block";
+    } else {
+      badge.style.display = "none";
+    }
+  }
+
+  // Update Stats Cards
+  const totalOrders = allOrders.length;
+  const confirmedCount = allOrders.filter(o => o.status === "Confirmed").length;
+  const deliveredCount = allOrders.filter(o => o.status === "Delivered").length;
+  const totalRev = allOrders.reduce((sum, o) => sum + (Number(o.subtotal) || 0), 0);
+
+  if ($("statTotalOrders")) $("statTotalOrders").textContent = totalOrders;
+  if ($("statPendingOrders")) $("statPendingOrders").textContent = pendingCount;
+  if ($("statConfirmedOrders")) $("statConfirmedOrders").textContent = confirmedCount;
+  if ($("statDeliveredOrders")) $("statDeliveredOrders").textContent = deliveredCount;
+  if ($("statTotalRevenue")) $("statTotalRevenue").textContent = "PKR " + totalRev.toLocaleString("en-PK");
+  if ($("ordersCountBadge")) $("ordersCountBadge").textContent = `${totalOrders} Orders`;
+
+  renderOrdersList();
+}
+
+function getStatusBadgeStyle(status) {
+  switch(status) {
+    case "Confirmed":
+      return { bg: "rgba(59,130,246,0.15)", text: "#60a5fa", border: "rgba(59,130,246,0.35)", icon: "✓" };
+    case "Shipped":
+      return { bg: "rgba(168,85,247,0.15)", text: "#c084fc", border: "rgba(168,85,247,0.35)", icon: "🚚" };
+    case "Delivered":
+      return { bg: "rgba(16,185,129,0.15)", text: "#34d399", border: "rgba(16,185,129,0.35)", icon: "🎉" };
+    case "Cancelled":
+      return { bg: "rgba(239,68,68,0.15)", text: "#f87171", border: "rgba(239,68,68,0.35)", icon: "✕" };
+    case "Pending":
+    default:
+      return { bg: "rgba(245,158,11,0.15)", text: "#f59e0b", border: "rgba(245,158,11,0.35)", icon: "⏳" };
+  }
+}
+
+function renderOrdersList() {
+  const container = $("ordersListContainer");
+  if (!container) return;
+
+  const search = ($("orderSearchInput") ? $("orderSearchInput").value.trim().toLowerCase() : "");
+  const statusFilter = ($("orderStatusFilter") ? $("orderStatusFilter").value : "ALL");
+
+  let filtered = allOrders.filter(o => {
+    if (statusFilter !== "ALL" && (o.status || "Pending") !== statusFilter) return false;
+    if (search) {
+      const idMatch = (o.id || "").toLowerCase().includes(search);
+      const nameMatch = (o.customer && o.customer.name || "").toLowerCase().includes(search);
+      const phoneMatch = (o.customer && o.customer.phone || "").toLowerCase().includes(search);
+      const cityMatch = (o.customer && o.customer.city || "").toLowerCase().includes(search);
+      const itemsMatch = Array.isArray(o.items) && o.items.some(it => (it.name || "").toLowerCase().includes(search));
+      if (!idMatch && !nameMatch && !phoneMatch && !cityMatch && !itemsMatch) return false;
+    }
+    return true;
+  });
+
+  if (!filtered.length) {
+    container.innerHTML = `
+      <div style="text-align:center;padding:50px 20px;color:var(--muted)">
+        <div style="font-size:36px;margin-bottom:8px">📭</div>
+        <div style="font-size:14px;font-weight:700;color:#aaa">No orders found</div>
+        <p style="font-size:11px;margin:4px 0 0">No orders match your filter criteria.</p>
+      </div>
+    `;
+    return;
+  }
+
+  container.innerHTML = filtered.map(order => {
+    const cust = order.customer || {};
+    const items = Array.isArray(order.items) ? order.items : [];
+    const dateStr = order.createdAt ? new Date(order.createdAt).toLocaleString("en-PK", { dateStyle: "medium", timeStyle: "short" }) : "Recent";
+    const stStyle = getStatusBadgeStyle(order.status || "Pending");
+    const cleanPhone = (cust.phone || "").replace(/[^0-9]/g, "");
+    const waPhone = cleanPhone.startsWith("0") ? "92" + cleanPhone.substring(1) : cleanPhone;
+    const waChatMsg = `Assalam-o-Alaikum ${cust.name || 'Customer'}! Main ALIZOX Team se baat kar raha hun regarding your order #${order.id}.`;
+
+    const itemsHtml = items.map(item => `
+      <div style="display:flex;align-items:center;gap:10px;padding:6px 0;border-bottom:1px solid rgba(255,255,255,0.04)">
+        <img src="${escapeHtml(item.image || 'images/shoe-purple.png')}" alt="${escapeHtml(item.name || 'Shoe')}" style="width:42px;height:42px;object-fit:contain;background:rgba(255,255,255,0.03);border-radius:6px;padding:2px;flex-shrink:0" onerror="this.src='images/shoe-purple.png'">
+        <div style="flex:1;min-width:0">
+          <div style="font-size:12px;font-weight:800;color:#eee;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${escapeHtml(item.name || 'Shoe')}</div>
+          <div style="font-size:10px;color:var(--muted);display:flex;gap:6px;align-items:center;margin-top:2px;flex-wrap:wrap">
+            <span>Color: <strong style="color:#ddd">${escapeHtml(item.color || 'Default')}</strong></span>
+            <span>•</span>
+            <span>Size: <strong style="color:var(--accent)">UK ${escapeHtml(item.size || '7')}</strong></span>
+            <span>•</span>
+            <span>Qty: <strong style="color:#fff">${item.quantity || 1}</strong></span>
+          </div>
+        </div>
+        <div style="font-size:12px;font-weight:900;color:#fff;text-align:right">
+          PKR ${Number((item.price || 0) * (item.quantity || 1)).toLocaleString("en-PK")}
+        </div>
+      </div>
+    `).join("");
+
+    return `
+      <div class="order-card" style="background:rgba(255,255,255,0.025);border:1px solid rgba(255,255,255,0.08);border-radius:12px;padding:16px;display:flex;flex-direction:column;gap:12px">
+        <!-- Order Header -->
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:10px;flex-wrap:wrap">
+          <div>
+            <div style="display:flex;align-items:center;gap:8px">
+              <span style="font-size:14px;font-weight:950;color:#fff;letter-spacing:0.5px">#${escapeHtml(order.id)}</span>
+              <span style="display:inline-flex;align-items:center;gap:4px;font-size:10px;font-weight:900;padding:2px 8px;border-radius:999px;background:${stStyle.bg};color:${stStyle.text};border:1px solid ${stStyle.border}">
+                ${stStyle.icon} ${escapeHtml(order.status || 'Pending')}
+              </span>
+            </div>
+            <div style="font-size:11px;color:var(--muted);margin-top:2px">📅 ${dateStr}</div>
+          </div>
+          <div style="text-align:right">
+            <div style="font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:0.5px">Total Amount</div>
+            <div style="font-size:16px;font-weight:950;color:var(--accent)">PKR ${Number(order.subtotal || 0).toLocaleString("en-PK")}</div>
+          </div>
+        </div>
+
+        <!-- Customer & Delivery Info Grid -->
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:10px;background:rgba(0,0,0,0.25);border:1px solid rgba(255,255,255,0.04);border-radius:8px;padding:10px 12px;font-size:11.5px">
+          <div>
+            <span style="color:var(--muted);font-size:10px;text-transform:uppercase">Customer</span>
+            <div style="font-weight:800;color:#fff;margin-top:1px">👤 ${escapeHtml(cust.name || 'Unnamed')}</div>
+            <div style="color:#aaa;margin-top:3px;display:flex;align-items:center;gap:6px">
+              📞 <a href="tel:${escapeHtml(cust.phone || '')}" style="color:var(--accent);text-decoration:none">${escapeHtml(cust.phone || 'No phone')}</a>
+              ${cleanPhone ? `<a href="https://wa.me/${waPhone}?text=${encodeURIComponent(waChatMsg)}" target="_blank" rel="noopener" style="font-size:10px;background:#25d366;color:#000;font-weight:900;padding:1px 6px;border-radius:4px;text-decoration:none" title="Chat on WhatsApp">💬 WA</a>` : ''}
+            </div>
+          </div>
+          <div>
+            <span style="color:var(--muted);font-size:10px;text-transform:uppercase">Shipping Address</span>
+            <div style="color:#eee;margin-top:1px">📍 ${escapeHtml(cust.address || 'Address not provided')}</div>
+            <div style="color:var(--muted);margin-top:2px">City: <strong style="color:#ddd">${escapeHtml(cust.city || 'Pakistan')}</strong></div>
+          </div>
+          <div>
+            <span style="color:var(--muted);font-size:10px;text-transform:uppercase">Payment & Notes</span>
+            <div style="color:#eee;margin-top:1px">💳 ${escapeHtml(cust.payment || 'Cash on Delivery')}</div>
+            ${cust.notes && cust.notes !== 'None' ? `<div style="color:#f59e0b;font-size:10.5px;margin-top:2px">📝 “${escapeHtml(cust.notes)}”</div>` : ''}
+          </div>
+        </div>
+
+        <!-- Ordered Items -->
+        <div style="background:rgba(255,255,255,0.015);border:1px solid rgba(255,255,255,0.04);border-radius:8px;padding:8px 12px">
+          <div style="font-size:10px;color:var(--muted);text-transform:uppercase;margin-bottom:4px;letter-spacing:0.5px">Order Items (${items.length})</div>
+          ${itemsHtml || '<div style="font-size:11px;color:var(--muted)">No item details attached</div>'}
+        </div>
+
+        <!-- Order Actions Footer -->
+        <div style="display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;padding-top:6px;border-top:1px solid rgba(255,255,255,0.05)">
+          <div style="display:flex;align-items:center;gap:8px">
+            <label style="font-size:10.5px;color:var(--muted)">Status:</label>
+            <select onchange="updateOrderStatus('${order.id}', this.value)" class="form-select" style="width:auto;font-size:11px;padding:4px 8px;height:auto">
+              <option value="Pending" ${order.status === 'Pending' ? 'selected' : ''}>⏳ Pending</option>
+              <option value="Confirmed" ${order.status === 'Confirmed' ? 'selected' : ''}>✓ Confirmed</option>
+              <option value="Shipped" ${order.status === 'Shipped' ? 'selected' : ''}>🚚 Shipped</option>
+              <option value="Delivered" ${order.status === 'Delivered' ? 'selected' : ''}>🎉 Delivered</option>
+              <option value="Cancelled" ${order.status === 'Cancelled' ? 'selected' : ''}>✕ Cancelled</option>
+            </select>
+          </div>
+          <div style="display:flex;gap:8px;align-items:center">
+            ${cleanPhone ? `
+              <a href="https://wa.me/${waPhone}?text=${encodeURIComponent(waChatMsg)}" target="_blank" rel="noopener" class="top-btn" style="text-decoration:none;padding:6px 12px;font-size:10.5px;background:#25d366;color:#000;font-weight:900">
+                💬 WhatsApp Customer
+              </a>
+            ` : ''}
+            <button type="button" class="top-btn btn-danger" onclick="deleteOrderById('${order.id}')" style="padding:6px 12px;font-size:10.5px">
+              🗑️ Delete
+            </button>
+          </div>
+        </div>
+      </div>
+    `;
+  }).join("");
+}
+
+async function updateOrderStatus(orderId, newStatus) {
+  const order = allOrders.find(o => o.id === orderId);
+  if (!order) return;
+  order.status = newStatus;
+
+  showToast(`Updating Order #${orderId} to ${newStatus}...`);
+
+  // 1. Try local server endpoint or Vercel serverless /api/orders
+  try {
+    await fetch("api/orders", {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ id: orderId, status: newStatus })
+    });
+  } catch(e) {}
+
+  // 2. Direct GitHub sync fallback
+  try {
+    await pushOrdersDataToGitHub(allOrders);
+  } catch(e) {}
+
+  // 3. Update localStorage backup
+  try {
+    localStorage.setItem(ORDERS_BACKUP_KEY, JSON.stringify(allOrders));
+  } catch(e) {}
+
+  showToast(`✅ Order #${orderId} marked as ${newStatus}!`);
+  loadOrdersFromBackend();
+}
+window.updateOrderStatus = updateOrderStatus;
+
+async function deleteOrderById(orderId) {
+  if (!confirm(`Are you sure you want to permanently delete Order #${orderId}?`)) return;
+
+  allOrders = allOrders.filter(o => o.id !== orderId);
+
+  showToast(`Deleting Order #${orderId}...`);
+
+  // 1. Try /api/orders?id=...
+  try {
+    await fetch(`api/orders?id=${orderId}`, { method: "DELETE" });
+  } catch(e) {}
+
+  // 2. Direct GitHub sync fallback
+  try {
+    await pushOrdersDataToGitHub(allOrders);
+  } catch(e) {}
+
+  // 3. Update localStorage backup
+  try {
+    localStorage.setItem(ORDERS_BACKUP_KEY, JSON.stringify(allOrders));
+  } catch(e) {}
+
+  showToast(`🗑️ Order #${orderId} deleted successfully.`);
+  loadOrdersFromBackend();
+}
+window.deleteOrderById = deleteOrderById;
+
+function exportOrdersCSV() {
+  if (!allOrders.length) {
+    alert("No orders to export!");
+    return;
+  }
+
+  const headers = ["Order ID", "Date", "Customer Name", "Phone", "City", "Shipping Address", "Payment Method", "Items Description", "Subtotal (PKR)", "Status", "Customer Notes"];
+  const rows = allOrders.map(o => {
+    const cust = o.customer || {};
+    const items = Array.isArray(o.items) ? o.items.map(it => `${it.name} (UK ${it.size}, Qty: ${it.quantity})`).join("; ") : "";
+    return [
+      `"${o.id || ''}"`,
+      `"${o.createdAt ? new Date(o.createdAt).toLocaleString('en-PK') : ''}"`,
+      `"${(cust.name || '').replace(/"/g, '""')}"`,
+      `"${(cust.phone || '').replace(/"/g, '""')}"`,
+      `"${(cust.city || '').replace(/"/g, '""')}"`,
+      `"${(cust.address || '').replace(/"/g, '""')}"`,
+      `"${(cust.payment || '').replace(/"/g, '""')}"`,
+      `"${items.replace(/"/g, '""')}"`,
+      Number(o.subtotal || 0),
+      `"${o.status || 'Pending'}"`,
+      `"${(cust.notes || '').replace(/"/g, '""')}"`
+    ].join(",");
+  });
+
+  const csvContent = "data:text/csv;charset=utf-8," + [headers.join(","), ...rows].join("\n");
+  const encodedUri = encodeURI(csvContent);
+  const link = document.createElement("a");
+  const dateStr = new Date().toISOString().split("T")[0];
+  link.setAttribute("href", encodedUri);
+  link.setAttribute("download", `ALIZOX-Orders-${dateStr}.csv`);
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+  showToast("📥 Exported orders spreadsheet successfully!");
+}
+
+// Wire up Orders events
+if ($("openOrdersBtn")) {
+  $("openOrdersBtn").addEventListener("click", () => {
+    $("ordersModal").classList.add("open");
+    loadOrdersFromBackend();
+  });
+}
+if ($("refreshOrdersBtn")) $("refreshOrdersBtn").addEventListener("click", loadOrdersFromBackend);
+if ($("exportOrdersBtn")) $("exportOrdersBtn").addEventListener("click", exportOrdersCSV);
+if ($("orderSearchInput")) $("orderSearchInput").addEventListener("input", renderOrdersList);
+if ($("orderStatusFilter")) $("orderStatusFilter").addEventListener("change", renderOrdersList);
+
+// Initial load & periodic polling
+loadOrdersFromBackend();
+setInterval(loadOrdersFromBackend, 35000);
 </script>
 </body>
 </html>
