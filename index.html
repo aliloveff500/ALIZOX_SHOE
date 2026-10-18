@@ -6,8 +6,10 @@
 <meta name="theme-color" content="#111114">
 <title>ALIZOX — Move Different</title>
 <style>
-:root{--accent:#c026d3;--accent2:#581c87;--glow:rgba(192,38,211,.45);--page1:#be185d;--page2:#581c87;--ink:#f8f8fb;--muted:#a4a4b1;--panel:#121216;--line:rgba(255,255,255,.09)}
+:root{--accent:#0284c7;--accent2:#1e3a8a;--glow:rgba(2,132,199,.45);--page1:#0284c7;--page2:#1e3a8a;--ink:#f8f8fb;--muted:#a4a4b1;--panel:#121216;--line:rgba(255,255,255,.09)}
 *{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:#050508;color:var(--ink);font-family:Inter,ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;overflow-x:hidden}button,a{font:inherit}button{cursor:pointer}a{color:inherit;text-decoration:none}
+@keyframes siteEntrance{0%{opacity:0;transform:translateY(30px)}100%{opacity:1;transform:translateY(0)}}
+.site-app{animation:siteEntrance .75s cubic-bezier(.16,1,.3,1) both;width:100%;overflow-x:hidden}
 .ambient{position:fixed;inset:0;z-index:-2;background:radial-gradient(ellipse at 18% 20%,var(--glow),transparent 48%),radial-gradient(ellipse at 85% 78%,var(--accent2),transparent 42%),#050508;transition:background 850ms ease}
 .site-header{height:84px;padding:0 clamp(20px,5vw,76px);display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid rgba(255,255,255,.07);position:relative;z-index:10;background:rgba(10,10,13,.75);backdrop-filter:blur(18px)}
 .brand{font-weight:950;letter-spacing:.16em;font-size:22px;display:flex;align-items:center;gap:10px}
@@ -159,52 +161,123 @@
 
 footer{border-top:1px solid rgba(255,255,255,.08);padding:28px clamp(20px,5vw,76px);display:flex;align-items:center;justify-content:space-between;gap:20px;color:#7d7d89;font-size:10px;letter-spacing:.06em}footer .brand{color:#f7f7fb;font-size:16px}.footer-links{display:flex;gap:22px;flex-wrap:wrap}.footer-links a:hover{color:var(--accent)}.toast{position:fixed;bottom:24px;left:50%;transform:translate(-50%,20px);background:#f7f7fb;color:#111;padding:13px 19px;border-radius:9px;font-size:12px;font-weight:800;opacity:0;pointer-events:none;transition:all .3s;z-index:50}.toast.show{opacity:1;transform:translate(-50%,0)}.mobile-menu{display:none}
 
-@media(max-width:1050px){
- .hero-content{grid-template-columns:.8fr 1.15fr .65fr;padding-left:30px;padding-right:30px}.product-copy h1{font-size:43px}.hero-card{min-height:560px}.hero-content{min-height:410px}
- .shoe-stage{overflow:visible;padding:10px 0}
- .shoe-image{max-width:92%;max-height:280px;width:auto;height:auto}
- .product-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
- .product-card-img{height:220px;padding:10px}
- .why-grid{grid-template-columns:repeat(2,1fr)}
+/* Responsive Layout Optimization for All Devices (PC, Laptop, Tablet, Mobile) */
+@media(max-width:1050px) and (min-width:761px){
+ .site-header{height:76px;padding:0 24px}
+ .hero-wrap{padding:24px 20px 60px;min-height:auto}
+ .hero-shell{min-height:auto}
+ .hero-card{min-height:auto;border-radius:22px}
+ .hero-top{padding:20px 24px}
+ .hero-content{
+   grid-template-columns:1fr 1fr;
+   gap:18px 24px;
+   padding:20px 24px 80px;
+   min-height:auto;
+ }
+ .product-copy{grid-column:1;grid-row:1}
+ .product-copy h1{font-size:clamp(32px,4.5vw,46px);margin:10px 0 12px}
+ .description{max-width:100%;font-size:12.5px}
+ .shoe-stage{grid-column:2;grid-row:1/3;height:320px;display:flex;align-items:center;justify-content:center;padding:10px 0}
+ .shoe-image{max-width:96%;max-height:270px;transform:rotate(-3deg)}
+ .product-info{grid-column:1;grid-row:2;padding-left:0}
+ .price{font-size:32px;margin:6px 0 14px}
+ .purchase-options{grid-template-columns:1fr 1fr;gap:10px}
+ .hero-buy-actions{grid-template-columns:1fr 1fr;gap:10px;margin-top:14px}
+ .buy-btn{padding:14px 10px;font-size:10px;margin-top:0}
+ .cart-add-btn{padding:14px 10px;font-size:10px;margin-top:0}
+ .slider-footer{left:24px;right:24px;bottom:18px}
+ .product-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
+ .product-card-img{height:210px;padding:12px}
+ .reviews-grid{grid-template-columns:repeat(2,1fr);gap:16px}
+ .why-grid{grid-template-columns:repeat(2,1fr);gap:14px}
  .about-hero-grid{grid-template-columns:1fr}
  .about-hero-founder{border-right:0;border-bottom:1px solid var(--line)}
 }
+
 @media(max-width:760px){
- .site-header{height:70px;padding:0 18px}.brand{font-size:19px}.nav{display:none}.menu-toggle{display:grid}.header-actions .icon-btn:first-child{display:none}
- .mobile-menu{position:absolute;top:70px;left:0;right:0;background:#121216;border-bottom:1px solid var(--line);padding:20px;display:none;flex-direction:column;gap:20px;font-size:11px;font-weight:900;letter-spacing:.15em;text-transform:uppercase}.mobile-menu.open{display:flex}
- .hero-wrap{padding:18px 12px 50px;min-height:auto}.hero-shell{min-height:0}.hero-card{min-height:0;border-radius:19px;overflow:visible}.hero-top{padding:19px 19px 4px}
- .hero-content{grid-template-columns:1fr 1fr;gap:0;padding:25px 20px 90px;min-height:520px}
- .product-copy{grid-column:1/3;grid-row:1;padding:0 0 4px}
- .product-copy h1{font-size:clamp(36px,10vw,54px);max-width:none;margin:13px 0 10px}
- .description{font-size:12px;max-width:340px}.copy-cta{margin-top:14px}
- .shoe-stage{grid-column:1/3;grid-row:2;height:220px;margin-top:0;display:flex;align-items:center;justify-content:center;overflow:visible;padding:6px 0}
- .shoe-image{max-width:92%;max-height:190px;width:auto;height:auto;transform:rotate(-3deg)}
- .product-info{grid-column:1/3;grid-row:3;display:grid;grid-template-columns:1fr 1fr;gap:0 15px;padding:0 0 8px}
- .product-info .price-label,.product-info .price{grid-column:1}
- .product-info .detail-line{display:none}
- .product-info .color-area{grid-column:2;grid-row:1/3;align-self:center}
- .product-info .purchase-options{grid-column:1/3;grid-row:3;margin-top:12px}
- .product-info .buy-btn{grid-column:1/3;grid-row:4;margin-top:13px;align-self:end}
- .price{font-size:30px;margin:6px 0 0}.slider-footer{left:18px;right:18px;bottom:17px}.socials{display:none}.scroll-note{display:none}.ghost-word{font-size:23vw;top:42%}
- .section{padding:70px 18px}.section-head{display:block}.section-sub{margin-top:17px}
- .product-grid{gap:12px}
- .product-card-img{height:180px;padding:10px}
- .product-card-img img{max-width:90%;max-height:90%}
- .card-body{padding:13px}.card-title{font-size:13px}.card-desc{font-size:10px}
- .mission-vision-grid{grid-template-columns:1fr}
- .why-grid{grid-template-columns:1fr}
- footer{align-items:flex-start;flex-direction:column;padding:25px 20px}.footer-links{gap:15px}
+ .site-header{height:68px;padding:0 16px}
+ .brand{font-size:18px;letter-spacing:.12em}
+ .nav{display:none}
+ .menu-toggle{display:grid}
+ .header-actions .icon-btn:first-child{display:grid}
+ .mobile-menu{position:absolute;top:68px;left:0;right:0;background:#121216;border-bottom:1px solid var(--line);padding:20px 18px;display:none;flex-direction:column;gap:18px;font-size:11px;font-weight:900;letter-spacing:.15em;text-transform:uppercase;box-shadow:0 15px 40px rgba(0,0,0,.6);z-index:90}
+ .mobile-menu.open{display:flex}
+ .hero-wrap{padding:14px 12px 45px;min-height:auto}
+ .hero-shell{min-height:auto}
+ .hero-card{min-height:auto;border-radius:18px;overflow:visible}
+ .hero-top{padding:16px 16px 4px}
+ .hero-content{display:flex;flex-direction:column;gap:14px;padding:16px 16px 76px;min-height:auto}
+ .ghost-word{font-size:20vw;top:38%}
+ .product-copy{padding:0;text-align:left}
+ .product-copy h1{font-size:clamp(32px,8.5vw,44px);line-height:1.05;margin:8px 0 10px}
+ .description{font-size:12.5px;max-width:100%;line-height:1.65}
+ .copy-cta{margin-top:10px}
+ .shoe-stage{height:220px;padding:8px 0;margin:2px 0;display:flex;align-items:center;justify-content:center}
+ .shoe-image{max-width:92%;max-height:195px;transform:rotate(-3deg)}
+ .product-info{padding-left:0;width:100%}
+ .price{font-size:28px;margin:6px 0 12px}
+ .detail-line{margin:12px 0}
+ .color-area{margin-bottom:8px}
+ .purchase-options{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px}
+ .size-select{height:42px;padding:10px 8px;font-size:12px}
+ .quantity-control{height:42px;padding:4px 8px}
+ .hero-buy-actions{display:grid;grid-template-columns:1fr;gap:10px;margin-top:14px}
+ .buy-btn{padding:14px;font-size:11px;margin-top:0;height:48px}
+ .cart-add-btn{padding:12px;font-size:10.5px;margin-top:0;height:44px}
+ .slider-footer{left:16px;right:16px;bottom:16px}
+ .socials,.scroll-note{display:none}
+ .section{padding:54px 16px}
+ .section-head{display:block;margin-bottom:22px}
+ .section h2{font-size:clamp(28px,7vw,38px)}
+ .section-sub{margin-top:10px;font-size:12.5px}
+ .filter-row{gap:8px;margin-bottom:20px}
+ .filter-btn{padding:8px 14px;font-size:9.5px}
+ .product-grid{grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:14px}
+ .product-card-img{height:190px;padding:10px}
+ .product-card-img img{max-width:92%;max-height:92%}
+ .card-body{padding:14px}
+ .card-title{font-size:14px}
+ .card-desc{font-size:11px}
+ .reviews-summary{padding:14px 16px;gap:12px}
+ .reviews-score{font-size:24px}
+ .reviews-grid{grid-template-columns:1fr;gap:14px}
+ .review-card{padding:20px 18px}
+ .why-grid{grid-template-columns:1fr;gap:12px}
+ .mission-vision-grid{grid-template-columns:1fr;gap:14px}
+ .mv-card{padding:24px 20px}
+ .about-hero-grid{grid-template-columns:1fr}
+ .about-hero-founder{padding:24px 18px;border-right:0;border-bottom:1px solid var(--line)}
+ .about-story-col{padding:24px 18px}
+ .founder-avatar{width:64px;height:64px;font-size:24px}
+ .founder-meta h3{font-size:24px}
+ .founder-quote-banner{padding:28px 18px}
+ .quote-text{font-size:16px;line-height:1.6}
+ footer{flex-direction:column;align-items:flex-start;padding:24px 16px;gap:16px}
+ .footer-links{gap:14px}
+ .search-panel{right:12px;width:calc(100vw - 24px)}
+ .cart-drawer{width:100%}
+ .cart-content{padding:16px}
+ .drawer-head{padding:16px 18px}
+ .cart-line{grid-template-columns:62px 1fr auto;gap:10px}
+ .cart-line img{width:62px;height:58px}
+ .order-stepper{gap:2px;margin:12px 0 10px}
+ .step-icon{width:22px;height:22px;font-size:9.5px}
+ .step-label{font-size:8px}
+ .step-item:not(:last-child):after{top:11px}
+ .review-modal{padding:20px 16px;border-radius:18px}
+ .form-row{grid-template-columns:1fr;gap:10px}
 }
-@media(max-width:390px){
- .hero-content{padding-left:15px;padding-right:15px}
- .product-info{grid-template-columns:1fr}
- .product-info .color-area{grid-column:1;grid-row:3;margin-top:12px}
- .product-info .size-area{grid-column:1;grid-row:4}
- .product-info .buy-btn{grid-column:1;grid-row:5}
- .product-info{padding-bottom:5px}.hero-content{padding-bottom:125px}
- .shoe-stage{height:190px}
+
+@media(max-width:380px){
+ .hero-card{border-radius:16px}
+ .hero-top{padding:14px 12px 2px}
+ .hero-content{padding:12px 12px 72px}
+ .product-copy h1{font-size:30px}
+ .shoe-stage{height:185px}
  .shoe-image{max-height:165px}
- .product-card-img{height:160px}
+ .price{font-size:25px}
+ .purchase-options{grid-template-columns:1fr}
+ .quick-stat-val{font-size:14px}
 }
 @media(prefers-reduced-motion:reduce){*,*:before,*:after{scroll-behavior:auto!important;transition:none!important;animation:none!important}}
 
@@ -274,27 +347,6 @@ footer{border-top:1px solid rgba(255,255,255,.08);padding:28px clamp(20px,5vw,76
 .reviews-score span{font-size:13px;color:var(--muted);font-weight:700}
 .reviews-pill{display:flex;align-items:center;gap:8px;font-size:11px;color:#c8c8d5;font-weight:750}
 @media(max-width:1050px){.reviews-grid{grid-template-columns:repeat(2,1fr)}}
-/* Preloader Styles */
-.preloader{position:fixed;inset:0;z-index:999999;background:#050508;display:flex;align-items:center;justify-content:center;transition:opacity .65s cubic-bezier(.4,0,.2,1),visibility .65s ease;user-select:none}
-.preloader.fade-out{opacity:0;visibility:hidden;pointer-events:none}
-.preloader-content{display:flex;flex-direction:column;align-items:center;text-align:center}
-.preloader-logo-wrap{position:relative;width:120px;height:120px;display:grid;place-items:center;margin-bottom:20px}
-.preloader-glow-ring{position:absolute;inset:-6px;border-radius:50%;border:1.5px dashed rgba(192,38,211,.5);animation:spinRing 7s linear infinite;box-shadow:0 0 30px rgba(192,38,211,.25)}
-.preloader-glow-ring.ring-outer{inset:-16px;border:1px solid rgba(56,189,248,.3);border-top-color:transparent;border-bottom-color:transparent;animation:spinRingRev 10s linear infinite}
-@keyframes spinRing{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
-@keyframes spinRingRev{from{transform:rotate(360deg)}to{transform:rotate(0deg)}}
-.preloader-emblem{width:86px;height:86px;animation:pulseEmblem 2.2s ease-in-out infinite alternate}
-@keyframes pulseEmblem{0%{transform:scale(.95);filter:drop-shadow(0 0 15px rgba(192,38,211,.5))}100%{transform:scale(1.05);filter:drop-shadow(0 0 35px rgba(56,189,248,.85))}}
-.emblem-hex{stroke-dasharray:300;stroke-dashoffset:300;animation:dashDraw 2.4s cubic-bezier(.4,0,.2,1) infinite alternate}
-@keyframes dashDraw{0%{stroke-dashoffset:300}100%{stroke-dashoffset:0}}
-.emblem-slash{stroke-dasharray:80;stroke-dashoffset:80;animation:slashDraw 1.8s ease-in-out infinite alternate}
-@keyframes slashDraw{0%{stroke-dashoffset:80}100%{stroke-dashoffset:0}}
-.preloader-brand{font-size:26px;font-weight:950;letter-spacing:.28em;color:#fff;margin-bottom:8px;text-shadow:0 0 20px rgba(192,38,211,.6);animation:brandGlow 2s ease-in-out infinite alternate}
-@keyframes brandGlow{0%{letter-spacing:.24em;opacity:.88}100%{letter-spacing:.32em;opacity:1;text-shadow:0 0 30px rgba(56,189,248,.8)}}
-.preloader-tagline{font-size:9px;letter-spacing:.22em;font-weight:800;color:#8e8e9e;text-transform:uppercase;margin-bottom:22px}
-.preloader-bar{width:160px;height:3px;background:rgba(255,255,255,.08);border-radius:999px;overflow:hidden;position:relative}
-.preloader-progress{position:absolute;inset:0;width:50%;background:linear-gradient(90deg,#c026d3,#38bdf8);border-radius:999px;animation:loadingSlide 1.5s ease-in-out infinite}
-@keyframes loadingSlide{0%{transform:translateX(-100%)}50%{transform:translateX(50%)}100%{transform:translateX(200%)}}
 
 /* Customer Reviews Interactive Button & Modal Styles */
 .write-review-btn{display:inline-flex;align-items:center;gap:8px;padding:11px 20px;background:linear-gradient(135deg,rgba(192,38,211,.22),rgba(88,28,135,.3));border:1px solid var(--accent);color:#fff;border-radius:10px;font-size:11px;font-weight:900;letter-spacing:.1em;text-transform:uppercase;cursor:pointer;transition:all .25s ease;box-shadow:0 6px 20px rgba(192,38,211,.25)}
@@ -325,44 +377,8 @@ footer{border-top:1px solid rgba(255,255,255,.08);padding:28px clamp(20px,5vw,76
 </style>
 </head>
 <body>
-<!-- ANIMATED PRELOADER SCREEN -->
-<div id="preloader" class="preloader" aria-hidden="true">
-  <div class="preloader-content">
-    <div class="preloader-logo-wrap">
-      <div class="preloader-glow-ring"></div>
-      <div class="preloader-glow-ring ring-outer"></div>
-      <svg class="preloader-emblem" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <defs>
-          <linearGradient id="preGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-            <stop offset="0%" stop-color="#e879f9" />
-            <stop offset="50%" stop-color="#c026d3" />
-            <stop offset="100%" stop-color="#38bdf8" />
-          </linearGradient>
-          <filter id="preGlow" x="-30%" y="-30%" width="160%" height="160%">
-            <feGaussianBlur stdDeviation="3.5" result="blur" />
-            <feMerge>
-              <feMergeNode in="blur" />
-              <feMergeNode in="SourceGraphic" />
-            </feMerge>
-          </filter>
-        </defs>
-        <!-- Futuristic Hexagonal Shield -->
-        <polygon class="emblem-hex" points="50,6 88,27 88,73 50,94 12,73 12,27" stroke="url(#preGrad)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
-        <!-- Bold Geometric 'A' Monogram -->
-        <path class="emblem-a" d="M50 18 L25 72 L38 72 L44 58 L56 58 L62 72 L75 72 Z M50 34 L54 50 L46 50 Z" fill="url(#preGrad)" filter="url(#preGlow)"/>
-        <!-- Dynamic Neon Speed Slash -->
-        <path class="emblem-slash" d="M20 62 Q50 68 80 50" stroke="#38bdf8" stroke-width="3" stroke-linecap="round"/>
-      </svg>
-    </div>
-    <div class="preloader-brand">ALIZOX</div>
-    <div class="preloader-tagline">MOVE DIFFERENT · STEP INTO YOUR STYLE</div>
-    <div class="preloader-bar">
-      <div class="preloader-progress"></div>
-    </div>
-  </div>
-</div>
-
 <div class="ambient" id="ambient"></div>
+<div class="site-app">
 <header class="site-header">
   <a class="brand" href="#home" aria-label="ALIZOX home"><span class="brand-mark">A</span>ALIZOX</a>
   <nav class="nav" aria-label="Main navigation">
@@ -383,12 +399,12 @@ footer{border-top:1px solid rgba(255,255,255,.08);padding:28px clamp(20px,5vw,76
    <div class="hero-top"><span class="mini-label">ALIZOX / Signature Series</span><span class="status"><span class="status-dot"></span> Designed to move</span></div>
    <div class="hero-content" id="slider" aria-live="polite">
     <div class="ghost-word">ALIZOX</div>
-    <div class="product-copy"><div class="eyebrow" id="eyebrow">New season / 01</div><h1 id="productName">PULSE <span>SHIFT</span></h1><p class="description" id="productDescription">A bold everyday silhouette with a futuristic edge. Built for your own lane.</p><a href="#shop" class="copy-cta"><span class="play-dot">↗</span> Explore collection</a></div>
-    <div class="shoe-stage"><img class="shoe-image" id="shoeImage" alt="Featured ALIZOX sneaker" src="images/shoe-purple.png"></div>
+    <div class="product-copy"><div class="eyebrow" id="eyebrow">Motion series / 03</div><h1 id="productName">AERO <span>FLOW</span></h1><p class="description" id="productDescription">Light-looking lines and a versatile shape made for everyday movement and effortless fits.</p><a href="#shop" class="copy-cta"><span class="play-dot">↗</span> Explore collection</a></div>
+    <div class="shoe-stage"><img class="shoe-image" id="shoeImage" alt="Featured ALIZOX sneaker" src="images/shoe-blue.png"></div>
     <aside class="product-info">
-      <div class="price-label">ALIZOX price</div><div class="price" id="price">PKR 8,499</div>
+      <div class="price-label">ALIZOX price</div><div class="price" id="price">PKR 2,999</div>
       <div class="detail-line"></div>
-      <div class="color-area"><div class="detail-label">Colorway</div><div class="color-name" id="colorName">Voltage Purple</div><div class="swatches" id="swatches"></div></div>
+      <div class="color-area"><div class="detail-label">Colorway</div><div class="color-name" id="colorName">Ice Blue</div><div class="swatches" id="swatches"></div></div>
       <div class="purchase-options"><div class="size-area"><div class="detail-label">Select size (UK)</div><select class="size-select" id="sizeSelect" aria-label="Select shoe size"><option>UK 5</option><option>UK 6</option><option selected>UK 7</option><option>UK 8</option><option>UK 9</option><option>UK 10</option></select></div><div class="quantity-area"><div class="quantity-label">Quantity</div><div class="quantity-control"><button type="button" id="qtyMinus" aria-label="Decrease quantity">−</button><output id="quantityValue" aria-live="polite">1</output><button type="button" id="qtyPlus" aria-label="Increase quantity">+</button></div></div></div>
       <div class="hero-buy-actions"><button class="buy-btn" id="buyBtn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 11.5a8.4 8.4 0 0 1-8.5 8.5 9 9 0 0 1-4-.9L3 21l1.9-5.2a9 9 0 1 1 16.1-4.3Z"/><path d="M8.5 9.5c.8 2 2 3.2 4 4"/></svg> Buy via WhatsApp</button><button class="cart-add-btn" id="addToCartBtn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 8h14l1 12H4L5 8Z"/><path d="M9 8V6a3 3 0 0 1 6 0v2M8 13h8"/></svg> Add to cart</button></div>
     </aside>
@@ -651,6 +667,7 @@ footer{border-top:1px solid rgba(255,255,255,.08);padding:28px clamp(20px,5vw,76
     <a href="https://wa.me/923079436896" target="_blank" rel="noopener" id="footerWa">WhatsApp Order</a>
   </div>
 </footer>
+</div><!-- /.site-app -->
 
 <div class="drawer-backdrop" id="drawerBackdrop"></div>
 <aside class="cart-drawer" id="cartDrawer" aria-label="Shopping cart" aria-hidden="true">
@@ -777,30 +794,15 @@ if (window.top !== window.self) {
   try { window.top.location = window.self.location; } catch(e) { window.location = "about:blank"; }
 }
 
-// PRELOADER DISMISSAL CONTROLLER
-function hidePreloader(){
-  const p = document.getElementById("preloader");
-  if(!p || p.classList.contains("fade-out")) return;
-  p.classList.add("fade-out");
-  setTimeout(()=>{ try { p.remove(); } catch(e){} }, 700);
-}
-const _loadStart = Date.now();
-window.addEventListener("load", ()=>{
-  const elapsed = Date.now() - _loadStart;
-  const delay = Math.max(0, 1100 - elapsed);
-  setTimeout(hidePreloader, delay);
-});
-setTimeout(hidePreloader, 2600);
-
 const products = [
+ {id:3,name:"AERO",sub:"FLOW",tag:"Motion series / 03",description:"Light-looking lines and a versatile shape made for everyday movement and effortless fits.",price:2999,category:"Women",type:"Streetwear",theme:["#0284c7","#1e3a8a","rgba(2,132,199,.45)"],colors:[
+  {name:"Ice Blue",hex:"#58c8ff",image:"images/shoe-blue.png"}
+ ]},
  {id:1,name:"PULSE",sub:"SHIFT",tag:"New season / 01",description:"A bold everyday silhouette with a futuristic edge. Built for your own lane.",price:3488,category:"Men",type:"Streetwear",theme:["#c026d3","#581c87","rgba(192,38,211,.45)"],colors:[
   {name:"Voltage Purple",hex:"#b62dff",image:"images/shoe-purple.png"}
  ]},
  {id:2,name:"NOVA",sub:"RUSH",tag:"Energy line / 02",description:"A clean, athletic profile with high-contrast color and a street-ready attitude.",price:4546,category:"Men",type:"Streetwear",theme:["#e11d48","#881337","rgba(225,29,72,.45)"],colors:[
   {name:"Solar Red",hex:"#ff453a",image:"images/shoe-red.png"}
- ]},
- {id:3,name:"AERO",sub:"FLOW",tag:"Motion series / 03",description:"Light-looking lines and a versatile shape made for everyday movement and effortless fits.",price:2999,category:"Women",type:"Streetwear",theme:["#0284c7","#1e3a8a","rgba(2,132,199,.45)"],colors:[
-  {name:"Ice Blue",hex:"#58c8ff",image:"images/shoe-blue.png"}
  ]},
  {id:4,name:"ECLIPSE",sub:"CORE",tag:"Core collection / 04",description:"Understated from a distance, impossible to ignore up close. Your daily rotation, redefined.",price:4999,category:"Women",type:"Streetwear",theme:["#059669","#064e3b","rgba(5,150,105,.45)"],colors:[
   {name:"Emerald Night",hex:"#10b981",image:"images/shoe-green.png"}
@@ -812,7 +814,7 @@ const formatPrice=n=>"PKR "+n.toLocaleString("en-PK");
 const escHtml=s=>String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
 
 function applyTheme(p){
-  const glow = (p.theme && p.theme[2]) ? p.theme[2] : "rgba(192,38,211,.45)";
+  const glow = (p.theme && p.theme[2]) ? p.theme[2] : "rgba(2,132,199,.45)";
   document.documentElement.style.setProperty("--accent", p.theme[0]);
   document.documentElement.style.setProperty("--accent2", p.theme[1]);
   document.documentElement.style.setProperty("--glow", glow);
@@ -981,7 +983,7 @@ function selectColor(index){
   if(colorways[index]) selectAvailableColorway(colorways[index]);
 }
 
-function themeFromHex(hex, fallback = ["#c026d3", "#581c87", "rgba(192, 38, 211, 0.45)"]) {
+function themeFromHex(hex, fallback = ["#0284c7", "#1e3a8a", "rgba(2, 132, 199, 0.45)"]) {
   const map = {
     "#ff453a": ["#e11d48", "#881337", "rgba(225, 29, 72, 0.45)"],
     "#ff4b35": ["#e11d48", "#881337", "rgba(225, 29, 72, 0.45)"],
