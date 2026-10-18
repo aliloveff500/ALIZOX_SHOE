@@ -1,6 +1,33 @@
 {
-  "updatedAt": "2026-10-18T03:52:27.192Z",
+  "updatedAt": "2026-10-18T05:33:38.731Z",
   "orders": [
+    {
+      "id": "ALX-53707",
+      "createdAt": "2026-10-18T05:33:37.610Z",
+      "customer": {
+        "name": "Ali Ff",
+        "phone": "03222222222",
+        "address": "Ismail pura\nStreet no: 17",
+        "city": "Lahore",
+        "payment": "Easypaisa — confirm manually",
+        "notes": "Test"
+      },
+      "items": [
+        {
+          "productId": 4,
+          "name": "ECLIPSE CORE",
+          "color": "Emerald Night",
+          "size": "UK 7",
+          "price": 2898,
+          "quantity": 1,
+          "image": "images/shoe-orange.png"
+        }
+      ],
+      "subtotal": 2898,
+      "currency": "PKR",
+      "status": "Pending",
+      "source": "Storefront Web"
+    },
     {
       "id": "ALX-66577",
       "createdAt": "2026-10-18T03:51:56.341Z",
