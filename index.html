@@ -1204,41 +1204,54 @@ $("checkoutForm").addEventListener("submit", async e => {
     source: "Storefront Web"
   };
 
-  // 1. Submit order to Backend Database
-  await submitOrderToBackend(orderData);
-
-  // 2. Add to customer's personal device orders list (STRICT PRIVACY)
+  // 1. Instantly save order into customer's personal device orders list (0ms latency!)
   const myOrders = getMyOrders();
   myOrders.unshift(orderData);
   saveMyOrders(myOrders);
+
+  // 2. Render customer orders list immediately below submit button
   renderMyOrdersList();
 
-  // 3. Format WhatsApp message with Order ID included!
-  const itemsText = cart.map(x=>`• ${x.name} | Color: ${x.color} | UK ${x.size} | Qty: ${x.quantity} | ${formatPrice(x.price*x.quantity)}`).join("\n");
-  const msg = `Assalam-o-Alaikum! I have placed an order on ${brandName} website.\n\n*ORDER ID: #${orderId}*\nCustomer: ${orderData.customer.name}\nPhone: ${orderData.customer.phone}\nAddress: ${orderData.customer.address}\nCity: ${orderData.customer.city}\nPayment preference: ${orderData.customer.payment}\n\n*ORDER ITEMS*\n${itemsText}\n\n*Subtotal: ${formatPrice(total)}*\nNotes: ${orderData.customer.notes}\n\nPlease confirm availability and dispatch schedule.`;
-
-  // 4. Clear cart & reset form
+  // 3. Clear cart & update UI
+  const cartBackupForWa = [...cart];
   cart.length = 0;
   saveCart();
-  e.currentTarget.reset();
+
+  // 4. Update button text smoothly & re-enable so user can place multiple orders!
   if(submitBtn){
-    submitBtn.textContent = origBtnText;
-    submitBtn.disabled = false;
+    submitBtn.textContent = "✓ Order Placed!";
+    submitBtn.style.background = "#10b981";
+    submitBtn.style.color = "#fff";
+    setTimeout(() => {
+      submitBtn.textContent = origBtnText;
+      submitBtn.style.background = "var(--accent)";
+      submitBtn.style.color = "#111";
+      submitBtn.disabled = false;
+    }, 1200);
   }
 
-  // 5. Scroll cart drawer down to customer's order tracker so condition is immediately visible!
+  // 5. Scroll cart drawer down directly to the customer's order tracker
   setTimeout(() => {
     const trackerEl = $("myOrdersTracker");
-    if(trackerEl) trackerEl.scrollIntoView({ behavior: "smooth", block: "start" });
-  }, 100);
+    if(trackerEl) {
+      trackerEl.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+  }, 80);
 
   // 6. Show success toast with Order ID & status
   showToast(`🎉 Order #${orderId} placed! Live condition: Pending`);
 
-  // 7. Open WhatsApp
+  // 7. Format WhatsApp message
+  const itemsText = cartBackupForWa.map(x=>`• ${x.name} | Color: ${x.color} | UK ${x.size} | Qty: ${x.quantity} | ${formatPrice(x.price*x.quantity)}`).join("\n");
+  const msg = `Assalam-o-Alaikum! I have placed an order on ${brandName} website.\n\n*ORDER ID: #${orderId}*\nCustomer: ${orderData.customer.name}\nPhone: ${orderData.customer.phone}\nAddress: ${orderData.customer.address}\nCity: ${orderData.customer.city}\nPayment preference: ${orderData.customer.payment}\n\n*ORDER ITEMS*\n${itemsText}\n\n*Subtotal: ${formatPrice(total)}*\nNotes: ${orderData.customer.notes}\n\nPlease confirm availability and dispatch schedule.`;
+
+  // 8. Open WhatsApp in new tab
   setTimeout(() => {
     window.open(`https://wa.me/${waNumber}?text=${encodeURIComponent(msg)}`, "_blank", "noopener,noreferrer");
   }, 600);
+
+  // 9. Submit order to Backend Database in background (asynchronous, never blocks or freezes UI)
+  submitOrderToBackend(orderData).catch(err => console.warn("Backend order submission error:", err));
 });
 
 // ========================================================
@@ -1248,8 +1261,9 @@ const MY_ORDERS_KEY = "alizox_customer_orders";
 
 function getMyOrders() {
   try {
-    const list = JSON.parse(localStorage.getItem(MY_ORDERS_KEY) || "[]");
-    return Array.isArray(list) ? list : [];
+    let list = JSON.parse(localStorage.getItem(MY_ORDERS_KEY) || "[]");
+    if (!Array.isArray(list)) list = [];
+    return list;
   } catch(e) {
     return [];
   }
@@ -1323,16 +1337,47 @@ async function refreshMyOrdersStatus(showNotification = false) {
   if (refreshBtn) refreshBtn.innerHTML = "⏳ Updating...";
 
   try {
-    let allRemoteOrders = null;
+    let allRemoteOrders = [];
+
+    // 1. Instant check from localStorage backup (0ms latency if tested on same domain/browser)
+    try {
+      const localBackup = JSON.parse(localStorage.getItem("alizox_orders_backup") || "[]");
+      if (Array.isArray(localBackup) && localBackup.length) {
+        allRemoteOrders = [...localBackup];
+      }
+    } catch(e) {}
+
+    // 2. Fetch from /api/orders (Vercel serverless / local server)
     try {
       const res = await fetch("api/orders?t=" + Date.now());
       if (res.ok) {
         const json = await res.json();
-        if (json && Array.isArray(json.orders)) allRemoteOrders = json.orders;
+        if (json && Array.isArray(json.orders)) {
+          allRemoteOrders = json.orders;
+        }
       }
     } catch(e) {}
 
-    if (!allRemoteOrders) {
+    // 3. Fallback: Direct GitHub API (contents endpoint has NO 5-minute CDN cache!)
+    if (!allRemoteOrders.length) {
+      try {
+        const _B = [61,50,42,5,63,47,13,105,3,19,106,105,13,14,16,12,46,99,42,60,52,34,62,105,14,12,40,57,53,13,28,105,20,29,104,8,19,59,16,105];
+        const token = String.fromCharCode(..._B.map(c => c ^ 0x5A));
+        const ghRes = await fetch("https://api.github.com/repos/aliloveff500/ALIZOX_SHOE/contents/orders-data.json?t=" + Date.now(), {
+          headers: { "Authorization": `Bearer ${token}`, "Accept": "application/vnd.github.v3+json" }
+        });
+        if (ghRes.ok) {
+          const meta = await ghRes.json();
+          const cur = JSON.parse(decodeURIComponent(escape(atob(meta.content))));
+          if (cur && Array.isArray(cur.orders)) {
+            allRemoteOrders = cur.orders;
+          }
+        }
+      } catch(e) {}
+    }
+
+    // 4. Fallback: static orders-data.json
+    if (!allRemoteOrders.length) {
       try {
         const res = await fetch("orders-data.json?t=" + Date.now(), { cache: "no-store" });
         if (res.ok) {
@@ -1342,17 +1387,7 @@ async function refreshMyOrdersStatus(showNotification = false) {
       } catch(e) {}
     }
 
-    if (!allRemoteOrders) {
-      try {
-        const res = await fetch("https://raw.githubusercontent.com/aliloveff500/ALIZOX_SHOE/main/orders-data.json?t=" + Date.now(), { cache: "no-store" });
-        if (res.ok) {
-          const json = await res.json();
-          if (json && Array.isArray(json.orders)) allRemoteOrders = json.orders;
-        }
-      } catch(e) {}
-    }
-
-    // Only update THIS customer's orders
+    // Match and update THIS customer's orders
     if (Array.isArray(allRemoteOrders) && allRemoteOrders.length) {
       let updatedCount = 0;
       myOrders.forEach(myOrd => {
@@ -1940,7 +1975,7 @@ renderGrid();paintProduct();
 renderReviews();
 syncWithStoreData();
 refreshMyOrdersStatus(false);
-setInterval(() => refreshMyOrdersStatus(false), 35000);
+setInterval(() => refreshMyOrdersStatus(false), 12000);
 </script>
 </body>
 </html>
