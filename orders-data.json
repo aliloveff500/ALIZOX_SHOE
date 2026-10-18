@@ -1,6 +1,33 @@
 {
-  "updatedAt": "2026-10-18T08:15:00.000Z",
+  "updatedAt": "2026-10-18T03:46:56.396Z",
   "orders": [
+    {
+      "id": "ALX-59469",
+      "createdAt": "2026-10-18T03:46:28.853Z",
+      "customer": {
+        "name": "Ali Ff",
+        "phone": "0328181888",
+        "address": "Ismail pura\nStreet no: 17",
+        "city": "Lahore",
+        "payment": "JazzCash — confirm manually",
+        "notes": "hhh"
+      },
+      "items": [
+        {
+          "productId": 1,
+          "name": "PULSE SHIFT",
+          "color": "Voltage Purple",
+          "size": "UK 7",
+          "price": 3488,
+          "quantity": 1,
+          "image": "images/shoe-purple.png"
+        }
+      ],
+      "subtotal": 3488,
+      "currency": "PKR",
+      "status": "Pending",
+      "source": "Storefront Web"
+    },
     {
       "id": "ALX-1001",
       "createdAt": "2026-10-18T08:00:00.000Z",
