@@ -1,32 +1,32 @@
 {
-  "updatedAt": "2026-10-18T03:32:30.943Z",
+  "updatedAt": "2026-10-18T08:15:00.000Z",
   "orders": [
     {
-      "id": "ALX-26727",
-      "createdAt": "2026-10-18T03:23:16.816Z",
+      "id": "ALX-1001",
+      "createdAt": "2026-10-18T08:00:00.000Z",
       "customer": {
-        "name": "Ali Ff",
-        "phone": "989123847591847513",
-        "address": "Ismail pura\nStreet no: 17",
+        "name": "Hamza Malik",
+        "phone": "03001234567",
         "city": "Lahore",
-        "payment": "Easypaisa — confirm manually",
-        "notes": "test"
+        "address": "House 12, Street 4, Gulberg III",
+        "payment": "Easypaisa - confirm manually",
+        "notes": "Please call before delivery"
       },
       "items": [
         {
-          "productId": 1,
-          "name": "PULSE SHIFT",
-          "color": "Voltage Purple",
-          "size": "UK 7",
-          "price": 3488,
+          "productId": 2,
+          "name": "NOVA RUSH",
+          "color": "Solar Red",
+          "size": "8",
+          "price": 4546,
           "quantity": 1,
-          "image": "images/shoe-purple.png"
+          "image": "images/shoe-red.png"
         }
       ],
-      "subtotal": 3488,
+      "subtotal": 4546,
       "currency": "PKR",
       "status": "Pending",
-      "source": "Storefront Web"
+      "source": "Web Checkout"
     }
   ]
 }
