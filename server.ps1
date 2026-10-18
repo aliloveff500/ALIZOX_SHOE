@@ -64,6 +64,10 @@ try {
                 $resBytes = [System.Text.Encoding]::UTF8.GetBytes('{"error":"Failed to write file"}')
                 $response.OutputStream.Write($resBytes, 0, $resBytes.Length)
             }
+            $response.OutputStream.Close()
+            continue
+        }
+
         # Handle Orders API (Local Development & Server)
         if ($localPath -eq "api/orders" -or $localPath -eq "orders-data.json") {
             $ordersFilePath = Join-Path $baseDir "orders-data.json"
