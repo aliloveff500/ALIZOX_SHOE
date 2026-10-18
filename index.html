@@ -210,6 +210,51 @@ footer{border-top:1px solid rgba(255,255,255,.08);padding:28px clamp(20px,5vw,76
 
 /* Search, cart and checkout additions */
 .search-panel{display:none;position:absolute;top:calc(100% + 8px);right:clamp(16px,5vw,76px);width:min(430px,calc(100vw - 32px));padding:16px;background:#17171c;border:1px solid var(--line);border-radius:14px;box-shadow:0 20px 60px #0009;z-index:30}.search-panel.open{display:block}.search-input{width:100%;padding:14px 15px;border-radius:9px;border:1px solid var(--line);background:#0e0e12;color:#fff;outline:none}.search-input:focus{border-color:var(--accent)}.search-hint{font-size:10px;color:#8f8f9a;margin:9px 2px 0}.cart-count{position:absolute;top:-4px;right:-4px;min-width:18px;height:18px;padding:0 4px;border-radius:20px;background:var(--accent);color:#111;font-size:10px;font-weight:900;display:grid;place-items:center}.cart-trigger{position:relative}.hero-buy-actions{display:grid;grid-template-columns:1fr 1fr;gap:9px}.cart-add-btn{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;padding:14px 10px;margin-top:10px;background:transparent;color:#fff;border:1px solid var(--accent);border-radius:7px;font-size:9px;font-weight:950;letter-spacing:.09em;text-transform:uppercase;transition:all .2s}.cart-add-btn:hover{background:var(--accent);color:#111;transform:translateY(-2px)}.cart-add-btn svg{width:16px;height:16px}.drawer-backdrop{position:fixed;inset:0;background:#0009;backdrop-filter:blur(4px);z-index:100;opacity:0;pointer-events:none;transition:opacity .25s}.drawer-backdrop.open{opacity:1;pointer-events:auto}.cart-drawer{position:fixed;z-index:101;top:0;right:0;width:min(520px,100%);height:100dvh;background:#121216;border-left:1px solid var(--line);transform:translateX(102%);transition:transform .3s ease;display:flex;flex-direction:column;box-shadow:-25px 0 70px #0008}.cart-drawer.open{transform:translateX(0)}.drawer-head{display:flex;align-items:center;justify-content:space-between;padding:22px 24px;border-bottom:1px solid var(--line)}.drawer-head h2{font-size:21px;margin:0}.close-drawer{border:1px solid var(--line);background:#202026;color:#fff;border-radius:50%;width:36px;height:36px;font-size:21px}.cart-content{padding:20px 24px;overflow:auto;flex:1}.cart-empty{padding:38px 10px;text-align:center;color:#9b9ba6}.cart-line{display:grid;grid-template-columns:76px 1fr auto;gap:13px;padding:14px 0;border-bottom:1px solid var(--line);align-items:center}.cart-line img{width:76px;height:70px;object-fit:contain;background:#1b1b20;border-radius:9px}.cart-line h3{font-size:13px;margin:0 0 6px}.cart-line p{font-size:11px;color:#a4a4b1;margin:3px 0}.cart-line .line-price{font-size:12px;font-weight:900;white-space:nowrap}.line-actions{display:flex;align-items:center;gap:8px;margin-top:8px}.line-actions button{width:25px;height:25px;background:#292930;color:#fff;border:1px solid var(--line);border-radius:5px}.remove-line{font-size:10px!important;color:#ff9b9b!important;background:none!important;border:0!important;width:auto!important}.cart-total{display:flex;justify-content:space-between;gap:15px;padding:20px 0;font-weight:900}.checkout-form{border-top:1px solid var(--line);padding-top:18px;display:grid;gap:11px}.checkout-form h3{font-size:14px;margin:0 0 4px}.checkout-form label{display:grid;gap:6px;color:#aaaab5;font-size:10px;letter-spacing:.04em}.checkout-form input,.checkout-form textarea,.checkout-form select{width:100%;background:#202026;color:#fff;border:1px solid var(--line);border-radius:7px;padding:11px;font:inherit;font-size:12px;outline:none}.checkout-form input:focus,.checkout-form textarea:focus,.checkout-form select:focus{border-color:var(--accent)}.checkout-form textarea{resize:vertical;min-height:65px}.checkout-submit{width:100%;border:0;border-radius:8px;padding:14px;background:var(--accent);color:#111;font-weight:950;letter-spacing:.07em;text-transform:uppercase}.checkout-note{font-size:10px;color:#8e8e9a;line-height:1.6;margin:0}.cart-open-btn{position:relative}.card-actions{display:flex;gap:8px;margin-top:13px}.card-actions button{flex:1;padding:10px 8px;border:1px solid var(--line);background:#202026;color:#fff;border-radius:7px;font-size:9px;font-weight:850;text-transform:uppercase;letter-spacing:.05em}.card-actions button:last-child{background:var(--accent);color:#111;border-color:var(--accent)}
+/* Customer My Orders & Live Tracking Styles */
+.my-orders-tracker{margin-top:26px;padding-top:20px;border-top:1px solid rgba(255,255,255,.1)}
+.tracker-head-row{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:14px}
+.tracker-title{font-size:12px;font-weight:900;letter-spacing:.12em;text-transform:uppercase;color:#fff;display:flex;align-items:center;gap:8px}
+.tracker-badge{background:var(--accent);color:#000;font-size:9.5px;font-weight:950;padding:2px 7px;border-radius:999px}
+.refresh-tracking-btn{background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.12);color:#ccc;font-size:10px;font-weight:800;padding:5px 11px;border-radius:6px;transition:all .2s;display:inline-flex;align-items:center;gap:5px;cursor:pointer}
+.refresh-tracking-btn:hover{background:var(--accent);color:#000;border-color:var(--accent)}
+.my-order-card{background:linear-gradient(145deg,#191921,#111116);border:1px solid rgba(255,255,255,.08);border-radius:14px;padding:15px;margin-bottom:14px;position:relative;overflow:hidden;transition:border-color .3s}
+.my-order-card:hover{border-color:rgba(255,255,255,.2)}
+.order-top-row{display:flex;justify-content:space-between;align-items:flex-start;gap:8px;margin-bottom:12px}
+.order-id-label{font-size:13px;font-weight:950;color:#fff;letter-spacing:.03em}
+.order-date-label{font-size:10.5px;color:var(--muted);margin-top:2px}
+.condition-pill{display:inline-flex;align-items:center;gap:5px;font-size:10px;font-weight:900;padding:4px 10px;border-radius:999px;letter-spacing:.05em}
+.condition-pill.pending{background:rgba(245,158,11,.15);color:#f59e0b;border:1px solid rgba(245,158,11,.35);box-shadow:0 0 14px rgba(245,158,11,.15)}
+.condition-pill.confirmed{background:rgba(59,130,246,.15);color:#60a5fa;border:1px solid rgba(59,130,246,.35);box-shadow:0 0 14px rgba(59,130,246,.15)}
+.condition-pill.shipped{background:rgba(168,85,247,.15);color:#c084fc;border:1px solid rgba(168,85,247,.35);box-shadow:0 0 14px rgba(168,85,247,.15)}
+.condition-pill.delivered{background:rgba(16,185,129,.15);color:#34d399;border:1px solid rgba(16,185,129,.35);box-shadow:0 0 14px rgba(16,185,129,.15)}
+.condition-pill.cancelled{background:rgba(239,68,68,.15);color:#f87171;border:1px solid rgba(239,68,68,.35)}
+
+/* 4-Step Stepper Progress Bar */
+.order-stepper{display:grid;grid-template-columns:repeat(4,1fr);gap:4px;margin:14px 0 12px;position:relative}
+.step-item{display:flex;flex-direction:column;align-items:center;text-align:center;position:relative}
+.step-item:not(:last-child):after{content:"";position:absolute;top:12px;left:50%;width:100%;height:2px;background:rgba(255,255,255,.08);z-index:1}
+.step-item.active-line:not(:last-child):after{background:var(--accent)}
+.step-icon{width:26px;height:26px;border-radius:50%;background:#1d1d24;border:2px solid rgba(255,255,255,.15);color:#888;display:grid;place-items:center;font-size:11px;font-weight:900;position:relative;z-index:2;transition:all .3s}
+.step-item.done .step-icon{background:var(--accent);color:#000;border-color:var(--accent);box-shadow:0 0 10px var(--glow)}
+.step-item.current .step-icon{background:#111;color:var(--accent);border-color:var(--accent);box-shadow:0 0 12px var(--glow);animation:pulseStep 1.8s infinite}
+@keyframes pulseStep{0%,100%{transform:scale(1)}50%{transform:scale(1.15)}}
+.step-label{font-size:9.5px;font-weight:800;color:#888;margin-top:6px;letter-spacing:.04em;text-transform:uppercase}
+.step-item.done .step-label,.step-item.current .step-label{color:#fff;font-weight:900}
+
+.order-msg-box{background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.06);border-radius:8px;padding:9px 12px;font-size:11px;color:#d0d0dc;line-height:1.5;margin-bottom:12px}
+.order-items-mini{display:flex;flex-direction:column;gap:6px;margin-bottom:12px;background:rgba(0,0,0,.2);border-radius:8px;padding:8px 10px}
+.order-item-row{display:flex;align-items:center;gap:8px;font-size:11px}
+.order-item-img{width:34px;height:34px;object-fit:contain;background:rgba(255,255,255,.04);border-radius:5px}
+.order-card-foot{display:flex;justify-content:space-between;align-items:center;gap:10px;padding-top:10px;border-top:1px solid rgba(255,255,255,.06);font-size:11px;flex-wrap:wrap}
+.order-wa-ask-btn{background:#25d366;color:#000;padding:6px 12px;border-radius:6px;font-size:10px;font-weight:900;display:inline-flex;align-items:center;gap:4px;text-decoration:none}
+
+.manual-track-box{margin-top:14px;background:rgba(255,255,255,.02);border:1px dashed rgba(255,255,255,.1);border-radius:10px;padding:12px}
+.manual-track-toggle{background:none;border:none;color:var(--accent);font-size:11px;font-weight:850;cursor:pointer;padding:0;display:flex;align-items:center;gap:6px}
+.manual-track-fields{margin-top:10px;display:grid;gap:8px}
+.track-input{background:#181820;border:1px solid var(--line);border-radius:6px;padding:8px 10px;color:#fff;font-size:11.5px;outline:none}
+.track-input:focus{border-color:var(--accent)}
+.track-submit-btn{background:var(--accent);color:#000;border:none;border-radius:6px;padding:9px;font-size:11px;font-weight:900;cursor:pointer;transition:all .2s}
+.track-submit-btn:hover{filter:brightness(1.15)}
 @media(max-width:760px){.header-actions .icon-btn:first-child{display:grid}.search-panel{right:12px}.hero-buy-actions{grid-template-columns:1fr}.cart-content{padding:16px}.drawer-head{padding:18px 16px}.cart-line{grid-template-columns:62px 1fr auto;gap:9px}.cart-line img{width:62px;height:62px}}
 
 /* Reviews Section */
@@ -608,7 +653,67 @@ footer{border-top:1px solid rgba(255,255,255,.08);padding:28px clamp(20px,5vw,76
 </footer>
 
 <div class="drawer-backdrop" id="drawerBackdrop"></div>
-<aside class="cart-drawer" id="cartDrawer" aria-label="Shopping cart" aria-hidden="true"><div class="drawer-head"><h2>Your ALIZOX Cart</h2><button class="close-drawer" id="closeCart" aria-label="Close cart">×</button></div><div class="cart-content"><div id="cartItems"></div><div class="cart-total"><span>Subtotal</span><strong id="cartSubtotal">PKR 0</strong></div><form class="checkout-form" id="checkoutForm"><h3>Checkout details</h3><label>Full name *<input name="customerName" required maxlength="100" autocomplete="name" placeholder="Your full name"></label><label>Phone / WhatsApp *<input name="phone" required type="tel" maxlength="25" autocomplete="tel" placeholder="03XX XXXXXXX"></label><label>Delivery address *<textarea name="address" required maxlength="500" autocomplete="street-address" placeholder="House, street, area"></textarea></label><label>City *<input name="city" required maxlength="80" autocomplete="address-level2" placeholder="e.g. Lahore"></label><label>Payment method<select name="payment"><option value="Easypaisa — confirm manually">Easypaisa (confirm manually)</option><option value="JazzCash — confirm manually">JazzCash (confirm manually)</option><option value="Bank transfer — confirm manually">Bank transfer (confirm manually)</option></select></label><label>Order notes (optional)<textarea name="notes" maxlength="500" placeholder="Any delivery instructions"></textarea></label><button class="checkout-submit" type="submit">Send order via WhatsApp</button><p class="checkout-note">🔒 Your order details are securely recorded in our store system. Submitting also opens WhatsApp with your order reference so our team can confirm dispatch immediately.</p></form></div></aside>
+<aside class="cart-drawer" id="cartDrawer" aria-label="Shopping cart" aria-hidden="true">
+  <div class="drawer-head">
+    <h2>Your ALIZOX Cart</h2>
+    <button class="close-drawer" id="closeCart" aria-label="Close cart">×</button>
+  </div>
+  <div class="cart-content">
+    <div id="cartItems"></div>
+    <div class="cart-total">
+      <span>Subtotal</span><strong id="cartSubtotal">PKR 0</strong>
+    </div>
+    <form class="checkout-form" id="checkoutForm">
+      <h3>Checkout details</h3>
+      <label>Full name *<input name="customerName" required maxlength="100" autocomplete="name" placeholder="Your full name"></label>
+      <label>Phone / WhatsApp *<input name="phone" required type="tel" maxlength="25" autocomplete="tel" placeholder="03XX XXXXXXX"></label>
+      <label>Delivery address *<textarea name="address" required maxlength="500" autocomplete="street-address" placeholder="House, street, area"></textarea></label>
+      <label>City *<input name="city" required maxlength="80" autocomplete="address-level2" placeholder="e.g. Lahore"></label>
+      <label>Payment method
+        <select name="payment">
+          <option value="Easypaisa — confirm manually">Easypaisa (confirm manually)</option>
+          <option value="JazzCash — confirm manually">JazzCash (confirm manually)</option>
+          <option value="Bank transfer — confirm manually">Bank transfer (confirm manually)</option>
+        </select>
+      </label>
+      <label>Order notes (optional)<textarea name="notes" maxlength="500" placeholder="Any delivery instructions"></textarea></label>
+      <button class="checkout-submit" type="submit">Send order via WhatsApp</button>
+      <p class="checkout-note">🔒 Your order details are securely recorded in our store system. Submitting also opens WhatsApp with your order reference so our team can confirm dispatch immediately.</p>
+    </form>
+
+    <!-- CUSTOMER'S OWN ORDERS & LIVE CONDITION TRACKER (PRIVATE) -->
+    <div class="my-orders-tracker" id="myOrdersTracker">
+      <div class="tracker-head-row">
+        <div class="tracker-title">
+          <span>📦</span>
+          <span>Your Orders & Live Status</span>
+          <span class="tracker-badge" id="myOrdersBadge" style="display:none">0</span>
+        </div>
+        <button type="button" class="refresh-tracking-btn" id="refreshTrackingBtn" title="Refresh live status">
+          🔄 Refresh
+        </button>
+      </div>
+
+      <!-- Orders List Container (Only this customer's orders) -->
+      <div id="myOrdersList"></div>
+
+      <!-- Private lookup for orders placed on another device -->
+      <div class="manual-track-box">
+        <button type="button" class="manual-track-toggle" id="manualTrackToggleBtn">
+          <span>🔍</span>
+          <span>Track an order placed on another phone?</span>
+        </button>
+        <div class="manual-track-fields" id="manualTrackFields" style="display:none">
+          <div style="font-size:10px;color:var(--muted)">Security check: Enter Order ID and matching Phone Number to verify.</div>
+          <input type="text" id="trackOrderIdInput" placeholder="Order ID (e.g. ALX-12345)" class="track-input">
+          <input type="tel" id="trackPhoneInput" placeholder="Phone number used at checkout" class="track-input">
+          <button type="button" id="submitTrackBtn" class="track-submit-btn">Verify & Load Order ➔</button>
+          <div id="trackResultAlert" style="display:none;font-size:11px;padding:8px 10px;border-radius:6px;line-height:1.4"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</aside>
 <!-- CUSTOMER REVIEW MODAL -->
 <div class="review-modal-backdrop" id="reviewModalBackdrop"></div>
 <div class="review-modal" id="reviewModal" role="dialog" aria-modal="true" aria-labelledby="reviewModalTitle">
@@ -958,7 +1063,7 @@ let cart=[];
 try{const saved=JSON.parse(localStorage.getItem(CART_KEY)||"[]");if(Array.isArray(saved))cart=saved;}catch(e){cart=[];}
 function saveCart(){try{localStorage.setItem(CART_KEY,JSON.stringify(cart));}catch(e){}renderCart();}
 function showToast(message){const t=$("toast");t.textContent=message;t.classList.add("show");clearTimeout(showToast.timer);showToast.timer=setTimeout(()=>t.classList.remove("show"),2200);}
-function openCart(){$("cartDrawer").classList.add("open");$("drawerBackdrop").classList.add("open");$("cartDrawer").setAttribute("aria-hidden","false");document.body.style.overflow="hidden";}
+function openCart(){$("cartDrawer").classList.add("open");$("drawerBackdrop").classList.add("open");$("cartDrawer").setAttribute("aria-hidden","false");document.body.style.overflow="hidden";if(typeof refreshMyOrdersStatus==="function")refreshMyOrdersStatus(false);}
 function closeCart(){$("cartDrawer").classList.remove("open");$("drawerBackdrop").classList.remove("open");$("cartDrawer").setAttribute("aria-hidden","true");document.body.style.overflow="";}
 function renderCart(){const totalQty=cart.reduce((n,x)=>n+x.quantity,0);$("cartCount").textContent=String(totalQty);$("cartSubtotal").textContent=formatPrice(cart.reduce((n,x)=>n+x.price*x.quantity,0));if(!cart.length){$("cartItems").innerHTML='<div class="cart-empty">Your cart is empty.<br><span style="font-size:11px">Add a pair from the collection to get started.</span></div>';return;}
 $("cartItems").innerHTML=cart.map((item,i)=>`<div class="cart-line"><img src="${item.image}" alt="${item.name}" onerror="this.style.opacity='.25'"><div><h3>${escapeHtml(item.name)}</h3><p>${escapeHtml(item.color)} · UK ${escapeHtml(item.size)}</p><p>${formatPrice(item.price)} each</p><div class="line-actions"><button type="button" data-cart-action="minus" data-i="${i}" aria-label="Decrease quantity">−</button><span>${item.quantity}</span><button type="button" data-cart-action="plus" data-i="${i}" aria-label="Increase quantity">+</button><button type="button" class="remove-line" data-cart-action="remove" data-i="${i}">Remove</button></div></div><strong class="line-price">${formatPrice(item.price*item.quantity)}</strong></div>`).join("");}
@@ -1102,28 +1207,390 @@ $("checkoutForm").addEventListener("submit", async e => {
   // 1. Submit order to Backend Database
   await submitOrderToBackend(orderData);
 
-  // 2. Format WhatsApp message with Order ID included!
+  // 2. Add to customer's personal device orders list (STRICT PRIVACY)
+  const myOrders = getMyOrders();
+  myOrders.unshift(orderData);
+  saveMyOrders(myOrders);
+  renderMyOrdersList();
+
+  // 3. Format WhatsApp message with Order ID included!
   const itemsText = cart.map(x=>`• ${x.name} | Color: ${x.color} | UK ${x.size} | Qty: ${x.quantity} | ${formatPrice(x.price*x.quantity)}`).join("\n");
   const msg = `Assalam-o-Alaikum! I have placed an order on ${brandName} website.\n\n*ORDER ID: #${orderId}*\nCustomer: ${orderData.customer.name}\nPhone: ${orderData.customer.phone}\nAddress: ${orderData.customer.address}\nCity: ${orderData.customer.city}\nPayment preference: ${orderData.customer.payment}\n\n*ORDER ITEMS*\n${itemsText}\n\n*Subtotal: ${formatPrice(total)}*\nNotes: ${orderData.customer.notes}\n\nPlease confirm availability and dispatch schedule.`;
 
-  // 3. Clear cart & reset
+  // 4. Clear cart & reset form
   cart.length = 0;
   saveCart();
-  closeCart();
   e.currentTarget.reset();
   if(submitBtn){
     submitBtn.textContent = origBtnText;
     submitBtn.disabled = false;
   }
 
-  // 4. Show success toast with Order ID
-  showToast(`🎉 Order #${orderId} confirmed & stored! Opening WhatsApp...`);
+  // 5. Scroll cart drawer down to customer's order tracker so condition is immediately visible!
+  setTimeout(() => {
+    const trackerEl = $("myOrdersTracker");
+    if(trackerEl) trackerEl.scrollIntoView({ behavior: "smooth", block: "start" });
+  }, 100);
 
-  // 5. Open WhatsApp
+  // 6. Show success toast with Order ID & status
+  showToast(`🎉 Order #${orderId} placed! Live condition: Pending`);
+
+  // 7. Open WhatsApp
   setTimeout(() => {
     window.open(`https://wa.me/${waNumber}?text=${encodeURIComponent(msg)}`, "_blank", "noopener,noreferrer");
-  }, 350);
+  }, 600);
 });
+
+// ========================================================
+// CUSTOMER'S OWN ORDERS & LIVE CONDITION TRACKER (STRICT PRIVACY)
+// ========================================================
+const MY_ORDERS_KEY = "alizox_customer_orders";
+
+function getMyOrders() {
+  try {
+    const list = JSON.parse(localStorage.getItem(MY_ORDERS_KEY) || "[]");
+    return Array.isArray(list) ? list : [];
+  } catch(e) {
+    return [];
+  }
+}
+
+function saveMyOrders(list) {
+  try {
+    localStorage.setItem(MY_ORDERS_KEY, JSON.stringify(list));
+  } catch(e) {}
+}
+
+function getConditionMeta(status) {
+  const s = (status || "Pending").toLowerCase();
+  if (s === "confirmed") {
+    return {
+      step: 2,
+      cls: "confirmed",
+      label: "✓ Confirmed",
+      icon: "✓",
+      msgUrdu: "Aapka order confirm ho chuka hai! Sneakers packing process mein hain.",
+      msgEng: "Order confirmed & packing in progress."
+    };
+  } else if (s === "shipped") {
+    return {
+      step: 3,
+      cls: "shipped",
+      label: "🚚 Shipped",
+      icon: "🚚",
+      msgUrdu: "Order courier ko handover ho chuka hai aur aapke address ki taraf rawana hai!",
+      msgEng: "Dispatched & on the way to your delivery address."
+    };
+  } else if (s === "delivered") {
+    return {
+      step: 4,
+      cls: "delivered",
+      label: "🎉 Delivered",
+      icon: "🎉",
+      msgUrdu: "Order successfully deliver ho gaya hai. ALIZOX shoes choose karne ka shukriya!",
+      msgEng: "Delivered! Thank you for choosing ALIZOX."
+    };
+  } else if (s === "cancelled") {
+    return {
+      step: 0,
+      cls: "cancelled",
+      label: "✕ Cancelled",
+      icon: "✕",
+      msgUrdu: "Ye order cancel ho chuka hai. Agar koi sawal ho toh WhatsApp support se rabta karein.",
+      msgEng: "Order cancelled."
+    };
+  } else {
+    // Pending
+    return {
+      step: 1,
+      cls: "pending",
+      label: "⏳ Pending",
+      icon: "⏳",
+      msgUrdu: "Aapka order receive ho chuka hai aur store verification ke process mein hai.",
+      msgEng: "Order received. Awaiting store verification."
+    };
+  }
+}
+
+async function refreshMyOrdersStatus(showNotification = false) {
+  const myOrders = getMyOrders();
+  if (!myOrders.length) {
+    renderMyOrdersList();
+    return;
+  }
+
+  const refreshBtn = $("refreshTrackingBtn");
+  if (refreshBtn) refreshBtn.innerHTML = "⏳ Updating...";
+
+  try {
+    let allRemoteOrders = null;
+    try {
+      const res = await fetch("api/orders?t=" + Date.now());
+      if (res.ok) {
+        const json = await res.json();
+        if (json && Array.isArray(json.orders)) allRemoteOrders = json.orders;
+      }
+    } catch(e) {}
+
+    if (!allRemoteOrders) {
+      try {
+        const res = await fetch("orders-data.json?t=" + Date.now(), { cache: "no-store" });
+        if (res.ok) {
+          const json = await res.json();
+          if (json && Array.isArray(json.orders)) allRemoteOrders = json.orders;
+        }
+      } catch(e) {}
+    }
+
+    if (!allRemoteOrders) {
+      try {
+        const res = await fetch("https://raw.githubusercontent.com/aliloveff500/ALIZOX_SHOE/main/orders-data.json?t=" + Date.now(), { cache: "no-store" });
+        if (res.ok) {
+          const json = await res.json();
+          if (json && Array.isArray(json.orders)) allRemoteOrders = json.orders;
+        }
+      } catch(e) {}
+    }
+
+    // Only update THIS customer's orders
+    if (Array.isArray(allRemoteOrders) && allRemoteOrders.length) {
+      let updatedCount = 0;
+      myOrders.forEach(myOrd => {
+        const remote = allRemoteOrders.find(r => r && String(r.id) === String(myOrd.id));
+        if (remote && remote.status && remote.status !== myOrd.status) {
+          myOrd.status = remote.status;
+          updatedCount++;
+        }
+      });
+      if (updatedCount > 0) {
+        saveMyOrders(myOrders);
+      }
+    }
+
+    if (showNotification) {
+      showToast("✅ Order condition updated live!");
+    }
+  } catch(err) {
+    console.warn("refreshMyOrdersStatus error:", err);
+  } finally {
+    if (refreshBtn) refreshBtn.innerHTML = "🔄 Refresh";
+    renderMyOrdersList();
+  }
+}
+
+function renderMyOrdersList() {
+  const container = $("myOrdersList");
+  if (!container) return;
+
+  const myOrders = getMyOrders();
+
+  const badge = $("myOrdersBadge");
+  if (badge) {
+    badge.textContent = myOrders.length ? `${myOrders.length}` : "";
+    badge.style.display = myOrders.length ? "inline-block" : "none";
+  }
+
+  if (!myOrders.length) {
+    container.innerHTML = `
+      <div style="background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.05);border-radius:10px;padding:16px 14px;text-align:center;color:var(--muted);font-size:11.5px">
+        <div style="font-size:22px;margin-bottom:4px">📦</div>
+        <div style="font-weight:700;color:#bbb">No orders placed yet</div>
+        <div style="font-size:10.5px;color:#7e7e8e;margin-top:2px">Jab aap upar se order place karenge, toh aapke order ki live condition (Pending, Confirmed, Shipped, Delivered) yahan real-time nazar aayegi.</div>
+      </div>
+    `;
+    return;
+  }
+
+  const waNum = getWhatsAppNumber();
+
+  container.innerHTML = myOrders.map(order => {
+    const meta = getConditionMeta(order.status);
+    const dateStr = order.createdAt ? new Date(order.createdAt).toLocaleDateString("en-PK", { month: "short", day: "numeric", hour: "2-digit", minute: "2-digit" }) : "Recent";
+    const items = Array.isArray(order.items) ? order.items : [];
+    const cust = order.customer || {};
+    const waInquiry = `Assalam-o-Alaikum! Main apne ALIZOX order #${order.id} ki condition ke baray mein maloomat lena chahta hun (Current status: ${meta.label}).`;
+
+    // Stepper HTML
+    let stepperHtml = "";
+    if (meta.cls === "cancelled") {
+      stepperHtml = `
+        <div style="background:rgba(239,68,68,0.1);border:1px solid rgba(239,68,68,0.25);border-radius:8px;padding:8px 10px;text-align:center;color:#f87171;font-size:11px;font-weight:800;margin:10px 0">
+          ✕ This order was cancelled.
+        </div>
+      `;
+    } else {
+      stepperHtml = `
+        <div class="order-stepper">
+          <div class="step-item ${meta.step > 1 ? 'done active-line' : (meta.step === 1 ? 'current' : '')}">
+            <div class="step-icon">${meta.step > 1 ? '✓' : '1'}</div>
+            <div class="step-label">Placed</div>
+          </div>
+          <div class="step-item ${meta.step > 2 ? 'done active-line' : (meta.step === 2 ? 'current' : '')}">
+            <div class="step-icon">${meta.step > 2 ? '✓' : '2'}</div>
+            <div class="step-label">Confirmed</div>
+          </div>
+          <div class="step-item ${meta.step > 3 ? 'done active-line' : (meta.step === 3 ? 'current' : '')}">
+            <div class="step-icon">${meta.step > 3 ? '✓' : '3'}</div>
+            <div class="step-label">Shipped</div>
+          </div>
+          <div class="step-item ${meta.step === 4 ? 'done' : ''}">
+            <div class="step-icon">${meta.step === 4 ? '✓' : '4'}</div>
+            <div class="step-label">Delivered</div>
+          </div>
+        </div>
+      `;
+    }
+
+    const itemsHtml = items.map(it => `
+      <div class="order-item-row">
+        <img class="order-item-img" src="${escapeHtml(it.image || 'images/shoe-purple.png')}" alt="Shoe" onerror="this.src='images/shoe-purple.png'">
+        <div style="flex:1;min-width:0">
+          <div style="font-weight:800;color:#eee;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${escapeHtml(it.name || 'Shoe')}</div>
+          <div style="font-size:10px;color:var(--muted)">Color: ${escapeHtml(it.color || 'Default')} · UK ${escapeHtml(it.size || '7')} · Qty: ${it.quantity || 1}</div>
+        </div>
+        <div style="font-weight:900;color:#fff">${formatPrice((it.price || 0) * (it.quantity || 1))}</div>
+      </div>
+    `).join("");
+
+    return `
+      <div class="my-order-card">
+        <div class="order-top-row">
+          <div>
+            <div class="order-id-label">#${escapeHtml(order.id)}</div>
+            <div class="order-date-label">📅 ${dateStr}</div>
+          </div>
+          <span class="condition-pill ${meta.cls}">
+            ${meta.icon} ${meta.label}
+          </span>
+        </div>
+
+        ${stepperHtml}
+
+        <div class="order-msg-box">
+          <div style="font-weight:800;color:#fff;margin-bottom:2px">Status Condition:</div>
+          <div>${meta.msgUrdu}</div>
+        </div>
+
+        <div class="order-items-mini">
+          <div style="font-size:9.5px;color:var(--muted);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:2px">Items Ordered (${items.length}):</div>
+          ${itemsHtml}
+        </div>
+
+        <div class="order-card-foot">
+          <div>
+            <span style="color:var(--muted)">Deliver to: </span>
+            <strong style="color:#ddd">${escapeHtml(cust.city || 'Pakistan')}${cust.address ? ', ' + escapeHtml(cust.address) : ''}</strong>
+            <div style="color:var(--accent);font-weight:950;margin-top:2px">Total: ${formatPrice(order.subtotal || 0)}</div>
+          </div>
+          <a href="https://wa.me/${waNum}?text=${encodeURIComponent(waInquiry)}" target="_blank" rel="noopener" class="order-wa-ask-btn">
+            💬 WhatsApp Status
+          </a>
+        </div>
+      </div>
+    `;
+  }).join("");
+}
+
+// Manual track form toggle and verification (Privacy check)
+if ($("manualTrackToggleBtn")) {
+  $("manualTrackToggleBtn").addEventListener("click", () => {
+    const f = $("manualTrackFields");
+    if (f) f.style.display = (f.style.display === "none" || !f.style.display) ? "grid" : "none";
+  });
+}
+
+if ($("submitTrackBtn")) {
+  $("submitTrackBtn").addEventListener("click", async () => {
+    const idInput = $("trackOrderIdInput");
+    const phoneInput = $("trackPhoneInput");
+    const alertEl = $("trackResultAlert");
+    if (!idInput || !phoneInput || !alertEl) return;
+
+    const rawId = idInput.value.trim().toUpperCase();
+    const phone = phoneInput.value.trim().replace(/[^0-9]/g, '');
+
+    if (!rawId || !phone) {
+      alertEl.style.display = "block";
+      alertEl.style.background = "rgba(239,68,68,0.15)";
+      alertEl.style.color = "#f87171";
+      alertEl.textContent = "Please enter both Order ID and Phone number.";
+      return;
+    }
+
+    alertEl.style.display = "block";
+    alertEl.style.background = "rgba(255,255,255,0.06)";
+    alertEl.style.color = "#ccc";
+    alertEl.textContent = "Searching for order...";
+
+    try {
+      let allOrders = null;
+      const res = await fetch("api/orders?t=" + Date.now()).catch(() => null);
+      if (res && res.ok) {
+        const j = await res.json();
+        allOrders = j.orders;
+      }
+      if (!allOrders) {
+        const res2 = await fetch("orders-data.json?t=" + Date.now()).catch(() => null);
+        if (res2 && res2.ok) {
+          const j2 = await res2.json();
+          allOrders = j2.orders;
+        }
+      }
+
+      if (!Array.isArray(allOrders)) {
+        alertEl.style.color = "#f87171";
+        alertEl.textContent = "Could not connect to orders database.";
+        return;
+      }
+
+      const cleanOrdId = rawId.startsWith("ALX-") ? rawId : "ALX-" + rawId.replace(/^#/, "");
+      const match = allOrders.find(o => String(o.id).toUpperCase() === cleanOrdId);
+
+      if (!match) {
+        alertEl.style.color = "#f87171";
+        alertEl.textContent = `Order #${cleanOrdId} not found. Please check Order ID.`;
+        return;
+      }
+
+      // Security check: phone number must match the order's phone to prevent privacy leaks
+      const matchPhone = (match.customer && match.customer.phone || "").replace(/[^0-9]/g, '');
+      const pLast = phone.slice(-7);
+      const mLast = matchPhone.slice(-7);
+      if (!pLast || !mLast || pLast !== mLast) {
+        alertEl.style.color = "#f87171";
+        alertEl.textContent = "Phone number does not match this order. Access denied.";
+        return;
+      }
+
+      // Add to this customer's private storage
+      const myOrders = getMyOrders();
+      const existingIdx = myOrders.findIndex(o => String(o.id) === String(match.id));
+      if (existingIdx >= 0) {
+        myOrders[existingIdx] = match;
+      } else {
+        myOrders.unshift(match);
+      }
+      saveMyOrders(myOrders);
+      renderMyOrdersList();
+
+      alertEl.style.background = "rgba(16,185,129,0.15)";
+      alertEl.style.color = "#34d399";
+      alertEl.textContent = `✓ Order #${match.id} loaded! Condition: ${match.status || 'Pending'}`;
+      idInput.value = "";
+      phoneInput.value = "";
+    } catch(e) {
+      alertEl.style.color = "#f87171";
+      alertEl.textContent = "Error: " + e.message;
+    }
+  });
+}
+
+if ($("refreshTrackingBtn")) {
+  $("refreshTrackingBtn").addEventListener("click", () => refreshMyOrdersStatus(true));
+}
+
+// Initial render of customer's own orders on page load
+renderMyOrdersList();
 
 // ========================================================
 // CUSTOMER REVIEW SUBMISSION & RENDERING PIPELINE
@@ -1472,6 +1939,8 @@ renderCart();
 renderGrid();paintProduct();
 renderReviews();
 syncWithStoreData();
+refreshMyOrdersStatus(false);
+setInterval(() => refreshMyOrdersStatus(false), 35000);
 </script>
 </body>
 </html>
