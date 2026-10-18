@@ -524,6 +524,13 @@ footer{border-top:1px solid rgba(255,255,255,.08);padding:28px clamp(20px,5vw,76
           <label class="form-label">Colorway Name</label>
           <input class="form-input" id="mShoeColorName" required placeholder="e.g. Voltage Purple">
         </div>
+        <div class="form-group">
+          <label class="form-label">Colorway Hex & Glow</label>
+          <div style="display:flex;gap:8px;align-items:center">
+            <input type="color" id="mShoeColorPicker" value="#b62dff" style="width:40px;height:38px;padding:2px;border:1px solid var(--line);border-radius:8px;background:#0d0d10;cursor:pointer">
+            <input class="form-input" id="mShoeColorHex" required placeholder="#b62dff" style="flex:1">
+          </div>
+        </div>
         <div class="form-group full">
           <label class="form-label">Shoe Image (Select from Library or Upload from Device)</label>
           <div class="img-selector-wrap">
@@ -1093,7 +1100,7 @@ async function loadStoreData() {
     const localTime = localData && localData.updatedAt ? new Date(localData.updatedAt).getTime() : 0;
     const remoteTime = remoteData.updatedAt ? new Date(remoteData.updatedAt).getTime() : 0;
 
-    if (remoteTime >= localTime || !storeData) {
+    if (remoteTime > localTime || !storeData) {
       storeData = remoteData;
     }
   }
@@ -1179,6 +1186,12 @@ function renderHeroSlider() {
   $("price").textContent = formatPrice(p.price);
   $("colorName").textContent = c.name;
   $("shoeImage").src = c.image;
+
+  if (p.theme && p.theme.length >= 2) {
+    document.documentElement.style.setProperty("--accent", p.theme[0]);
+    document.documentElement.style.setProperty("--accent2", p.theme[1]);
+    if (p.theme[2]) document.documentElement.style.setProperty("--glow", p.theme[2]);
+  }
 
   // Swatches: Dynamically show only the available colors in storeData
   const colorways = getAvailableColorwaysAdmin();
@@ -1369,15 +1382,59 @@ $("themeForm").addEventListener("submit", async e => {
 // ==========================================
 
 const CURATED_MEDIA = [
-  { name: "Voltage Purple Sneaker", url: "images/shoe-purple.png" },
-  { name: "Solar Red Sneaker", url: "images/shoe-red.png" },
-  { name: "Ice Blue Sneaker", url: "images/shoe-blue.png" },
-  { name: "Volt Yellow Sneaker", url: "images/shoe-yellow.png" },
-  { name: "Blackout Stealth Sneaker", url: "images/shoe-black.png" },
-  { name: "Emerald Green Sneaker", url: "images/shoe-green.png" },
-  { name: "Cloud White Sneaker", url: "images/shoe-white.png" },
-  { name: "Ember Gold Sneaker", url: "images/shoe-orange.png" }
+  { name: "Voltage Purple Sneaker", colorName: "Voltage Purple", hex: "#b62dff", url: "images/shoe-purple.png" },
+  { name: "Solar Red Sneaker", colorName: "Solar Red", hex: "#ff453a", url: "images/shoe-red.png" },
+  { name: "Ice Blue Sneaker", colorName: "Ice Blue", hex: "#58c8ff", url: "images/shoe-blue.png" },
+  { name: "Volt Yellow Sneaker", colorName: "Volt Yellow", hex: "#ffd447", url: "images/shoe-yellow.png" },
+  { name: "Blackout Stealth Sneaker", colorName: "Blackout Stealth", hex: "#1f242d", url: "images/shoe-black.png" },
+  { name: "Emerald Green Sneaker", colorName: "Emerald Night", hex: "#10b981", url: "images/shoe-green.png" },
+  { name: "Cloud White Sneaker", colorName: "Cloud White", hex: "#e9e9f0", url: "images/shoe-white.png" },
+  { name: "Ember Gold Sneaker", colorName: "Ember Gold", hex: "#f97316", url: "images/shoe-orange.png" }
 ];
+
+function themeFromHex(hex, fallback = ["#c026d3", "#581c87", "rgba(192, 38, 211, 0.45)"]) {
+  const map = {
+    "#ff453a": ["#e11d48", "#881337", "rgba(225, 29, 72, 0.45)"],
+    "#ff4b35": ["#e11d48", "#881337", "rgba(225, 29, 72, 0.45)"],
+    "#e11d48": ["#e11d48", "#881337", "rgba(225, 29, 72, 0.45)"],
+    "#ffd447": ["#f59e0b", "#78350f", "rgba(245, 158, 11, 0.45)"],
+    "#f59e0b": ["#f59e0b", "#78350f", "rgba(245, 158, 11, 0.45)"],
+    "#58c8ff": ["#0284c7", "#1e3a8a", "rgba(2, 132, 199, 0.45)"],
+    "#5bd5ff": ["#0284c7", "#1e3a8a", "rgba(2, 132, 199, 0.45)"],
+    "#0284c7": ["#0284c7", "#1e3a8a", "rgba(2, 132, 199, 0.45)"],
+    "#e9e9f0": ["#94a3b8", "#1e293b", "rgba(148, 163, 184, 0.35)"],
+    "#f3f3f5": ["#94a3b8", "#1e293b", "rgba(148, 163, 184, 0.35)"],
+    "#94a3b8": ["#94a3b8", "#1e293b", "rgba(148, 163, 184, 0.35)"],
+    "#10b981": ["#059669", "#064e3b", "rgba(5, 150, 105, 0.45)"],
+    "#28c997": ["#059669", "#064e3b", "rgba(5, 150, 105, 0.45)"],
+    "#059669": ["#059669", "#064e3b", "rgba(5, 150, 105, 0.45)"],
+    "#1f242d": ["#374151", "#111827", "rgba(75, 85, 99, 0.45)"],
+    "#5b5b66": ["#374151", "#111827", "rgba(75, 85, 99, 0.45)"],
+    "#b62dff": ["#c026d3", "#581c87", "rgba(192, 38, 211, 0.45)"],
+    "#c026d3": ["#c026d3", "#581c87", "rgba(192, 38, 211, 0.45)"],
+    "#f97316": ["#ea580c", "#7c2d12", "rgba(234, 88, 12, 0.45)"]
+  };
+  const key = (hex || "").toLowerCase();
+  for (const k in map) {
+    if (k.toLowerCase() === key) return map[k];
+  }
+  try {
+    let clean = key.replace("#", "");
+    if (clean.length === 3) clean = clean.split("").map(x => x + x).join("");
+    if (clean.length === 6) {
+      const num = parseInt(clean, 16);
+      const r = (num >> 16) & 255;
+      const g = (num >> 8) & 255;
+      const b = num & 255;
+      const r2 = Math.floor(r * 0.45);
+      const g2 = Math.floor(g * 0.45);
+      const b2 = Math.floor(b * 0.45);
+      const hex2 = "#" + ((1 << 24) + (r2 << 16) + (g2 << 8) + b2).toString(16).slice(1);
+      return [hex, hex2, `rgba(${r},${g},${b},0.45)`];
+    }
+  } catch(e) {}
+  return fallback;
+}
 
 let selectedMediaUrl = "";
 let selectedMediaName = "";
@@ -1563,6 +1620,18 @@ function applySelectedMediaToShoe() {
   $("mShoeImgManual").value = selectedMediaUrl;
   $("shoeImgPreview").src = selectedMediaUrl;
   $("imgSrcDisplay").textContent = selectedMediaName || "Selected from library";
+
+  const curated = CURATED_MEDIA.find(m => m.url === selectedMediaUrl);
+  if (curated) {
+    if (!$("mShoeColorName").value || $("mShoeColorName").value === "Default" || $("mShoeColorName").value === "Core Edition") {
+      $("mShoeColorName").value = curated.colorName || curated.name;
+    }
+    if (curated.hex) {
+      $("mShoeColorHex").value = curated.hex;
+      $("mShoeColorPicker").value = curated.hex;
+    }
+  }
+
   $("mediaLibraryModal").classList.remove("open");
   showToast("Image selected from library!");
 }
@@ -1582,8 +1651,11 @@ function openShoeModal(p = null) {
     $("mShoePrice").value = p.price;
     $("mShoeCat").value = p.category || "Men";
     $("mShoeDesc").value = p.description;
-    const col = p.colors && p.colors[0] ? p.colors[0] : { name: "Default", image: "" };
+    const col = p.colors && p.colors[0] ? p.colors[0] : { name: "Default", image: "", hex: (p.theme && p.theme[0]) || "#b62dff" };
     $("mShoeColorName").value = col.name;
+    const hex = col.hex || (p.theme && p.theme[0]) || "#b62dff";
+    $("mShoeColorHex").value = hex;
+    $("mShoeColorPicker").value = /^#[0-9a-f]{6}$/i.test(hex) ? hex : "#b62dff";
     $("mShoeImg").value = col.image;
     $("mShoeImgManual").value = col.image;
     $("shoeImgPreview").src = col.image;
@@ -1597,15 +1669,25 @@ function openShoeModal(p = null) {
     $("mShoePrice").value = "8500";
     $("mShoeCat").value = "Men";
     $("mShoeDesc").value = "Everyday futuristic comfort sneaker.";
-    $("mShoeColorName").value = "Core Edition";
-    const defaultImg = "https://images.unsplash.com/photo-1542291026-7eec264c27ff?auto=format&fit=crop&w=1200&q=90";
+    $("mShoeColorName").value = "Voltage Purple";
+    $("mShoeColorHex").value = "#b62dff";
+    $("mShoeColorPicker").value = "#b62dff";
+    const defaultImg = "images/shoe-purple.png";
     $("mShoeImg").value = defaultImg;
     $("mShoeImgManual").value = defaultImg;
     $("shoeImgPreview").src = defaultImg;
-    $("imgSrcDisplay").textContent = "Pulse Purple (Default Preset)";
+    $("imgSrcDisplay").textContent = "Voltage Purple (Preset)";
   }
   $("shoeModal").classList.add("open");
 }
+
+$("mShoeColorPicker").addEventListener("input", e => {
+  $("mShoeColorHex").value = e.target.value;
+});
+$("mShoeColorHex").addEventListener("input", e => {
+  const v = e.target.value.trim();
+  if (/^#[0-9a-f]{6}$/i.test(v)) $("mShoeColorPicker").value = v;
+});
 
 // Wire up Library Modal Buttons
 $("openMediaLibraryBtn").addEventListener("click", () => {
@@ -1693,6 +1775,17 @@ window.deleteShoeById = async id => {
 $("shoeForm").addEventListener("submit", async e => {
   e.preventDefault();
   const idVal = $("mShoeId").value;
+  const hexVal = $("mShoeColorHex").value.trim() || "#ff453a";
+  const existingShoe = idVal ? storeData.products.find(x => x.id === Number(idVal)) : null;
+
+  // Determine theme for the shoe: preserve existing theme if hex matches, or generate theme from hex
+  let shoeTheme = null;
+  if (existingShoe && existingShoe.colors && existingShoe.colors[0] && existingShoe.colors[0].hex === hexVal && existingShoe.theme && existingShoe.theme.length === 3) {
+    shoeTheme = existingShoe.theme;
+  } else {
+    shoeTheme = themeFromHex(hexVal);
+  }
+
   const newShoe = {
     id: idVal ? Number(idVal) : Date.now(),
     name: $("mShoeName").value.trim(),
@@ -1702,23 +1795,24 @@ $("shoeForm").addEventListener("submit", async e => {
     category: $("mShoeCat").value,
     type: "Streetwear",
     description: $("mShoeDesc").value.trim(),
-    theme: [storeData.theme.accent, storeData.theme.accent2, storeData.theme.glow || "rgba(192,38,211,.45)"],
+    theme: shoeTheme,
     colors: [
       {
         name: $("mShoeColorName").value.trim(),
-        hex: storeData.theme.accent,
+        hex: hexVal,
         image: $("mShoeImg").value.trim()
       }
     ]
   };
 
-  if (idVal) {
+  if (existingShoe) {
     const idx = storeData.products.findIndex(x => x.id === Number(idVal));
     if (idx >= 0) {
-      if (storeData.products[idx].colors && storeData.products[idx].colors.length > 1) {
-        newShoe.colors = storeData.products[idx].colors;
+      if (existingShoe.colors && existingShoe.colors.length > 1) {
+        newShoe.colors = existingShoe.colors;
         newShoe.colors[0].image = $("mShoeImg").value.trim();
         newShoe.colors[0].name = $("mShoeColorName").value.trim();
+        newShoe.colors[0].hex = hexVal;
       }
       storeData.products[idx] = newShoe;
     }
@@ -1949,9 +2043,20 @@ async function pushStoreDataToGitHub(silent = false) {
 }
 
 async function autoSaveAndPublish(msg = "Changes updated & saved live!") {
+  storeData.updatedAt = new Date().toISOString();
   persistStoreLocal();
   renderLiveStore();
   showToast(msg);
+
+  // If running on local server, save store-data.json directly to disk immediately
+  try {
+    await fetch("api/save-store", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(storeData, null, 2)
+    });
+  } catch(e) {}
+
   // Auto-publish to GitHub repository in background (no extra confirmations needed)
   try {
     await pushStoreDataToGitHub(true);
