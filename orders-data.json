@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-10-19T02:13:28.953Z",
+  "updatedAt": "2026-10-19T02:14:00.190Z",
   "orders": [
     {
       "id": "ALX-1001",
@@ -79,8 +79,9 @@
       ],
       "subtotal": 2999,
       "currency": "PKR",
-      "status": "Pending",
-      "source": "Storefront Web"
+      "status": "Cancelled",
+      "source": "Storefront Web",
+      "updatedAt": "2026-10-19T02:14:00.190Z"
     }
   ]
 }
