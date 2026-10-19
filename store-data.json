@@ -17,7 +17,7 @@
     "customPass": "ALIZOX 49229",
     "updatedAt": "2026-10-17T09:37:00Z"
   },
-  "updatedAt": "2026-10-19T02:14:12.105Z",
+  "updatedAt": "2026-10-19T02:16:48.471Z",
   "products": [
     {
       "id": 1,
@@ -122,9 +122,9 @@
       "id": 1,
       "name": "Hamza Malik",
       "city": "Lahore",
-      "stars": 5,
       "shoe": "PULSE SHIFT",
-      "text": "Bohot zabardast quality hai! Picture se bhi zyada premium lagte hain real mein. Lightweight hain aur daily wear ke liye best comfort hai. WhatsApp pe response bhi bohot fast mila."
+      "stars": 5,
+      "text": "Bohot zabardast quality hai! Picture se bhi zyada premium lagte hain real mein."
     },
     {
       "id": 2,
