@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-10-19T02:50:38.867Z",
+  "updatedAt": "2026-10-19T02:51:20.167Z",
   "deletedIds": [
     "ALX-1001",
     "ALX-53707",
@@ -30,8 +30,9 @@
       ],
       "subtotal": 5998,
       "currency": "PKR",
-      "status": "Pending",
-      "source": "Storefront Web"
+      "status": "Confirmed",
+      "source": "Storefront Web",
+      "updatedAt": "2026-10-19T02:51:20.167Z"
     }
   ]
 }
