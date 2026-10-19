@@ -53,13 +53,17 @@ async function getOrdersDatabase() {
   if (res.status === 200 && res.data && res.data.content) {
     const jsonStr = Buffer.from(res.data.content, "base64").toString("utf-8");
     const parsed = JSON.parse(jsonStr);
+    parsed.deletedIds = Array.isArray(parsed.deletedIds) ? parsed.deletedIds : [];
+    parsed.orders = Array.isArray(parsed.orders) ? parsed.orders : [];
     return { sha: res.data.sha, data: parsed };
   }
-  return { sha: null, data: { updatedAt: new Date().toISOString(), orders: [] } };
+  return { sha: null, data: { updatedAt: new Date().toISOString(), deletedIds: [], orders: [] } };
 }
 
 async function saveOrdersDatabase(payload, sha, commitMsg = "Update customer orders database") {
   payload.updatedAt = new Date().toISOString();
+  payload.deletedIds = Array.isArray(payload.deletedIds) ? payload.deletedIds : [];
+  payload.orders = Array.isArray(payload.orders) ? payload.orders : [];
   const jsonStr = JSON.stringify(payload, null, 2);
   const b64 = Buffer.from(jsonStr, "utf-8").toString("base64");
   const body = {
@@ -85,13 +89,16 @@ module.exports = async (req, res) => {
   }
 
   try {
-    // 1. GET: Fetch all orders
+    // 1. GET: Fetch all active orders
     if (req.method === "GET") {
       const db = await getOrdersDatabase();
+      const delSet = new Set((db.data.deletedIds || []).map(String));
+      const activeOrders = (db.data.orders || []).filter(o => o && o.id && !delSet.has(String(o.id)));
       return res.status(200).json({
         success: true,
         updatedAt: db.data.updatedAt,
-        orders: db.data.orders || []
+        deletedIds: db.data.deletedIds || [],
+        orders: activeOrders
       });
     }
 
@@ -116,7 +123,10 @@ module.exports = async (req, res) => {
 
       // Read current DB and prepend new order
       const db = await getOrdersDatabase();
+      db.data.deletedIds = (db.data.deletedIds || []).filter(id => String(id) !== String(order.id));
       db.data.orders = db.data.orders || [];
+      // Remove any duplicate if re-submitted
+      db.data.orders = db.data.orders.filter(o => String(o.id) !== String(order.id));
       db.data.orders.unshift(order);
 
       await saveOrdersDatabase(db.data, db.sha, `New Order Received: ${order.id} (${(order.customer && order.customer.name) || 'Customer'})`);
@@ -159,18 +169,26 @@ module.exports = async (req, res) => {
       });
     }
 
-    // 4. DELETE: Remove or cancel an order
+    // 4. DELETE: Permanently remove or cancel an order
     if (req.method === "DELETE") {
-      const orderId = req.query.id || (req.body && req.body.id);
+      const orderId = String(req.query.id || (req.body && req.body.id) || "").trim();
       if (!orderId) {
         return res.status(400).json({ success: false, error: "Order ID required" });
       }
 
       const db = await getOrdersDatabase();
-      db.data.orders = (db.data.orders || []).filter(o => String(o.id) !== String(orderId));
-      await saveOrdersDatabase(db.data, db.sha, `Delete Order: ${orderId}`);
+      db.data.deletedIds = db.data.deletedIds || [];
+      if (!db.data.deletedIds.includes(orderId)) {
+        db.data.deletedIds.push(orderId);
+      }
+      db.data.orders = (db.data.orders || []).filter(o => String(o.id) !== orderId);
+      await saveOrdersDatabase(db.data, db.sha, `Permanently Delete Order: ${orderId}`);
 
-      return res.status(200).json({ success: true, message: `Order ${orderId} deleted` });
+      return res.status(200).json({
+        success: true,
+        message: `Order ${orderId} permanently deleted`,
+        deletedIds: db.data.deletedIds
+      });
     }
 
     return res.status(405).json({ error: "Method not allowed" });
