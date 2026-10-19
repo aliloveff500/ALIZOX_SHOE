@@ -17,7 +17,7 @@
     "customPass": "ALIZOX 49229",
     "updatedAt": "2026-10-17T09:37:00Z"
   },
-  "updatedAt": "2026-10-19T02:16:22.095Z",
+  "updatedAt": "2026-10-19T02:17:18.213Z",
   "products": [
     {
       "id": 1,
@@ -130,9 +130,9 @@
       "id": 2,
       "name": "Saad Rehman",
       "city": "Karachi",
-      "stars": 5,
       "shoe": "NOVA RUSH",
-      "text": "Streetwear look bilkul top-tier hai. 15 saal ke Ali bhai ka brand hai aur itni solid quality deliver kar rahe hain, salute! Delivery bhi sirf 3 din mein mil gayi Karachi mein."
+      "stars": 5,
+      "text": "Streetwear look bilkul top-tier hai."
     },
     {
       "id": 3,
