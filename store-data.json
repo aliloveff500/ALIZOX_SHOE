@@ -17,7 +17,7 @@
     "customPass": "ALIZOX 49229",
     "updatedAt": "2026-10-17T09:37:00Z"
   },
-  "updatedAt": "2026-10-19T02:16:51.801Z",
+  "updatedAt": "2026-10-19T02:17:31.682Z",
   "products": [
     {
       "id": 1,
@@ -138,8 +138,8 @@
       "id": 3,
       "name": "Ayesha Khan",
       "city": "Islamabad",
-      "stars": 5,
       "shoe": "AERO FLOW",
+      "stars": 5,
       "text": "Sole cushioning bohot soft hai, gym aur daily university fits ke sath perfect match hoti hai. Colorway bohot unique hai, definitely ordering another pair soon!"
     },
     {
