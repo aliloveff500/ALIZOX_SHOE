@@ -6,7 +6,7 @@
 <meta name="theme-color" content="#111114">
 <title>ALIZOX — Live Visual Admin Editor</title>
 <style>
-:root{--accent:#c026d3;--accent2:#581c87;--glow:rgba(138,24,217,.38);--page1:#be185d;--page2:#581c87;--ink:#f8f8fb;--muted:#a4a4b1;--panel:#121216;--line:rgba(255,255,255,.1);--success:#10b981;--danger:#ef4444}
+:root{--accent:#0284c7;--accent2:#1e3a8a;--glow:rgba(2,132,199,.45);--page1:#0284c7;--page2:#1e3a8a;--ink:#f8f8fb;--muted:#a4a4b1;--panel:#121216;--line:rgba(255,255,255,.1);--success:#10b981;--danger:#ef4444}
 *{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:#050508;color:var(--ink);font-family:Inter,ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;overflow-x:hidden;padding-top:54px}
 button,a,input,textarea,select{font:inherit}button{cursor:pointer}a{color:inherit;text-decoration:none}
 .ambient{position:fixed;inset:0;z-index:-2;background:radial-gradient(ellipse at 18% 20%,var(--glow),transparent 38%),radial-gradient(ellipse at 85% 78%,rgba(78,91,255,.06),transparent 34%),#050508;transition:background 850ms ease}
@@ -1479,7 +1479,7 @@ const CURATED_MEDIA = [
   { name: "Ember Gold Sneaker", colorName: "Ember Gold", hex: "#f97316", url: "images/shoe-orange.png" }
 ];
 
-function themeFromHex(hex, fallback = ["#c026d3", "#581c87", "rgba(192, 38, 211, 0.45)"]) {
+function themeFromHex(hex, fallback = ["#0284c7", "#1e3a8a", "rgba(2, 132, 199, 0.45)"]) {
   const map = {
     "#ff453a": ["#e11d48", "#881337", "rgba(225, 29, 72, 0.45)"],
     "#ff4b35": ["#e11d48", "#881337", "rgba(225, 29, 72, 0.45)"],
@@ -2165,8 +2165,22 @@ $("publishLiveBtn").addEventListener("click", async () => {
 // ==========================================
 let allOrders = [];
 const ORDERS_BACKUP_KEY = "alizox_orders_backup";
+const DELETED_ORDERS_KEY = "alizox_deleted_order_ids";
 
-async function pushOrdersDataToGitHub(ordersArray) {
+// Permanent Tombstone Set: Keeps deleted IDs so stale CDN/caches NEVER resurrect them!
+let deletedOrderIds = new Set();
+try {
+  const savedDel = JSON.parse(localStorage.getItem(DELETED_ORDERS_KEY) || "[]");
+  if (Array.isArray(savedDel)) savedDel.forEach(id => deletedOrderIds.add(String(id)));
+} catch(e) {}
+
+function saveDeletedOrderIds() {
+  try {
+    localStorage.setItem(DELETED_ORDERS_KEY, JSON.stringify(Array.from(deletedOrderIds)));
+  } catch(e) {}
+}
+
+async function pushOrdersDataToGitHub(ordersArray, deletedList = null) {
   try {
     const token = getSecToken() || getMasterSecrets().token;
     if (!token) return false;
@@ -2183,6 +2197,7 @@ async function pushOrdersDataToGitHub(ordersArray) {
 
     const payload = {
       updatedAt: new Date().toISOString(),
+      deletedIds: deletedList || Array.from(deletedOrderIds),
       orders: ordersArray
     };
     const jsonStr = JSON.stringify(payload, null, 2);
@@ -2213,55 +2228,98 @@ async function pushOrdersDataToGitHub(ordersArray) {
 async function loadOrdersFromBackend() {
   let ordersList = null;
 
-  // 1. Try local server or Vercel serverless /api/orders
+  // 1. Try local server or Vercel serverless /api/orders (Primary real-time API)
   try {
     const res = await fetch("api/orders?t=" + Date.now());
     if (res.ok) {
       const json = await res.json();
-      if (json && Array.isArray(json.orders)) {
-        ordersList = json.orders;
+      if (json) {
+        if (Array.isArray(json.deletedIds)) {
+          json.deletedIds.forEach(id => deletedOrderIds.add(String(id)));
+          saveDeletedOrderIds();
+        }
+        if (Array.isArray(json.orders)) {
+          ordersList = json.orders;
+        }
       }
     }
   } catch(e) {}
 
-  // 2. Try static orders-data.json on server
+  // 2. Fallback: Direct GitHub Contents API (bypasses 5-minute Fastly CDN cache!)
+  if (!ordersList) {
+    try {
+      const token = getSecToken() || getMasterSecrets().token;
+      if (token) {
+        const ghRes = await fetch(`https://api.github.com/repos/${GITHUB_REPO}/contents/orders-data.json?t=${Date.now()}`, {
+          headers: { "Authorization": `Bearer ${token}`, "Accept": "application/vnd.github.v3+json" }
+        });
+        if (ghRes.ok) {
+          const meta = await ghRes.json();
+          const parsed = JSON.parse(decodeURIComponent(escape(atob(meta.content))));
+          if (parsed) {
+            if (Array.isArray(parsed.deletedIds)) {
+              parsed.deletedIds.forEach(id => deletedOrderIds.add(String(id)));
+              saveDeletedOrderIds();
+            }
+            if (Array.isArray(parsed.orders)) ordersList = parsed.orders;
+          }
+        }
+      }
+    } catch(e) {}
+  }
+
+  // 3. Fallback: static orders-data.json
   if (!ordersList) {
     try {
       const res = await fetch("orders-data.json?t=" + Date.now(), { cache: "no-store" });
       if (res.ok) {
         const json = await res.json();
-        if (json && Array.isArray(json.orders)) ordersList = json.orders;
+        if (json) {
+          if (Array.isArray(json.deletedIds)) {
+            json.deletedIds.forEach(id => deletedOrderIds.add(String(id)));
+            saveDeletedOrderIds();
+          }
+          if (Array.isArray(json.orders)) ordersList = json.orders;
+        }
       }
     } catch(e) {}
   }
 
-  // 3. Fallback to GitHub raw / API
-  if (!ordersList) {
-    try {
-      const ghRes = await fetch(`https://raw.githubusercontent.com/${GITHUB_REPO}/main/orders-data.json?t=${Date.now()}`);
-      if (ghRes.ok) {
-        const json = await ghRes.json();
-        if (json && Array.isArray(json.orders)) ordersList = json.orders;
-      }
-    } catch(e) {}
-  }
+  if (!ordersList) ordersList = [];
 
-  // 4. Merge any locally placed orders from localStorage backup
+  // 4. Merge any locally placed orders from localStorage backups
   let localBackup = [];
   try {
     const rawLocal = localStorage.getItem(ORDERS_BACKUP_KEY);
     if (rawLocal) localBackup = JSON.parse(rawLocal);
   } catch(e) {}
 
-  if (!ordersList) ordersList = [];
+  let customerOrders = [];
+  try {
+    const rawCust = localStorage.getItem("alizox_customer_orders");
+    if (rawCust) customerOrders = JSON.parse(rawCust);
+  } catch(e) {}
 
-  // Merge unique by ID
+  // Merge unique by ID, STRICTLY EXCLUDING ALL DELETED ORDER IDS
   const map = new Map();
-  ordersList.forEach(o => { if (o && o.id) map.set(o.id, o); });
+  ordersList.forEach(o => {
+    if (o && o.id && !deletedOrderIds.has(String(o.id))) {
+      map.set(String(o.id), o);
+    }
+  });
+
   if (Array.isArray(localBackup)) {
     localBackup.forEach(o => {
-      if (o && o.id && !map.has(o.id)) {
-        map.set(o.id, o);
+      if (o && o.id && !deletedOrderIds.has(String(o.id)) && !map.has(String(o.id))) {
+        map.set(String(o.id), o);
+      }
+    });
+  }
+
+  if (Array.isArray(customerOrders)) {
+    customerOrders.forEach(o => {
+      if (o && o.id && !deletedOrderIds.has(String(o.id)) && !map.has(String(o.id))) {
+        map.set(String(o.id), o);
       }
     });
   }
@@ -2271,6 +2329,11 @@ async function loadOrdersFromBackend() {
     const tb = new Date(b.createdAt || 0).getTime();
     return tb - ta; // newest first
   });
+
+  // Keep local backup clean and synchronized
+  try {
+    localStorage.setItem(ORDERS_BACKUP_KEY, JSON.stringify(allOrders));
+  } catch(e) {}
 
   // Update topbar badge
   const pendingCount = allOrders.filter(o => (o.status || "Pending") === "Pending").length;
@@ -2451,24 +2514,25 @@ function renderOrdersList() {
 }
 
 async function updateOrderStatus(orderId, newStatus) {
-  const order = allOrders.find(o => o.id === orderId);
+  const cleanId = String(orderId).trim();
+  const order = allOrders.find(o => String(o.id) === cleanId);
   if (!order) return;
   order.status = newStatus;
 
-  showToast(`Updating Order #${orderId} to ${newStatus}...`);
+  showToast(`Updating Order #${cleanId} to ${newStatus}...`);
 
   // 1. Try local server endpoint or Vercel serverless /api/orders
   try {
     await fetch("api/orders", {
       method: "PUT",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ id: orderId, status: newStatus })
+      body: JSON.stringify({ id: cleanId, status: newStatus })
     });
   } catch(e) {}
 
   // 2. Direct GitHub sync fallback
   try {
-    await pushOrdersDataToGitHub(allOrders);
+    await pushOrdersDataToGitHub(allOrders, Array.from(deletedOrderIds));
   } catch(e) {}
 
   // 3. Update localStorage backup
@@ -2476,7 +2540,7 @@ async function updateOrderStatus(orderId, newStatus) {
     localStorage.setItem(ORDERS_BACKUP_KEY, JSON.stringify(allOrders));
   } catch(e) {}
 
-  showToast(`✅ Order #${orderId} marked as ${newStatus}!`);
+  showToast(`✅ Order #${cleanId} marked as ${newStatus}!`);
   loadOrdersFromBackend();
 }
 window.updateOrderStatus = updateOrderStatus;
@@ -2510,26 +2574,39 @@ if ($("executeDeleteOrderBtn")) {
 }
 
 function deleteOrderById(orderId) {
-  openAppConfirm(`Delete Order #${orderId}?`, `Kya aap waqai Order #${orderId} ko permanently database se delete karna chahte hain?`, async () => {
-    allOrders = allOrders.filter(o => o.id !== orderId);
-    showToast(`🗑️ Deleting Order #${orderId}...`);
+  openAppConfirm(`Delete Order #${orderId}?`, `Kya aap waqai Order #${orderId} ko permanently database se delete karna chahte hain? Ye dobara kabhi wapis show nahi hoga.`, async () => {
+    const cleanId = String(orderId).trim();
 
-    // 1. Try /api/orders?id=...
-    try {
-      await fetch(`api/orders?id=${orderId}`, { method: "DELETE" });
-    } catch(e) {}
+    // 1. Permanently record in Tombstone Set so it NEVER resurrects from stale caches
+    deletedOrderIds.add(cleanId);
+    saveDeletedOrderIds();
 
-    // 2. Direct GitHub sync fallback
-    try {
-      await pushOrdersDataToGitHub(allOrders);
-    } catch(e) {}
+    // 2. Immediately remove from active orders & update UI (0ms latency!)
+    allOrders = allOrders.filter(o => String(o.id) !== cleanId);
+    renderOrdersList();
+    showToast(`🗑️ Order #${cleanId} deleted permanently.`);
 
-    // 3. Update localStorage backup
+    // 3. Clean all local caches
     try {
       localStorage.setItem(ORDERS_BACKUP_KEY, JSON.stringify(allOrders));
+      const rawCust = localStorage.getItem("alizox_customer_orders");
+      if (rawCust) {
+        const custOrders = JSON.parse(rawCust);
+        const filteredCust = (Array.isArray(custOrders) ? custOrders : []).filter(o => String(o.id) !== cleanId);
+        localStorage.setItem("alizox_customer_orders", JSON.stringify(filteredCust));
+      }
     } catch(e) {}
 
-    showToast(`✅ Order #${orderId} deleted successfully.`);
+    // 4. Send DELETE request to /api/orders
+    try {
+      await fetch(`api/orders?id=${encodeURIComponent(cleanId)}`, { method: "DELETE" });
+    } catch(e) {}
+
+    // 5. Direct GitHub sync with deletedIds list
+    try {
+      await pushOrdersDataToGitHub(allOrders, Array.from(deletedOrderIds));
+    } catch(e) {}
+
     loadOrdersFromBackend();
   });
 }
