@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-10-21T06:19:37.157Z",
+  "updatedAt": "2026-10-21T06:20:07.023Z",
   "deletedIds": [],
   "orders": [
     {
@@ -53,8 +53,9 @@
       ],
       "subtotal": 5998,
       "currency": "PKR",
-      "status": "Shipped",
-      "source": "Storefront Web"
+      "status": "Cancelled",
+      "source": "Storefront Web",
+      "updatedAt": "2026-10-21T06:20:07.023Z"
     },
     {
       "id": "ALX-92256",
