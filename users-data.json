@@ -1,4 +1,15 @@
 {
-  "updatedAt": "2026-10-21T06:30:00.000Z",
-  "users": []
+  "updatedAt": "2026-10-21T10:56:15.180Z",
+  "users": [
+    {
+      "id": "USR-87085",
+      "username": "admin",
+      "email": "aliloveff500@gmail.com",
+      "password": "admin",
+      "phone": "11111111111",
+      "address": "admin",
+      "city": "admin",
+      "createdAt": "2026-10-21T10:56:15.180Z"
+    }
+  ]
 }
