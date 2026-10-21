@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-10-21T06:38:13.438Z",
+  "updatedAt": "2026-10-21T06:38:43.867Z",
   "deletedIds": [
     "ALX-40823",
     "ALX-27021",
@@ -8,35 +8,8 @@
     "ALX-92919",
     "ALX-37799",
     "ALX-26727",
-    "ALX-28568"
+    "ALX-28568",
+    "ALX-57738"
   ],
-  "orders": [
-    {
-      "id": "ALX-57738",
-      "createdAt": "2026-10-21T06:37:51.516Z",
-      "customer": {
-        "name": "sdfg",
-        "phone": "dfg",
-        "address": "sdfg",
-        "city": "sdfg",
-        "payment": "Easypaisa — confirm manually",
-        "notes": "sdfg"
-      },
-      "items": [
-        {
-          "productId": 3,
-          "name": "AERO FLOW",
-          "color": "Ice Blue",
-          "size": "UK 7",
-          "price": 3500,
-          "quantity": 1,
-          "image": "images/shoe-blue.png"
-        }
-      ],
-      "subtotal": 3500,
-      "currency": "PKR",
-      "status": "Cancelled",
-      "source": "Storefront Web"
-    }
-  ]
+  "orders": []
 }
