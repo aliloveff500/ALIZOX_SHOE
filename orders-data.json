@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-10-21T06:20:24.304Z",
+  "updatedAt": "2026-10-21T06:19:57.596Z",
   "deletedIds": [],
   "orders": [
     {
@@ -188,9 +188,8 @@
       ],
       "subtotal": 3488,
       "currency": "PKR",
-      "status": "Cancelled",
-      "source": "Storefront Web",
-      "updatedAt": "2026-10-21T06:20:24.304Z"
+      "status": "Pending",
+      "source": "Storefront Web"
     }
   ]
 }
