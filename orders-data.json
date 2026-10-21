@@ -1,9 +1,64 @@
 {
-  "updatedAt": "2026-10-19T02:30:00.000Z",
+  "updatedAt": "2026-10-21T08:54:03.517Z",
   "deletedIds": [
     "ALX-1001",
     "ALX-53707",
     "ALX-66577"
   ],
-  "orders": []
+  "orders": [
+    {
+      "id": "ALX-86758",
+      "createdAt": "2026-10-18T10:58:06.214Z",
+      "customer": {
+        "name": "Ali hamid",
+        "phone": "0333333333",
+        "address": "Ismailpura",
+        "city": "Lahore",
+        "payment": "Easypaisa — confirm manually",
+        "notes": "Mujhe delivery 7 days se pehle chahiye 4 days mein or please delivery se pehle call krlena"
+      },
+      "items": [
+        {
+          "productId": 2,
+          "name": "NOVA RUSH",
+          "color": "Solar Red",
+          "size": "UK 9",
+          "price": 4546,
+          "quantity": 1,
+          "image": "images/shoe-red.png"
+        }
+      ],
+      "subtotal": 4546,
+      "currency": "PKR",
+      "status": "Cancelled",
+      "source": "Storefront Web"
+    },
+    {
+      "id": "ALX-92256",
+      "createdAt": "2026-10-18T03:51:15.246Z",
+      "customer": {
+        "name": "Ali Ff",
+        "phone": "6616666166",
+        "address": "Ismail pura\nStreet no: 17",
+        "city": "Lahore",
+        "payment": "Easypaisa — confirm manually",
+        "notes": "last test"
+      },
+      "items": [
+        {
+          "productId": 3,
+          "name": "AERO FLOW",
+          "color": "Ice Blue",
+          "size": "UK 7",
+          "price": 2999,
+          "quantity": 4,
+          "image": "images/shoe-blue.png"
+        }
+      ],
+      "subtotal": 11996,
+      "currency": "PKR",
+      "status": "Cancelled",
+      "source": "Storefront Web"
+    }
+  ]
 }
