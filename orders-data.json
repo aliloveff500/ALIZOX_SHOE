@@ -1,4 +1,33 @@
 {
-  "updatedAt": "2026-10-19T02:51:40.661Z",
-  "orders": []
+  "updatedAt": "2026-10-21T06:16:45.598Z",
+  "orders": [
+    {
+      "id": "ALX-40823",
+      "createdAt": "2026-10-21T06:16:17.020Z",
+      "customer": {
+        "name": "dfsg",
+        "phone": "dsfg",
+        "address": "sdfg",
+        "city": "sdfg",
+        "payment": "Easypaisa — confirm manually",
+        "notes": "sdfg"
+      },
+      "items": [
+        {
+          "productId": 3,
+          "name": "AERO FLOW",
+          "color": "Ice Blue",
+          "size": "UK 7",
+          "price": 3500,
+          "quantity": 1,
+          "image": "images/shoe-blue.png"
+        }
+      ],
+      "subtotal": 3500,
+      "currency": "PKR",
+      "status": "Pending",
+      "source": "Storefront Web"
+    }
+  ],
+  "deletedIds": []
 }
