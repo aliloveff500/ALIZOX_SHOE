@@ -1,40 +1,14 @@
 {
-  "updatedAt": "2026-10-21T06:21:03.198Z",
+  "updatedAt": "2026-10-21T06:21:33.314Z",
   "deletedIds": [
     "ALX-40823",
     "ALX-27021",
     "ALX-92256",
     "ALX-59469",
-    "ALX-92919"
+    "ALX-92919",
+    "ALX-37799"
   ],
   "orders": [
-    {
-      "id": "ALX-37799",
-      "createdAt": "2026-10-18T03:35:06.846Z",
-      "customer": {
-        "name": "ewewf",
-        "phone": "fqeerf",
-        "address": "sdvasfv",
-        "city": "fvdfvadfv",
-        "payment": "Easypaisa — confirm manually",
-        "notes": "vadsv"
-      },
-      "items": [
-        {
-          "productId": 2,
-          "name": "NOVA RUSH",
-          "color": "Solar Red",
-          "size": "UK 7",
-          "price": 4546,
-          "quantity": 1,
-          "image": "images/shoe-red.png"
-        }
-      ],
-      "subtotal": 4546,
-      "currency": "PKR",
-      "status": "Cancelled",
-      "source": "Storefront Web"
-    },
     {
       "id": "ALX-26727",
       "createdAt": "2026-10-18T03:23:16.816Z",
