@@ -17,7 +17,7 @@
     "customPass": "ALIZOX 49229",
     "updatedAt": "2026-10-17T09:37:00Z"
   },
-  "updatedAt": "2026-10-21T06:38:17.939Z",
+  "updatedAt": "2026-10-21T10:58:31.840Z",
   "products": [
     {
       "id": 1,
@@ -109,15 +109,6 @@
     }
   ],
   "reviews": [
-    {
-      "id": 1792335671609,
-      "name": "Ali Hamid",
-      "city": "Lahore",
-      "stars": 4,
-      "shoe": "NOVA RUSH",
-      "text": "Best in this affordable price",
-      "isCustomer": true
-    },
     {
       "id": 1,
       "name": "Hamza Malik",
