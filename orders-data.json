@@ -1,38 +1,12 @@
 {
-  "updatedAt": "2026-10-21T08:54:03.517Z",
+  "updatedAt": "2026-10-21T08:54:06.466Z",
   "deletedIds": [
     "ALX-1001",
     "ALX-53707",
-    "ALX-66577"
+    "ALX-66577",
+    "ALX-86758"
   ],
   "orders": [
-    {
-      "id": "ALX-86758",
-      "createdAt": "2026-10-18T10:58:06.214Z",
-      "customer": {
-        "name": "Ali hamid",
-        "phone": "0333333333",
-        "address": "Ismailpura",
-        "city": "Lahore",
-        "payment": "Easypaisa — confirm manually",
-        "notes": "Mujhe delivery 7 days se pehle chahiye 4 days mein or please delivery se pehle call krlena"
-      },
-      "items": [
-        {
-          "productId": 2,
-          "name": "NOVA RUSH",
-          "color": "Solar Red",
-          "size": "UK 9",
-          "price": 4546,
-          "quantity": 1,
-          "image": "images/shoe-red.png"
-        }
-      ],
-      "subtotal": 4546,
-      "currency": "PKR",
-      "status": "Cancelled",
-      "source": "Storefront Web"
-    },
     {
       "id": "ALX-92256",
       "createdAt": "2026-10-18T03:51:15.246Z",
