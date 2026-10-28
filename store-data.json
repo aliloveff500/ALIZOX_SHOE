@@ -17,30 +17,8 @@
     "customPass": "ALIZOX 49229",
     "updatedAt": "2026-10-17T09:37:00Z"
   },
-  "updatedAt": "2026-10-28T08:52:23.888Z",
+  "updatedAt": "2026-10-28T08:52:26.063Z",
   "products": [
-    {
-      "id": 3,
-      "name": "AERO",
-      "sub": "FLOW",
-      "tag": "Motion series / 03",
-      "price": 3500,
-      "category": "Women",
-      "type": "Streetwear",
-      "description": "Light-looking lines and a versatile shape made for everyday movement and effortless fits.",
-      "theme": [
-        "#0284c7",
-        "#1e3a8a",
-        "rgba(2, 132, 199, 0.45)"
-      ],
-      "colors": [
-        {
-          "name": "Ice Blue",
-          "hex": "#58c8ff",
-          "image": "images/shoe-blue.png"
-        }
-      ]
-    },
     {
       "id": 4,
       "name": "ECLIPSE",
