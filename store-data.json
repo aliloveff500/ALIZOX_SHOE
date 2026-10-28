@@ -17,7 +17,7 @@
     "customPass": "ALIZOX 49229",
     "updatedAt": "2026-10-17T09:37:00Z"
   },
-  "updatedAt": "2026-10-21T10:58:31.528Z",
+  "updatedAt": "2026-10-28T08:45:40.130Z",
   "products": [
     {
       "id": 1,
@@ -104,6 +104,28 @@
           "name": "Emerald Night",
           "hex": "#f97316",
           "image": "images/shoe-orange.png"
+        }
+      ]
+    },
+    {
+      "id": 1793177139919,
+      "name": "Chelsea",
+      "sub": "Shoes",
+      "tag": "New Drop / 05",
+      "price": 8500,
+      "category": "Men",
+      "type": "Streetwear",
+      "description": "Everyday futuristic comfort sneaker.",
+      "theme": [
+        "#000000",
+        "#000000",
+        "rgba(0,0,0,0.45)"
+      ],
+      "colors": [
+        {
+          "name": "Black and brown",
+          "hex": "#000000",
+          "image": "https://raw.githubusercontent.com/aliloveff500/ALIZOX_SHOE/main/images/shoe_1793177132727_6eb13b1b57b5d21.jpg"
         }
       ]
     }
