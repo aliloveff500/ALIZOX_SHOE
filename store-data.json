@@ -7,8 +7,8 @@
     "currency": "PKR"
   },
   "theme": {
-    "accent": "#100f10",
-    "accent2": "#3d140a",
+    "accent": "#c026d3",
+    "accent2": "#581c87",
     "glow": "rgba(192, 38, 211, 0.45)",
     "bg": "#050508"
   },
@@ -17,11 +17,11 @@
     "customPass": "ALIZOX 49229",
     "updatedAt": "2026-10-17T09:37:00Z"
   },
-  "updatedAt": "2026-10-28T10:01:02.713Z",
+  "updatedAt": "2026-10-28T10:02:34.187Z",
   "products": [
     {
       "id": 1793177139919,
-      "name": "Chelsea",
+      "name": "Double buckle anker shows",
       "sub": "Shoes",
       "tag": "New Drop / 05",
       "price": 8500,
@@ -43,7 +43,7 @@
     },
     {
       "id": 1793177641670,
-      "name": "Chelsea",
+      "name": "Double buckle anker shows",
       "sub": "Shoes",
       "tag": "New Drop / 05",
       "price": 8500,
@@ -59,7 +59,7 @@
         {
           "name": "Voltage Purple",
           "hex": "#472000",
-          "image": "images/shoe_chelsea.png"
+          "image": "https://raw.githubusercontent.com/aliloveff500/ALIZOX_SHOE/main/images/shoe_1793181741198_6eb13b1b57b5d21.png"
         }
       ]
     }
