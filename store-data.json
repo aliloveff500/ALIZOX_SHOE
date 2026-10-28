@@ -17,7 +17,7 @@
     "customPass": "ALIZOX 49229",
     "updatedAt": "2026-10-17T09:37:00Z"
   },
-  "updatedAt": "2026-10-28T08:52:30.521Z",
+  "updatedAt": "2026-10-28T08:54:01.676Z",
   "products": [
     {
       "id": 1793177139919,
@@ -38,6 +38,28 @@
           "name": "Black and brown",
           "hex": "#000000",
           "image": "https://raw.githubusercontent.com/aliloveff500/ALIZOX_SHOE/main/images/shoe_1793177334790_file_0000000010.jpg"
+        }
+      ]
+    },
+    {
+      "id": 1793177641670,
+      "name": "Chelsea",
+      "sub": "Shoes",
+      "tag": "New Drop / 05",
+      "price": 8500,
+      "category": "Men",
+      "type": "Streetwear",
+      "description": "Everyday luxury and Royal vide",
+      "theme": [
+        "#472000",
+        "#1f0e00",
+        "rgba(71,32,0,0.45)"
+      ],
+      "colors": [
+        {
+          "name": "Voltage Purple",
+          "hex": "#472000",
+          "image": "https://raw.githubusercontent.com/aliloveff500/ALIZOX_SHOE/main/images/shoe_1793177132727_6eb13b1b57b5d21.jpg"
         }
       ]
     }
