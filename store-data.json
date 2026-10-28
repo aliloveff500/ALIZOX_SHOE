@@ -17,30 +17,8 @@
     "customPass": "ALIZOX 49229",
     "updatedAt": "2026-10-17T09:37:00Z"
   },
-  "updatedAt": "2026-10-28T08:52:20.483Z",
+  "updatedAt": "2026-10-28T08:52:23.888Z",
   "products": [
-    {
-      "id": 2,
-      "name": "NOVA",
-      "sub": "RUSH",
-      "tag": "Energy line / 02",
-      "price": 3500,
-      "category": "Men",
-      "type": "Streetwear",
-      "description": "A clean, athletic profile with high-contrast color and a street-ready attitude.",
-      "theme": [
-        "#e11d48",
-        "#881337",
-        "rgba(225, 29, 72, 0.45)"
-      ],
-      "colors": [
-        {
-          "name": "Solar Red",
-          "hex": "#ff453a",
-          "image": "images/shoe-red.png"
-        }
-      ]
-    },
     {
       "id": 3,
       "name": "AERO",
