@@ -1,120 +1,120 @@
 {
-    "brand":  {
-                  "name":  "AA  SHOES",
-                  "tagline":  "Move Different",
-                  "slogan":  "Step Into Your Style",
-                  "whatsappNumber":  "923079436896",
-                  "currency":  "PKR"
-              },
-    "theme":  {
-                  "accent":  "#c026d3",
-                  "accent2":  "#581c87",
-                  "glow":  "rgba(192, 38, 211, 0.45)",
-                  "bg":  "#050508"
-              },
-    "auth":  {
-                 "username":  "ALI HAMID 49229",
-                 "customPass":  "ALIZOX 49229",
-                 "updatedAt":  "2026-10-17T09:37:00Z"
-             },
-    "updatedAt":  "2026-10-28T09:17:42.843Z",
-    "products":  [
-                     {
-                         "id":  1793177139919,
-                         "name":  "Chelsea",
-                         "sub":  "Shoes",
-                         "tag":  "New Drop / 05",
-                         "price":  8500,
-                         "category":  "Men",
-                         "type":  "Streetwear",
-                         "description":  "Everyday luxury  and Royal vide",
-                         "theme":  [
-                                       "#000000",
-                                       "#000000",
-                                       "rgba(0,0,0,0.45)"
-                                   ],
-                         "colors":  [
-                                        {
-                                            "name":  "Black and brown",
-                                            "hex":  "#000000",
-                                            "image":  "images/shoe_chelsea.png"
-                                        }
-                                    ]
-                     },
-                     {
-                         "id":  1793177641670,
-                         "name":  "Chelsea",
-                         "sub":  "Shoes",
-                         "tag":  "New Drop / 05",
-                         "price":  8500,
-                         "category":  "Men",
-                         "type":  "Streetwear",
-                         "description":  "Everyday luxury and Royal vide",
-                         "theme":  [
-                                       "#472000",
-                                       "#1f0e00",
-                                       "rgba(71,32,0,0.45)"
-                                   ],
-                         "colors":  [
-                                        {
-                                            "name":  "Voltage Purple",
-                                            "hex":  "#472000",
-                                            "image":  "images/shoe_chelsea.png"
-                                        }
-                                    ]
-                     }
-                 ],
-    "reviews":  [
-                    {
-                        "id":  1,
-                        "name":  "Hamza Malik",
-                        "city":  "Lahore",
-                        "shoe":  "PULSE SHIFT",
-                        "stars":  5,
-                        "text":  "Bohot zabardast quality hai! Picture se bhi zyada premium lagte hain real mein."
-                    },
-                    {
-                        "id":  2,
-                        "name":  "Saad Rehman",
-                        "city":  "Karachi",
-                        "shoe":  "NOVA RUSH",
-                        "stars":  5,
-                        "text":  "Streetwear look bilkul top-tier hai."
-                    },
-                    {
-                        "id":  3,
-                        "name":  "Ayesha Khan",
-                        "city":  "Islamabad",
-                        "shoe":  "AERO FLOW",
-                        "stars":  5,
-                        "text":  "Sole cushioning bohot soft hai, gym aur daily university fits ke sath perfect match hoti hai. Colorway bohot unique hai, definitely ordering another pair soon!"
-                    },
-                    {
-                        "id":  4,
-                        "name":  "Usman Tariq",
-                        "city":  "Faisalabad",
-                        "shoe":  "ECLIPSE CORE",
-                        "stars":  5,
-                        "text":  "Finishing aur stitching 10/10. Advance payment Easypaisa se ki thi, bhai ne payment aate hi tracking update de di. Trustworthy seller."
-                    },
-                    {
-                        "id":  5,
-                        "name":  "Zayan Ahmed",
-                        "city":  "Rawalpindi",
-                        "shoe":  "PULSE SHIFT",
-                        "stars":  5,
-                        "text":  "Sole grip aur fit bilkul true to size hai (UK 8). Streetwear community ko aise young creators ko zaroor support karna chahiye."
-                    }
-                ],
-    "about":  {
-                  "founderName":  "ALI HAMID",
-                  "founderRole":  "Founder of AA  SHOES",
-                  "age":  "15 Years",
-                  "education":  "10th Grade",
-                  "storyTitle":  "Turning Passion Into a Growing Brand",
-                  "storyText":  "Welcome to AA  SHOES — a brand built on passion, ambition, and a vision for style.\n\nMy name is Ali Hamid, and I am a 15-year-old student currently studying in Class 10th. I started AA  SHOES with a dream of building something of my own and turning my passion for sneakers and fashion into a growing brand.\n\nAt AA  SHOES, our goal is to make discovering stylish sneakers simple, enjoyable, and convenient. We believe that great style is not just about what you wear — it\u0027s about expressing your personality and confidence.",
-                  "mission":  "Our mission is to provide customers with stylish sneaker options, a smooth shopping experience, and friendly customer service. We aim to build a brand that customers can trust and that continues to grow through dedication, creativity, and hard work.",
-                  "vision":  "We dream of growing AA  SHOES into a recognized footwear brand, reaching more customers, expanding our collection, and creating a name that stands for style, ambition, and trust.",
-                  "quote":  "Age is just a number when you have a dream, a clear vision, and the courage to work for it. AA  SHOES is only the beginning of my journey, and I hope to build something meaningful through hard work, consistency, and the trust of my customers."
-              }
+  "brand": {
+    "name": "AA  SHOES",
+    "tagline": "Move Different",
+    "slogan": "Step Into Your Style",
+    "whatsappNumber": "923079436896",
+    "currency": "PKR"
+  },
+  "theme": {
+    "accent": "#c026d3",
+    "accent2": "#581c87",
+    "glow": "rgba(192, 38, 211, 0.45)",
+    "bg": "#050508"
+  },
+  "auth": {
+    "username": "ALI HAMID 49229",
+    "customPass": "ALIZOX 49229",
+    "updatedAt": "2026-10-17T09:37:00Z"
+  },
+  "updatedAt": "2026-10-28T10:00:03.065Z",
+  "products": [
+    {
+      "id": 1793177139919,
+      "name": "Chelsea",
+      "sub": "Shoes",
+      "tag": "New Drop / 05",
+      "price": 8500,
+      "category": "Men",
+      "type": "Streetwear",
+      "description": "Everyday luxury  and Royal vide",
+      "theme": [
+        "#000000",
+        "#000000",
+        "rgba(0,0,0,0.45)"
+      ],
+      "colors": [
+        {
+          "name": "Black and brown",
+          "hex": "#000000",
+          "image": "https://raw.githubusercontent.com/aliloveff500/ALIZOX_SHOE/main/images/shoe_1793181567928_0eab9d3f-534d-4.png"
+        }
+      ]
+    },
+    {
+      "id": 1793177641670,
+      "name": "Chelsea",
+      "sub": "Shoes",
+      "tag": "New Drop / 05",
+      "price": 8500,
+      "category": "Men",
+      "type": "Streetwear",
+      "description": "Everyday luxury and Royal vide",
+      "theme": [
+        "#472000",
+        "#1f0e00",
+        "rgba(71,32,0,0.45)"
+      ],
+      "colors": [
+        {
+          "name": "Voltage Purple",
+          "hex": "#472000",
+          "image": "images/shoe_chelsea.png"
+        }
+      ]
+    }
+  ],
+  "reviews": [
+    {
+      "id": 1,
+      "name": "Hamza Malik",
+      "city": "Lahore",
+      "shoe": "PULSE SHIFT",
+      "stars": 5,
+      "text": "Bohot zabardast quality hai! Picture se bhi zyada premium lagte hain real mein."
+    },
+    {
+      "id": 2,
+      "name": "Saad Rehman",
+      "city": "Karachi",
+      "shoe": "NOVA RUSH",
+      "stars": 5,
+      "text": "Streetwear look bilkul top-tier hai."
+    },
+    {
+      "id": 3,
+      "name": "Ayesha Khan",
+      "city": "Islamabad",
+      "shoe": "AERO FLOW",
+      "stars": 5,
+      "text": "Sole cushioning bohot soft hai, gym aur daily university fits ke sath perfect match hoti hai. Colorway bohot unique hai, definitely ordering another pair soon!"
+    },
+    {
+      "id": 4,
+      "name": "Usman Tariq",
+      "city": "Faisalabad",
+      "shoe": "ECLIPSE CORE",
+      "stars": 5,
+      "text": "Finishing aur stitching 10/10. Advance payment Easypaisa se ki thi, bhai ne payment aate hi tracking update de di. Trustworthy seller."
+    },
+    {
+      "id": 5,
+      "name": "Zayan Ahmed",
+      "city": "Rawalpindi",
+      "shoe": "PULSE SHIFT",
+      "stars": 5,
+      "text": "Sole grip aur fit bilkul true to size hai (UK 8). Streetwear community ko aise young creators ko zaroor support karna chahiye."
+    }
+  ],
+  "about": {
+    "founderName": "ALI HAMID",
+    "founderRole": "Founder of AA  SHOES",
+    "age": "15 Years",
+    "education": "10th Grade",
+    "storyTitle": "Turning Passion Into a Growing Brand",
+    "storyText": "Welcome to AA  SHOES — a brand built on passion, ambition, and a vision for style.\n\nMy name is Ali Hamid, and I am a 15-year-old student currently studying in Class 10th. I started AA  SHOES with a dream of building something of my own and turning my passion for sneakers and fashion into a growing brand.\n\nAt AA  SHOES, our goal is to make discovering stylish sneakers simple, enjoyable, and convenient. We believe that great style is not just about what you wear — it's about expressing your personality and confidence.",
+    "mission": "Our mission is to provide customers with stylish sneaker options, a smooth shopping experience, and friendly customer service. We aim to build a brand that customers can trust and that continues to grow through dedication, creativity, and hard work.",
+    "vision": "We dream of growing AA  SHOES into a recognized footwear brand, reaching more customers, expanding our collection, and creating a name that stands for style, ambition, and trust.",
+    "quote": "Age is just a number when you have a dream, a clear vision, and the courage to work for it. AA  SHOES is only the beginning of my journey, and I hope to build something meaningful through hard work, consistency, and the trust of my customers."
+  }
 }
