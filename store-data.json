@@ -17,30 +17,8 @@
     "customPass": "ALIZOX 49229",
     "updatedAt": "2026-10-17T09:37:00Z"
   },
-  "updatedAt": "2026-10-28T08:48:59.982Z",
+  "updatedAt": "2026-10-28T08:52:18.804Z",
   "products": [
-    {
-      "id": 1,
-      "name": "PULSE",
-      "sub": "SHIFT",
-      "tag": "New season / 01",
-      "price": 3500,
-      "category": "Men",
-      "type": "Streetwear",
-      "description": "A bold everyday silhouette with a futuristic edge. Built for your own lane.",
-      "theme": [
-        "#c026d3",
-        "#581c87",
-        "rgba(192, 38, 211, 0.45)"
-      ],
-      "colors": [
-        {
-          "name": "Voltage Purple",
-          "hex": "#b62dff",
-          "image": "images/shoe-purple.png"
-        }
-      ]
-    },
     {
       "id": 2,
       "name": "NOVA",
