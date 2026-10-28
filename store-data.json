@@ -7,8 +7,8 @@
     "currency": "PKR"
   },
   "theme": {
-    "accent": "#c026d3",
-    "accent2": "#581c87",
+    "accent": "#100f10",
+    "accent2": "#3d140a",
     "glow": "rgba(192, 38, 211, 0.45)",
     "bg": "#050508"
   },
@@ -17,11 +17,11 @@
     "customPass": "ALIZOX 49229",
     "updatedAt": "2026-10-17T09:37:00Z"
   },
-  "updatedAt": "2026-10-28T10:01:27.953Z",
+  "updatedAt": "2026-10-28T10:01:32.777Z",
   "products": [
     {
       "id": 1793177139919,
-      "name": "Double buckle anker shows",
+      "name": "Chelsea",
       "sub": "Shoes",
       "tag": "New Drop / 05",
       "price": 8500,
