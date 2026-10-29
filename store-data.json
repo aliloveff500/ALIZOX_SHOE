@@ -17,7 +17,7 @@
     "customPass": "ALIZOX 49229",
     "updatedAt": "2026-10-17T09:37:00Z"
   },
-  "updatedAt": "2026-10-29T09:20:00.399Z",
+  "updatedAt": "2026-10-29T09:20:57.709Z",
   "products": [
     {
       "id": 1793177139919,
@@ -34,7 +34,8 @@
         "rgba(149,91,91,0.45)"
       ],
       "images": [
-        "images/shoe_chelsea.png"
+        "images/shoe_chelsea.png",
+        "https://raw.githubusercontent.com/aliloveff500/ALIZOX_SHOE/main/images/shoe_1793265610473_0eab9d3f-534d-4.png"
       ],
       "colors": [
         {
@@ -42,7 +43,8 @@
           "hex": "#955b5b",
           "image": "images/shoe_chelsea.png",
           "images": [
-            "images/shoe_chelsea.png"
+            "images/shoe_chelsea.png",
+            "https://raw.githubusercontent.com/aliloveff500/ALIZOX_SHOE/main/images/shoe_1793265610473_0eab9d3f-534d-4.png"
           ]
         }
       ]
