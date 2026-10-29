@@ -7,8 +7,8 @@
     "currency": "PKR"
   },
   "theme": {
-    "accent": "#c026d3",
-    "accent2": "#581c87",
+    "accent": "#e100ff",
+    "accent2": "#7838a8",
     "glow": "rgba(192, 38, 211, 0.45)",
     "bg": "#050508"
   },
@@ -17,7 +17,7 @@
     "customPass": "ALIZOX 49229",
     "updatedAt": "2026-10-17T09:37:00Z"
   },
-  "updatedAt": "2026-10-29T08:15:53.778Z",
+  "updatedAt": "2026-10-29T08:16:40.749Z",
   "products": [
     {
       "id": 1793177139919,
