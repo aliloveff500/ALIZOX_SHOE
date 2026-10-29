@@ -17,7 +17,7 @@
     "customPass": "ALIZOX 49229",
     "updatedAt": "2026-10-17T09:37:00Z"
   },
-  "updatedAt": "2026-10-29T09:13:58.781Z",
+  "updatedAt": "2026-10-29T09:20:30.281Z",
   "products": [
     {
       "id": 1793177139919,
@@ -63,9 +63,7 @@
       ],
       "images": [
         "https://raw.githubusercontent.com/aliloveff500/ALIZOX_SHOE/main/images/shoe_1793181567928_0eab9d3f-534d-4.png",
-        "https://raw.githubusercontent.com/aliloveff500/ALIZOX_SHOE/main/images/shoe_1793261797668_5dc1d2a9-4356-4.png",
-        "images/shoe-purple.png",
-        "images/shoe-black.png"
+        "https://raw.githubusercontent.com/aliloveff500/ALIZOX_SHOE/main/images/shoe_1793265588661_5dc1d2a9-4356-4.png"
       ],
       "colors": [
         {
@@ -74,9 +72,7 @@
           "image": "https://raw.githubusercontent.com/aliloveff500/ALIZOX_SHOE/main/images/shoe_1793181567928_0eab9d3f-534d-4.png",
           "images": [
             "https://raw.githubusercontent.com/aliloveff500/ALIZOX_SHOE/main/images/shoe_1793181567928_0eab9d3f-534d-4.png",
-            "https://raw.githubusercontent.com/aliloveff500/ALIZOX_SHOE/main/images/shoe_1793261797668_5dc1d2a9-4356-4.png",
-            "images/shoe-purple.png",
-            "images/shoe-black.png"
+            "https://raw.githubusercontent.com/aliloveff500/ALIZOX_SHOE/main/images/shoe_1793265588661_5dc1d2a9-4356-4.png"
           ]
         }
       ]
