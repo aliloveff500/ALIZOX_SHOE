@@ -17,7 +17,7 @@
     "customPass": "ALIZOX 49229",
     "updatedAt": "2026-10-17T09:37:00Z"
   },
-  "updatedAt": "2026-10-29T08:18:30.030Z",
+  "updatedAt": "2026-10-29T09:11:13.187Z",
   "products": [
     {
       "id": 1793177139919,
@@ -29,9 +29,9 @@
       "type": "Streetwear",
       "description": "Everyday luxury  and Royal vide",
       "theme": [
-        "#000000",
-        "#000000",
-        "rgba(0,0,0,0.45)"
+        "#ffffff",
+        "#727272",
+        "rgba(255,255,255,0.45)"
       ],
       "images": [
         "images/shoe_chelsea.png"
@@ -39,7 +39,7 @@
       "colors": [
         {
           "name": "Black and brown",
-          "hex": "#000000",
+          "hex": "#ffffff",
           "image": "images/shoe_chelsea.png",
           "images": [
             "images/shoe_chelsea.png"
