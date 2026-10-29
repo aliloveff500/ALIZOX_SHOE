@@ -17,7 +17,7 @@
     "customPass": "ALIZOX 49229",
     "updatedAt": "2026-10-17T09:37:00Z"
   },
-  "updatedAt": "2026-10-29T08:16:10.774Z",
+  "updatedAt": "2026-10-29T08:18:03.495Z",
   "products": [
     {
       "id": 1793177139919,
@@ -43,6 +43,40 @@
           "image": "images/shoe_chelsea.png",
           "images": [
             "images/shoe_chelsea.png"
+          ]
+        }
+      ]
+    },
+    {
+      "id": 1793261852129,
+      "name": "demo",
+      "sub": "demo",
+      "tag": "New Drop / 05",
+      "price": 8500,
+      "category": "Men",
+      "type": "Streetwear",
+      "description": "Everyday futuristic comfort sneaker.",
+      "theme": [
+        "#ffffff",
+        "#727272",
+        "rgba(255,255,255,0.45)"
+      ],
+      "images": [
+        "https://raw.githubusercontent.com/aliloveff500/ALIZOX_SHOE/main/images/shoe_1793181567928_0eab9d3f-534d-4.png",
+        "https://raw.githubusercontent.com/aliloveff500/ALIZOX_SHOE/main/images/shoe_1793261797668_5dc1d2a9-4356-4.png",
+        "images/shoe-purple.png",
+        "images/shoe-black.png"
+      ],
+      "colors": [
+        {
+          "name": "Voltage Purple",
+          "hex": "#ffffff",
+          "image": "https://raw.githubusercontent.com/aliloveff500/ALIZOX_SHOE/main/images/shoe_1793181567928_0eab9d3f-534d-4.png",
+          "images": [
+            "https://raw.githubusercontent.com/aliloveff500/ALIZOX_SHOE/main/images/shoe_1793181567928_0eab9d3f-534d-4.png",
+            "https://raw.githubusercontent.com/aliloveff500/ALIZOX_SHOE/main/images/shoe_1793261797668_5dc1d2a9-4356-4.png",
+            "images/shoe-purple.png",
+            "images/shoe-black.png"
           ]
         }
       ]
