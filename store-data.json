@@ -17,7 +17,7 @@
     "customPass": "ALIZOX 49229",
     "updatedAt": "2026-10-17T09:37:00Z"
   },
-  "updatedAt": "2026-10-29T13:27:47.810Z",
+  "updatedAt": "2026-10-29T13:30:59.254Z",
   "products": [
     {
       "id": 1793261852129,
@@ -79,6 +79,38 @@
             "https://raw.githubusercontent.com/aliloveff500/ALIZOX_SHOE/main/images/shoe_1793280408490_file_00000000a9.png",
             "https://raw.githubusercontent.com/aliloveff500/ALIZOX_SHOE/main/images/shoe_1793280192177_file_0000000013.png",
             "https://raw.githubusercontent.com/aliloveff500/ALIZOX_SHOE/main/images/shoe_1793280424763_file_000000001b.png"
+          ]
+        }
+      ]
+    },
+    {
+      "id": 1793280659002,
+      "name": "Chelsea",
+      "sub": "Shoes",
+      "tag": "New Drop / 05",
+      "price": 8500,
+      "category": "Men",
+      "type": "Streetwear",
+      "description": "Everyday luxury and Royal vide Chelsea",
+      "theme": [
+        "#000000",
+        "#000000",
+        "rgba(0,0,0,0.45)"
+      ],
+      "images": [
+        "https://raw.githubusercontent.com/aliloveff500/ALIZOX_SHOE/main/images/shoe_1793280613541_IMG_1330603f-19.jpg",
+        "https://raw.githubusercontent.com/aliloveff500/ALIZOX_SHOE/main/images/shoe_1793280616437_IMG_19c72f25-86.jpg",
+        "https://raw.githubusercontent.com/aliloveff500/ALIZOX_SHOE/main/images/shoe_1793280618900_IMG_f6426cb8-b3.jpg"
+      ],
+      "colors": [
+        {
+          "name": "Black and brown",
+          "hex": "#000000",
+          "image": "https://raw.githubusercontent.com/aliloveff500/ALIZOX_SHOE/main/images/shoe_1793280613541_IMG_1330603f-19.jpg",
+          "images": [
+            "https://raw.githubusercontent.com/aliloveff500/ALIZOX_SHOE/main/images/shoe_1793280613541_IMG_1330603f-19.jpg",
+            "https://raw.githubusercontent.com/aliloveff500/ALIZOX_SHOE/main/images/shoe_1793280616437_IMG_19c72f25-86.jpg",
+            "https://raw.githubusercontent.com/aliloveff500/ALIZOX_SHOE/main/images/shoe_1793280618900_IMG_f6426cb8-b3.jpg"
           ]
         }
       ]
