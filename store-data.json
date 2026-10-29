@@ -17,34 +17,34 @@
     "customPass": "ALIZOX 49229",
     "updatedAt": "2026-10-17T09:37:00Z"
   },
-  "updatedAt": "2026-10-29T13:08:10.469Z",
+  "updatedAt": "2026-10-29T13:09:51.933Z",
   "products": [
     {
       "id": 1793261852129,
-      "name": "demo",
-      "sub": "demo",
+      "name": "Double buckle anker shows",
+      "sub": "Shoes",
       "tag": "New Drop / 05",
       "price": 8500,
       "category": "Men",
       "type": "Streetwear",
-      "description": "Everyday futuristic comfort sneaker.",
+      "description": "Everyday luxurious and Royal vide",
       "theme": [
-        "#ffffff",
-        "#727272",
-        "rgba(255,255,255,0.45)"
+        "#000000",
+        "#000000",
+        "rgba(0,0,0,0.45)"
       ],
       "images": [
-        "https://raw.githubusercontent.com/aliloveff500/ALIZOX_SHOE/main/images/shoe_1793181567928_0eab9d3f-534d-4.png",
-        "https://raw.githubusercontent.com/aliloveff500/ALIZOX_SHOE/main/images/shoe_1793265588661_5dc1d2a9-4356-4.png"
+        "https://raw.githubusercontent.com/aliloveff500/ALIZOX_SHOE/main/images/shoe_1793279336544_6eb13b1b57b5d21.png",
+        "https://raw.githubusercontent.com/aliloveff500/ALIZOX_SHOE/main/images/shoe_1793279357353_file_0000000010.png"
       ],
       "colors": [
         {
           "name": "Voltage Purple",
-          "hex": "#ffffff",
-          "image": "https://raw.githubusercontent.com/aliloveff500/ALIZOX_SHOE/main/images/shoe_1793181567928_0eab9d3f-534d-4.png",
+          "hex": "#000000",
+          "image": "https://raw.githubusercontent.com/aliloveff500/ALIZOX_SHOE/main/images/shoe_1793279336544_6eb13b1b57b5d21.png",
           "images": [
-            "https://raw.githubusercontent.com/aliloveff500/ALIZOX_SHOE/main/images/shoe_1793181567928_0eab9d3f-534d-4.png",
-            "https://raw.githubusercontent.com/aliloveff500/ALIZOX_SHOE/main/images/shoe_1793265588661_5dc1d2a9-4356-4.png"
+            "https://raw.githubusercontent.com/aliloveff500/ALIZOX_SHOE/main/images/shoe_1793279336544_6eb13b1b57b5d21.png",
+            "https://raw.githubusercontent.com/aliloveff500/ALIZOX_SHOE/main/images/shoe_1793279357353_file_0000000010.png"
           ]
         }
       ]
