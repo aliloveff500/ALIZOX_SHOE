@@ -17,7 +17,7 @@
     "customPass": "ALIZOX 49229",
     "updatedAt": "2026-10-17T09:37:00Z"
   },
-  "updatedAt": "2026-10-29T13:09:53.297Z",
+  "updatedAt": "2026-10-29T13:11:03.186Z",
   "products": [
     {
       "id": 1793261852129,
@@ -29,9 +29,9 @@
       "type": "Streetwear",
       "description": "Everyday luxurious and Royal vide",
       "theme": [
-        "#000000",
-        "#000000",
-        "rgba(0,0,0,0.45)"
+        "#6b3000",
+        "#301500",
+        "rgba(107,48,0,0.45)"
       ],
       "images": [
         "https://raw.githubusercontent.com/aliloveff500/ALIZOX_SHOE/main/images/shoe_1793279336544_6eb13b1b57b5d21.png",
@@ -40,7 +40,7 @@
       "colors": [
         {
           "name": "Voltage Purple",
-          "hex": "#000000",
+          "hex": "#6b3000",
           "image": "https://raw.githubusercontent.com/aliloveff500/ALIZOX_SHOE/main/images/shoe_1793279336544_6eb13b1b57b5d21.png",
           "images": [
             "https://raw.githubusercontent.com/aliloveff500/ALIZOX_SHOE/main/images/shoe_1793279336544_6eb13b1b57b5d21.png",
