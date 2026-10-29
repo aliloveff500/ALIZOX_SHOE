@@ -17,7 +17,7 @@
     "customPass": "ALIZOX 49229",
     "updatedAt": "2026-10-17T09:37:00Z"
   },
-  "updatedAt": "2026-10-29T13:13:37.279Z",
+  "updatedAt": "2026-10-29T13:24:09.625Z",
   "products": [
     {
       "id": 1793261852129,
@@ -45,6 +45,40 @@
           "images": [
             "https://raw.githubusercontent.com/aliloveff500/ALIZOX_SHOE/main/images/shoe_1793279336544_6eb13b1b57b5d21.png",
             "https://raw.githubusercontent.com/aliloveff500/ALIZOX_SHOE/main/images/shoe_1793279357353_file_0000000010.png"
+          ]
+        }
+      ]
+    },
+    {
+      "id": 1793280249383,
+      "name": "Zipper Chelsea",
+      "sub": "Shoes",
+      "tag": "New Drop / 05",
+      "price": 8750,
+      "category": "Men",
+      "type": "Streetwear",
+      "description": "Everyday luxury and Royal vide zipper Chelsea",
+      "theme": [
+        "#823d00",
+        "#3a1b00",
+        "rgba(130,61,0,0.45)"
+      ],
+      "images": [
+        "https://raw.githubusercontent.com/aliloveff500/ALIZOX_SHOE/main/images/shoe_1793280181966_file_0000000075.png",
+        "https://raw.githubusercontent.com/aliloveff500/ALIZOX_SHOE/main/images/shoe_1793280187709_file_000000001b.png",
+        "https://raw.githubusercontent.com/aliloveff500/ALIZOX_SHOE/main/images/shoe_1793280192177_file_0000000013.png",
+        "https://raw.githubusercontent.com/aliloveff500/ALIZOX_SHOE/main/images/shoe_1793280220533_file_00000000a9.png"
+      ],
+      "colors": [
+        {
+          "name": "Black and brown",
+          "hex": "#823d00",
+          "image": "https://raw.githubusercontent.com/aliloveff500/ALIZOX_SHOE/main/images/shoe_1793280181966_file_0000000075.png",
+          "images": [
+            "https://raw.githubusercontent.com/aliloveff500/ALIZOX_SHOE/main/images/shoe_1793280181966_file_0000000075.png",
+            "https://raw.githubusercontent.com/aliloveff500/ALIZOX_SHOE/main/images/shoe_1793280187709_file_000000001b.png",
+            "https://raw.githubusercontent.com/aliloveff500/ALIZOX_SHOE/main/images/shoe_1793280192177_file_0000000013.png",
+            "https://raw.githubusercontent.com/aliloveff500/ALIZOX_SHOE/main/images/shoe_1793280220533_file_00000000a9.png"
           ]
         }
       ]
