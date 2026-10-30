@@ -17,7 +17,7 @@
     "customPass": "ALIZOX 49229",
     "updatedAt": "2026-10-17T09:37:00Z"
   },
-  "updatedAt": "2026-10-29T13:43:05.767Z",
+  "updatedAt": "2026-10-30T10:21:08.371Z",
   "products": [
     {
       "id": 1793261852129,
@@ -29,9 +29,9 @@
       "type": "Streetwear",
       "description": "Everyday luxurious and Royal vide",
       "theme": [
-        "#6b3000",
-        "#301500",
-        "rgba(107,48,0,0.45)"
+        "#ffffff",
+        "#727272",
+        "rgba(255,255,255,0.45)"
       ],
       "images": [
         "https://raw.githubusercontent.com/aliloveff500/ALIZOX_SHOE/main/images/shoe_1793279336544_6eb13b1b57b5d21.png",
@@ -39,8 +39,8 @@
       ],
       "colors": [
         {
-          "name": "Black and brown",
-          "hex": "#6b3000",
+          "name": "Original Edition",
+          "hex": "#ffffff",
           "image": "https://raw.githubusercontent.com/aliloveff500/ALIZOX_SHOE/main/images/shoe_1793279336544_6eb13b1b57b5d21.png",
           "images": [
             "https://raw.githubusercontent.com/aliloveff500/ALIZOX_SHOE/main/images/shoe_1793279336544_6eb13b1b57b5d21.png",
@@ -88,7 +88,7 @@
       "name": "Chelsea",
       "sub": "Shoes",
       "tag": "New Drop / 05",
-      "price": 6500,
+      "price": 8500,
       "category": "Men",
       "type": "Streetwear",
       "description": "Everyday luxury and Royal vide Chelsea",
