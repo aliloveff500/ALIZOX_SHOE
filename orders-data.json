@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-10-21T08:54:13.007Z",
+  "updatedAt": "2026-10-31T09:06:13.586Z",
   "deletedIds": [
     "ALX-1001",
     "ALX-53707",
@@ -7,5 +7,45 @@
     "ALX-86758",
     "ALX-92256"
   ],
-  "orders": []
+  "orders": [
+    {
+      "id": "ALX-57179",
+      "createdAt": "2026-10-31T09:05:41.480Z",
+      "userId": "USR-87085",
+      "userEmail": "aliloveff500@gmail.com",
+      "customer": {
+        "name": "admin",
+        "email": "aliloveff500@gmail.com",
+        "phone": "11111111111",
+        "address": "admin",
+        "city": "admin",
+        "payment": "Easypaisa (confirm manually)",
+        "notes": "None"
+      },
+      "items": [
+        {
+          "productId": 3,
+          "name": "AERO FLOW",
+          "color": "Ice Blue",
+          "size": "UK 7",
+          "price": 3500,
+          "quantity": 2,
+          "image": "images/shoe-blue.png"
+        },
+        {
+          "productId": 1793261852129,
+          "name": "Double buckle anker shows Shoes",
+          "color": "Original Edition",
+          "size": "UK 7",
+          "price": 8500,
+          "quantity": 1,
+          "image": "https://raw.githubusercontent.com/aliloveff500/ALIZOX_SHOE/main/images/shoe_1793279336544_6eb13b1b57b5d21.png"
+        }
+      ],
+      "subtotal": 15500,
+      "currency": "PKR",
+      "status": "Pending",
+      "source": "Storefront Web"
+    }
+  ]
 }
